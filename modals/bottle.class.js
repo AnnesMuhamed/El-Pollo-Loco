@@ -7,13 +7,20 @@ class bottle extends CollectibleObjects {
     ];
 
     constructor() {
-        super().loadImage('img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
+        super().loadImage(this.IMAGES_BOTTLE[0]);
         this.loadImages(this.IMAGES_BOTTLE);
-
 
         this.x = 200 + (Math.random() * 1600) * 1;
         this.height = 50;
         this.width = 40;
         this.y = 380;
+        
+        this.animate();
+    }
+
+    animate() {
+        setInterval(() => {
+            this.playAnimation(this.IMAGES_BOTTLE);
+        }, 200);
     }
 }
