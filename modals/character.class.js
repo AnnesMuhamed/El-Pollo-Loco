@@ -3,6 +3,7 @@ class Character extends MovableObject{
     height = 200;
     width = 90;
     speed = 10;
+    canThrowBottle = true;  // Neue Variable für den Cooldown
     IMAGES_WALKING = [
             'img/2_character_pepe/2_walk/W-21.png',
             'img/2_character_pepe/2_walk/W-22.png',
@@ -74,6 +75,14 @@ class Character extends MovableObject{
 
             if(this.world.keyboard.SPACE && !this.isAboveGround())  { // Wenn die taste UP gedrückt wird und man über den grund ist dann spring.
                 this.jump();
+            }
+
+            if(this.world.keyboard.D && this.canThrowBottle) {
+                this.world.throwBottle();
+                this.canThrowBottle = false;  // Verhindert mehrfaches Werfen
+                setTimeout(() => {
+                    this.canThrowBottle = true;  // Nach 500ms kann wieder geworfen werden
+                }, 500);
             }
 
         }, 1000 / 60);

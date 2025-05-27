@@ -10,7 +10,7 @@ function init() {
     
 }
 
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => {  // Taste Drücken.
     if(e.keyCode == 39) {
         keyboard.RIGHT = true;
     }
@@ -31,11 +31,15 @@ window.addEventListener('keydown', (e) => {
         keyboard.SPACE = true;
     }
 
+    if(e.keyCode == 68) {
+        keyboard.D = true;
+    }
+
     console.log(e);
     
 });
 
-window.addEventListener('keyup', (e) => {
+window.addEventListener('keyup', (e) => { // Taste Loslassen.
     if(e.keyCode == 39) {
         keyboard.RIGHT = false;
     }
@@ -54,5 +58,9 @@ window.addEventListener('keyup', (e) => {
 
     if(e.keyCode == 32) {
         keyboard.SPACE = false;
+    }
+
+    if(e.keyCode == 68) {
+        keyboard.D = false;
     }
 });

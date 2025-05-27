@@ -8,6 +8,7 @@ class World {
   statusBar = new StatusBar();
   statusBarBottle = new StatusBarBottle();
   statusBarCoin = new StatusBarCoin();
+  throwableObject = [];  // Leeres Array für geworfene Flaschen
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -72,6 +73,7 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.bottle);
+    this.addObjectsToMap(this.throwableObject);
 
     this.ctx.translate(-this.camera_x, 0);
     // Space for fixed Objects
@@ -126,5 +128,15 @@ class World {
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();
+  }
+
+  throwBottle() {
+    if (this.statusBarBottle.bottleStatusbarPercentage > 0) {
+      let bottle = new ThrowableObject();
+      bottle.x = this.character.x + 100;
+      bottle.y = this.character.y + 100;
+      this.throwableObject.push(bottle);
+      this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 20);
+    }
   }
 }
