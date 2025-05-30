@@ -12,11 +12,11 @@ class ThrowableObject extends MovableObject {
         
         this.x = 100;
         this.y = 100;
-        this.height = 60;
+        this.height = 50;
         this.width = 50;
-        this.speed = 10;
-        this.speedY = 30;
-        this.acceleration = 2.5;
+        this.speed = 15;
+        this.speedY = 0;
+        this.acceleration = 0;
         this.animate();
     }
 
@@ -29,8 +29,6 @@ class ThrowableObject extends MovableObject {
         // Wurfbewegung
         setInterval(() => {
             this.x += this.speed;
-            this.y -= this.speedY;
-            this.speedY -= this.acceleration;
         }, 1000 / 60);
     }
 }

@@ -56,35 +56,29 @@ class Character extends MovableObject{
     }
 
     animate() {
-
         setInterval (() => {
-            // this.walking_spund.pause();
-
             this.world.camera_x = -this.x + 100;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
-                // this.walking_spund.pause();
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
-                // this.walking_spund.pause();
             }
 
-            if(this.world.keyboard.SPACE && !this.isAboveGround())  { // Wenn die taste UP gedrückt wird und man über den grund ist dann spring.
+            if(this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
             }
 
             if(this.world.keyboard.D && this.canThrowBottle) {
                 this.world.throwBottle();
-                this.canThrowBottle = false;  // Verhindert mehrfaches Werfen
+                this.canThrowBottle = false;
                 setTimeout(() => {
-                    this.canThrowBottle = true;  // Nach 500ms kann wieder geworfen werden
+                    this.canThrowBottle = true;
                 }, 500);
             }
-
         }, 1000 / 60);
     
 
@@ -103,5 +97,24 @@ class Character extends MovableObject{
                 }
             }
         }, 50);
+    }
+
+    isJumpingOnEnemy(enemy) {
+        let characterBottom = this.y + this.height;
+        let enemyTop = enemy.y;
+        let characterCenter = this.x + (this.width / 2);
+        let enemyLeft = enemy.x;
+        let enemyRight = enemy.x + enemy.width;
+
+        // Prüfe, ob der Character nach unten fällt (mit Schwellenwert für Rundungsfehler)
+        const isFalling = this.speedY > 0.01;
+
+        return (
+            characterBottom >= enemyTop &&  // Character ist auf Höhe des Enemies
+            characterBottom <= enemyTop + 380 &&  // Toleranz für die Höhe
+            characterCenter >= enemyLeft - 0 &&  // Toleranz nach links
+            characterCenter <= enemyRight + 0 &&  // Toleranz nach rechts
+            isFalling  // Character muss aktiv nach unten fallen
+        );
     }
 }

@@ -20,6 +20,17 @@ class MovableObject extends DrawableObject {
   }
 
   isColliding(mo) {
+    // Wenn der Character von oben auf einen Enemy springt, keine Kollision
+    if (this instanceof Character && (mo instanceof Chicken || mo instanceof smallChicken)) {
+      if (this.isJumpingOnEnemy(mo)) {
+        return false;
+      }
+    }
+    // Wenn ein Enemy tot ist, keine Kollision
+    if ((mo instanceof Chicken || mo instanceof smallChicken) && mo.isDead) {
+      return false;
+    }
+    
     return (
       this.x + this.width > mo.x &&
       this.y + this.height > mo.y &&

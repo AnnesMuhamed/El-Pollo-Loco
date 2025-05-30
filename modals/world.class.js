@@ -33,6 +33,19 @@ class World {
 
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
+      // Wenn der Enemy bereits tot ist, keine Kollisionsprüfung durchführen
+      if (enemy.isDead) {
+        return;
+      }
+
+      // Prüfe zuerst, ob der Character auf dem Enemy springt
+      if (this.character.isJumpingOnEnemy(enemy)) {
+        enemy.isDead = true;
+        this.character.speedY = 20;  // Kleiner Sprung nach dem Töten
+        return;  // Beende die Prüfung für diesen Enemy
+      }
+
+      // Nur wenn der Character NICHT auf dem Enemy springt, prüfe auf normale Kollision
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
@@ -133,7 +146,7 @@ class World {
   throwBottle() {
     if (this.statusBarBottle.bottleStatusbarPercentage > 0) {
       let bottle = new ThrowableObject();
-      bottle.x = this.character.x + 100;
+      bottle.x = this.character.x + 50;
       bottle.y = this.character.y + 100;
       this.throwableObject.push(bottle);
       this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 20);
