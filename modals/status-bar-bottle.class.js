@@ -27,18 +27,6 @@ class StatusBarBottle extends DrawableObject {
   }
 
   resolveBottleImageIndex() {
-    if (this.bottleStatusbarPercentage == 0) {
-      return 0;
-    } else if (this.bottleStatusbarPercentage < 20) {
-      return 1;
-    } else if (this.bottleStatusbarPercentage < 40) {
-      return 2;
-    } else if (this.bottleStatusbarPercentage < 60) {
-      return 3;
-    } else if (this.bottleStatusbarPercentage < 80) {
-      return 4;
-    } else {
-      return 5;
-    }
+    return Math.min(Math.floor(this.bottleStatusbarPercentage / 20), 5);
   }
 }
