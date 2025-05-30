@@ -6,6 +6,11 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
 
+  /**
+   * Applies gravity to the object
+   * Updates vertical position and speed based on acceleration
+   * Runs every 40ms (1000/25)
+   */
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -15,10 +20,20 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  /**
+   * Checks if the object is above ground level
+   * @returns {boolean} True if object is above ground (y < 225), false otherwise
+   */
   isAboveGround() {
     return this.y < 225;
   }
 
+  /**
+   * Checks for collision with another movable object
+   * @param {MovableObject} mo - The object to check collision with
+   * @returns {boolean} True if objects are colliding, false otherwise
+   * @description Handles special cases for character-enemy collisions
+   */
   isColliding(mo) {
     // Wenn der Character von oben auf einen Enemy springt, keine Kollision
     if (this instanceof Character && (mo instanceof Chicken || mo instanceof smallChicken)) {
@@ -39,6 +54,11 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Reduces energy when object is hit
+   * Updates lastHit timestamp
+   * Ensures energy doesn't go below 0
+   */
   hit() {
     this.energy -= 5;
     if (this.energy < 0) {
@@ -48,16 +68,29 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Checks if object is in hurt state
+   * @returns {boolean} True if object was hit in the last 0.5 seconds
+   */
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
     timepassed = timepassed / 1000; // Difference in sek
     return timepassed < 0.5;
   }
 
+  /**
+   * Checks if object is dead
+   * @returns {boolean} True if energy is 0, false otherwise
+   */
   isDead() {
     return this.energy == 0;
   }
 
+  /**
+   * Plays animation sequence
+   * @param {string[]} images - Array of image paths for animation
+   * @description Cycles through images based on currentImage counter
+   */
   playAnimation(images) {
     let i = this.currentImage % images.length; // Modulu % Der Mathematische Rest. let i = 0 % 6 =>, Rest 0 (0 / 6 = 0, 0 ist rest). i = 0,1,2,3,4,5,0
     let path = images[i];
@@ -65,14 +98,26 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
+  /**
+   * Moves object to the right
+   * Updates x position based on speed
+   */
   moveRight() {
     this.x += this.speed;
   }
 
+  /**
+   * Moves object to the left
+   * Updates x position based on speed
+   */
   moveLeft() {
     this.x -= this.speed; // Px
   }
 
+  /**
+   * Makes object jump
+   * Sets initial upward velocity
+   */
   jump() {
     this.speedY = 30;
   }

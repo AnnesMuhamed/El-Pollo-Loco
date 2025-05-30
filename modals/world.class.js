@@ -10,6 +10,12 @@ class World {
   statusBarCoin = new StatusBarCoin();
   throwableObject = [];  // Leeres Array für geworfene Flaschen
 
+  /**
+   * Creates a new World instance
+   * @param {HTMLCanvasElement} canvas - The canvas element to draw on
+   * @param {Keyboard} keyboard - The keyboard input handler
+   * @description Initializes the game world, sets up canvas context and starts game loops
+   */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas; // Varibale wird in parameter geschrieben obwohl das die gleiche schreibweise ist.
@@ -19,10 +25,18 @@ class World {
     this.checkCollisions();
   }
 
+  /**
+   * Sets the world reference for the character
+   * @description Allows the character to access world properties and methods
+   */
   setWorld() {
     this.character.world = this;
   }
 
+  /**
+   * Starts collision detection loops
+   * @description Checks for collisions every 200ms
+   */
   checkCollisions() {
     setInterval(() => {
       this.checkEnemyCollisions();
@@ -31,6 +45,10 @@ class World {
     }, 200);
   }
 
+  /**
+   * Checks for collisions between character and enemies
+   * @description Handles enemy death when jumped on and character damage on side collision
+   */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
       // Wenn der Enemy bereits tot ist, keine Kollisionsprüfung durchführen
@@ -53,6 +71,10 @@ class World {
     });
   }
 
+  /**
+   * Checks for collisions between character and coins
+   * @description Collects coins and updates coin status bar
+   */
   checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
@@ -64,6 +86,10 @@ class World {
     });
   }
 
+  /**
+   * Checks for collisions between character and bottles
+   * @description Collects bottles and updates bottle status bar
+   */
   checkBottleCollisions() {
     this.level.bottle.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
@@ -75,6 +101,10 @@ class World {
     });
   }
 
+  /**
+   * Main draw loop
+   * @description Renders all game objects and updates the display
+   */
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Löscht das vorherige bild.
 
@@ -112,12 +142,21 @@ class World {
     });
   }
 
+  /**
+   * Adds multiple objects to the game map
+   * @param {Array} objects - Array of objects to add to the map
+   */
   addObjectsToMap(objects) {
     objects.forEach((o) => {
       this.addToMap(o);
     });
   }
 
+  /**
+   * Adds a single object to the game map
+   * @param {DrawableObject} mo - The object to add to the map
+   * @description Handles object drawing and direction flipping
+   */
   addToMap(mo) {
     if (mo.otherDirection) {
       this.flipImage(mo);
@@ -131,6 +170,10 @@ class World {
     }
   }
 
+  /**
+   * Flips an image horizontally
+   * @param {DrawableObject} mo - The object to flip
+   */
   flipImage(mo) {
     this.ctx.save();
     this.ctx.translate(mo.width, 0);
@@ -138,11 +181,19 @@ class World {
     mo.x = mo.x * -1;
   }
 
+  /**
+   * Restores an image to its original orientation
+   * @param {DrawableObject} mo - The object to restore
+   */
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();
   }
 
+  /**
+   * Creates and throws a bottle
+   * @description Creates a new throwable bottle if the character has bottles available
+   */
   throwBottle() {
     if (this.statusBarBottle.bottleStatusbarPercentage > 0) {
       let bottle = new ThrowableObject();

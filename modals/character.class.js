@@ -1,5 +1,5 @@
 class Character extends MovableObject{
-    y = 140;
+    y = 180;
     height = 200;
     width = 90;
     speed = 10;
@@ -44,7 +44,11 @@ class Character extends MovableObject{
     currentImage = 0;
     world;
 
-
+    /**
+     * Creates a new Character instance
+     * Initializes the character with walking, jumping, dead and hurt animations
+     * Applies gravity and starts the animation loop
+     */
     constructor (){
        super().loadImage('img/2_character_pepe/2_walk/W-21.png');
        this.loadImages(this.IMAGES_WALKING);
@@ -55,6 +59,12 @@ class Character extends MovableObject{
        this.animate();
     }
 
+    /**
+     * Handles all character animations and movements
+     * Updates camera position based on character movement
+     * Processes keyboard input for movement, jumping and bottle throwing
+     * Manages animation states (walking, jumping, dead, hurt)
+     */
     animate() {
         setInterval (() => {
             this.world.camera_x = -this.x + 100;
@@ -99,22 +109,28 @@ class Character extends MovableObject{
         }, 50);
     }
 
+    /**
+     * Checks if the character is jumping on top of an enemy
+     * @param {Object} enemy - The enemy object to check collision with
+     * @returns {boolean} True if character is jumping on enemy, false otherwise
+     * @description Determines if the character is landing on an enemy by checking:
+     * - Character's bottom position relative to enemy's top
+     * - Character's center position relative to enemy's width
+     * - Character's falling state (speedY)
+     */
     isJumpingOnEnemy(enemy) {
         let characterBottom = this.y + this.height;
         let enemyTop = enemy.y;
         let characterCenter = this.x + (this.width / 2);
         let enemyLeft = enemy.x;
         let enemyRight = enemy.x + enemy.width;
-
-        // Prüfe, ob der Character nach unten fällt (mit Schwellenwert für Rundungsfehler)
         const isFalling = this.speedY > 0.01;
-
         return (
-            characterBottom >= enemyTop &&  // Character ist auf Höhe des Enemies
-            characterBottom <= enemyTop + 380 &&  // Toleranz für die Höhe
-            characterCenter >= enemyLeft - 0 &&  // Toleranz nach links
-            characterCenter <= enemyRight + 0 &&  // Toleranz nach rechts
-            isFalling  // Character muss aktiv nach unten fallen
+            characterBottom >= enemyTop &&  
+            characterBottom <= enemyTop + 380 &&
+            characterCenter >= enemyLeft - 0 && 
+            characterCenter <= enemyRight + 0 &&  
+            isFalling
         );
     }
 }
