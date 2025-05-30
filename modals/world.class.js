@@ -51,19 +51,17 @@ class World {
    */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
-      // Wenn der Enemy bereits tot ist, keine Kollisionsprüfung durchführen
       if (enemy.isDead) {
         return;
       }
 
-      // Prüfe zuerst, ob der Character auf dem Enemy springt
       if (this.character.isJumpingOnEnemy(enemy)) {
         enemy.isDead = true;
-        this.character.speedY = 20;  // Kleiner Sprung nach dem Töten
-        return;  // Beende die Prüfung für diesen Enemy
+        this.character.y = enemy.y - this.character.height;
+        this.character.speedY = 10;
+        return;
       }
 
-      // Nur wenn der Character NICHT auf dem Enemy springt, prüfe auf normale Kollision
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
@@ -106,9 +104,9 @@ class World {
    * @description Renders all game objects and updates the display
    */
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Löscht das vorherige bild.
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.ctx.translate(this.camera_x, 0); // bild verschiebt sich nach links wenn sich der charackter bewegt.
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
 
     this.addToMap(this.character);
@@ -119,17 +117,14 @@ class World {
     this.addObjectsToMap(this.throwableObject);
 
     this.ctx.translate(-this.camera_x, 0);
-    // Space for fixed Objects
     this.addToMap(this.statusBar);
     this.ctx.translate(this.camera_x, 0);
 
     this.ctx.translate(-this.camera_x, 0);
-    // Space for fixed Objects
     this.addToMap(this.statusBarCoin);
     this.ctx.translate(this.camera_x, 0);
 
     this.ctx.translate(-this.camera_x, 0);
-    // Space for fixed Objects
     this.addToMap(this.statusBarBottle);
     this.ctx.translate(this.camera_x, 0);
 
@@ -137,7 +132,6 @@ class World {
 
     let self = this;
     requestAnimationFrame(function () {
-      // Häufig Aufrufen.
       self.draw();
     });
   }

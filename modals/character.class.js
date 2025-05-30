@@ -124,12 +124,14 @@ class Character extends MovableObject{
         let characterCenter = this.x + (this.width / 2);
         let enemyLeft = enemy.x;
         let enemyRight = enemy.x + enemy.width;
-        const isFalling = this.speedY > 0.01;
+        const isFalling = this.speedY >= 0;
+        let tolerance = 20;
+
         return (
             characterBottom >= enemyTop &&  
-            characterBottom <= enemyTop + 380 &&
-            characterCenter >= enemyLeft - 0 && 
-            characterCenter <= enemyRight + 0 &&  
+            characterBottom <= enemyTop + tolerance &&
+            characterCenter >= enemyLeft - 20 &&
+            characterCenter <= enemyRight + 20 &&
             isFalling
         );
     }

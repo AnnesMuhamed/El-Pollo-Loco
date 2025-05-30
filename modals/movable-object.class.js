@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   energy = 100;
   lastHit = 0;
+  hitCooldown = 1000; // 1 Sekunde Cooldown zwischen Treffern
 
   /**
    * Applies gravity to the object
@@ -58,13 +59,16 @@ class MovableObject extends DrawableObject {
    * Reduces energy when object is hit
    * Updates lastHit timestamp
    * Ensures energy doesn't go below 0
+   * Implements a cooldown between hits
    */
   hit() {
-    this.energy -= 5;
-    if (this.energy < 0) {
-      this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime(); // Zeit in Zhalenform Speichern.
+    let timepassed = new Date().getTime() - this.lastHit;
+    if (timepassed > this.hitCooldown) { // Nur Schaden verursachen, wenn der Cooldown vorbei ist
+      this.energy -= 20; // Reduziert von 5 auf 20 Leben pro Treffer
+      if (this.energy < 0) {
+        this.energy = 0;
+      }
+      this.lastHit = new Date().getTime();
     }
   }
 
@@ -73,8 +77,8 @@ class MovableObject extends DrawableObject {
    * @returns {boolean} True if object was hit in the last 0.5 seconds
    */
   isHurt() {
-    let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
-    timepassed = timepassed / 1000; // Difference in sek
+    let timepassed = new Date().getTime() - this.lastHit;
+    timepassed = timepassed / 1000;
     return timepassed < 0.5;
   }
 
