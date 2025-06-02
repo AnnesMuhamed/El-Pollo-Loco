@@ -1,5 +1,6 @@
 class World {
   character = new Character(); // Innerhalb eines Objekts braucht man keine let - var- const.
+  endBoss = new Endboss();
   level = level1;
   canvas;
   ctx;
@@ -8,6 +9,7 @@ class World {
   statusBar = new StatusBar();
   statusBarBottle = new StatusBarBottle();
   statusBarCoin = new StatusBarCoin();
+  statusBarEndboss = new StatusBarEndboss();
   throwableObject = [];  // Leeres Array für geworfene Flaschen
 
   /**
@@ -42,6 +44,7 @@ class World {
       this.checkEnemyCollisions();
       this.checkCoinCollisions();
       this.checkBottleCollisions();
+      this.checkBossBottleCollision();
     }, 200);
   }
 
@@ -67,6 +70,17 @@ class World {
         this.statusBar.setPercentage(this.character.energy);
       }
     });
+  }
+
+  checkBossBottleCollision() {
+    for (let i = this.throwableObject.length - 1; i >= 0; i--) {
+      let bottle = this.throwableObject[i];
+      if (bottle.isColliding(this.endBoss)) {
+        this.throwableObject.splice(i, 1);
+        this.endBoss.hit();
+        this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
+      }
+    }
   }
 
   /**
@@ -118,6 +132,10 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBar);
+    this.ctx.translate(this.camera_x, 0);
+
+    this.ctx.translate(-this.camera_x, 0);
+    this.addToMap(this.statusBarEndboss);
     this.ctx.translate(this.camera_x, 0);
 
     this.ctx.translate(-this.camera_x, 0);

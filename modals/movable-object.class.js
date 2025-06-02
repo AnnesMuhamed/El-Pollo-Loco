@@ -47,6 +47,17 @@ class MovableObject extends DrawableObject {
       return false;
     }
     
+    // Spezielle Kollisionserkennung für Flaschen gegen Endboss
+    if (this instanceof ThrowableObject && mo instanceof Endboss) {
+      return (
+        this.x + this.width >= mo.x &&
+        this.x <= mo.x + mo.width &&
+        this.y + this.height >= mo.y &&
+        this.y <= mo.y + mo.height
+      );
+    }
+    
+    // Normale Kollisionserkennung für alle anderen Fälle
     return (
       this.x + this.width > mo.x &&
       this.y + this.height > mo.y &&
@@ -62,13 +73,20 @@ class MovableObject extends DrawableObject {
    * Implements a cooldown between hits
    */
   hit() {
-    let timepassed = new Date().getTime() - this.lastHit;
-    if (timepassed > this.hitCooldown) { // Nur Schaden verursachen, wenn der Cooldown vorbei ist
-      this.energy -= 20; // Reduziert von 5 auf 20 Leben pro Treffer
+    if (this instanceof Character) {
+      let timepassed = new Date().getTime() - this.lastHit;
+      if (timepassed > this.hitCooldown) {
+        this.energy -= 20;
+        if (this.energy < 0) {
+          this.energy = 0;
+        }
+        this.lastHit = new Date().getTime();
+      }
+    } else {
+      this.energy -= 20;
       if (this.energy < 0) {
         this.energy = 0;
       }
-      this.lastHit = new Date().getTime();
     }
   }
 
