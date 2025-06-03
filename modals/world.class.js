@@ -79,6 +79,9 @@ class World {
         this.throwableObject.splice(i, 1);
         this.endBoss.hit();
         this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
+        if (this.endBoss.energy <= 0) {
+          this.endBoss.isDead = true;
+        }
       }
     }
   }
@@ -118,36 +121,34 @@ class World {
    * @description Renders all game objects and updates the display
    */
   draw() {
+    // Canvas leeren
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // Kamera-Position setzen
     this.ctx.translate(this.camera_x, 0);
+    
+    // Hintergrund und Objekte zeichnen
     this.addObjectsToMap(this.level.backgroundObjects);
-
-    this.addToMap(this.character);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.bottle);
     this.addObjectsToMap(this.throwableObject);
+    
+    // Character und Endboss zeichnen
+    this.addToMap(this.character);
+    this.addToMap(this.endBoss);
 
+    // Kamera-Position zurücksetzen für UI-Elemente
     this.ctx.translate(-this.camera_x, 0);
+    
+    // UI-Elemente zeichnen
     this.addToMap(this.statusBar);
-    this.ctx.translate(this.camera_x, 0);
-
-    this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBarEndboss);
-    this.ctx.translate(this.camera_x, 0);
-
-    this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBarCoin);
-    this.ctx.translate(this.camera_x, 0);
-
-    this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusBarBottle);
-    this.ctx.translate(this.camera_x, 0);
 
-    this.ctx.translate(-this.camera_x, 0);
-
+    // Nächsten Frame zeichnen
     let self = this;
     requestAnimationFrame(function () {
       self.draw();

@@ -5,8 +5,7 @@ const level1 = new Level(
         new Chicken(),
         new smallChicken(),
         new smallChicken(),
-        new smallChicken(),
-        new Endboss()
+        new smallChicken()
     ],
 
     [
