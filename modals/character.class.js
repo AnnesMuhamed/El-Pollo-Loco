@@ -68,26 +68,29 @@ class Character extends MovableObject {
   animate() {
     setInterval(() => {
       this.world.camera_x = -this.x + 100;
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-      }
+      // Alle Aktionen nur, wenn der Charakter lebt
+      if (!this.isDead()) {
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+          this.moveRight();
+          this.otherDirection = false;
+        }
 
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-      }
+        if (this.world.keyboard.LEFT && this.x > 0) {
+          this.moveLeft();
+          this.otherDirection = true;
+        }
 
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-      }
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+          this.jump();
+        }
 
-      if (this.world.keyboard.D && this.canThrowBottle) {
-        this.world.throwBottle();
-        this.canThrowBottle = false;
-        setTimeout(() => {
-          this.canThrowBottle = true;
-        }, 500);
+        if (this.world.keyboard.D && this.canThrowBottle) {
+          this.world.throwBottle();
+          this.canThrowBottle = false;
+          setTimeout(() => {
+            this.canThrowBottle = true;
+          }, 500);
+        }
       }
     }, 1000 / 60);
 
