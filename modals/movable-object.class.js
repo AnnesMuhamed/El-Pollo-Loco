@@ -46,7 +46,6 @@ class MovableObject extends DrawableObject {
     if ((mo instanceof Chicken || mo instanceof smallChicken) && mo.isDead) {
       return false;
     }
-    
     // Spezielle Kollisionserkennung für Flaschen gegen Endboss
     if (this instanceof ThrowableObject && mo instanceof Endboss) {
       return (
@@ -56,12 +55,20 @@ class MovableObject extends DrawableObject {
         this.y <= mo.y + mo.height
       );
     }
-    
-    // Normale Kollisionserkennung für alle anderen Fälle
+    // Prüfe, ob Offsets vorhanden sind (für präzisere Kollisionen)
+    if (this.offset && mo.offset) {
+      return (
+        this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+        this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+        this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+        this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+      );
+    }
+    // Standard-Kollisionserkennung (AABB, korrigiert)
     return (
       this.x + this.width > mo.x &&
       this.y + this.height > mo.y &&
-      this.x < mo.x &&
+      this.x < mo.x + mo.width &&
       this.y < mo.y + mo.height
     );
   }

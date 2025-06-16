@@ -17,6 +17,7 @@ class smallChicken extends MovableObject {
 
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
+        this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
