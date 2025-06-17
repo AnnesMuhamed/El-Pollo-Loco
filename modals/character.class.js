@@ -128,8 +128,8 @@ class Character extends MovableObject {
     const characterRight = this.x + this.width;
     const enemyLeft = enemy.x;
     const enemyRight = enemy.x + enemy.width;
-    const isFalling = this.speedY > 0;
-    const tolerance = 20; // Großzügiger Bereich
+    const isFalling = this.speedY > 0.3; 
+    const tolerance = 50;
 
     const wasAbove = prevCharacterBottom <= enemyTop + tolerance;
     const isNowBelow = characterBottom >= enemyTop + 1;

@@ -60,8 +60,6 @@ class World {
 
       if (this.character.isJumpingOnEnemy(enemy)) {
         enemy.isDead = true;
-        this.character.y = enemy.y - this.character.height;
-        this.character.speedY = 10;
         return;
       }
 
