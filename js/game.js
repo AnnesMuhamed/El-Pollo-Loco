@@ -5,6 +5,7 @@ let keyboard = new Keyboard();
 function init() {
    canvas = document.getElementById('canvas');
    world = new World(canvas, keyboard);
+   AudioManager.init();
 
     console.log('My Character is', world.character);
     
