@@ -95,6 +95,7 @@ class World {
         this.statusBarCoin.setCoinStatusbarPercentage(
           this.statusBarCoin.coinStatusbarPercentage + 20
         );
+        audioManager.playCollectCoinsSound();
       }
     });
   }
@@ -110,6 +111,8 @@ class World {
         this.statusBarBottle.setBottleStatusbarPercentage(
           this.statusBarBottle.bottleStatusbarPercentage + 20
         );
+        audioManager.playCollectBottleSound();
+
       }
     });
   }
@@ -212,6 +215,7 @@ class World {
       bottle.y = this.character.y + 100;
       this.throwableObject.push(bottle);
       this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 20);
+      audioManager.playThrowSound();
     }
   }
 }
