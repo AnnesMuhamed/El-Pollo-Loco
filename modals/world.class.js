@@ -60,6 +60,7 @@ class World {
 
       if (this.character.isJumpingOnEnemy(enemy)) {
         enemy.isDead = true;
+        audioManager.playEnemyHitSound();
         return;
       }
 
@@ -76,9 +77,11 @@ class World {
       if (bottle.isColliding(this.endBoss)) {
         this.throwableObject.splice(i, 1);
         this.endBoss.hit();
+        audioManager.playBossHitSound();
         this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
         if (this.endBoss.energy <= 0) {
           this.endBoss.isDead = true;
+          audioManager.playBossDeathSound();
         }
       }
     }
