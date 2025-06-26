@@ -106,6 +106,7 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_DEAD);
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        audioManager.playhurtCharacterSound();
       } else if (this.isAboveGround()) {
         //Jump animation
         this.playAnimation(this.IMAGES_JUMPING);

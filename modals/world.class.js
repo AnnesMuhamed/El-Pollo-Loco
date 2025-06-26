@@ -109,6 +109,7 @@ class World {
       if (this.character.isColliding(bottle)) {
         this.level.bottle.splice(index, 1);
         this.statusBarBottle.setBottleStatusbarPercentage(
+          
           this.statusBarBottle.bottleStatusbarPercentage + 20
         );
         audioManager.playCollectBottleSound();
