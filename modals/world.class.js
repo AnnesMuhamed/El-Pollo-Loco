@@ -11,6 +11,12 @@ class World {
   statusBarCoin = new StatusBarCoin();
   statusBarEndboss = new StatusBarEndboss();
   throwableObject = [];  // Leeres Array für geworfene Flaschen
+  youWonImage; // Neues Bild für "You won A.png"
+  youLostImage; // Neues Bild für "You lost b.png"
+  gameOverImage; // Neues Bild für "Game Over.png"
+  characterDeathTime; // Zeitpunkt, wann der Charakter gestorben ist
+  showGameOver = false; // Flag für Game Over Anzeige
+  gameOverScreenShown = false; // Flag um zu verfolgen, ob Game Over Bildschirm bereits angezeigt wurde
 
   /**
    * Creates a new World instance
@@ -22,9 +28,31 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas; // Varibale wird in parameter geschrieben obwohl das die gleiche schreibweise ist.
     this.keyboard = keyboard;
+    this.loadYouWonImage();
+    this.loadGameOverImages();
     this.draw();
     this.setWorld();
     this.checkCollisions();
+  }
+
+  /**
+   * Loads the "You won A.png" image
+   * @description Loads the victory screen image
+   */
+  loadYouWonImage() {
+    this.youWonImage = new Image();
+    this.youWonImage.src = 'img/You won, you lost/You won A.png';
+  }
+
+  /**
+   * Loads the game over images
+   * @description Loads the "You lost b.png" and "Game Over.png" images
+   */
+  loadGameOverImages() {
+    this.youLostImage = new Image();
+    this.youLostImage.src = 'img/You won, you lost/You lost b.png';
+    this.gameOverImage = new Image();
+    this.gameOverImage.src = 'img/You won, you lost/Game Over.png';
   }
 
   /**
@@ -67,6 +95,14 @@ class World {
       if (this.character.isColliding(enemy)) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
+        
+        if (this.character.isDead() && !this.characterDeathTime) {
+          this.characterDeathTime = new Date().getTime();
+          this.gameOverScreenShown = false; // Reset flag für neuen Game Over
+          setTimeout(() => {
+            this.showGameOver = true;
+          }, 3000);
+        }
       }
     });
   }
@@ -152,6 +188,27 @@ class World {
     this.addToMap(this.statusBarEndboss);
     this.addToMap(this.statusBarCoin);
     this.addToMap(this.statusBarBottle);
+
+    if (this.endBoss.isDead && this.youWonImage.complete) {
+      this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    // Game Over Bilder anzeigen, wenn der Charakter tot ist
+    if (this.character.isDead() && this.characterDeathTime) {
+        const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
+        
+        if (timeSinceDeath < 3000 && this.youLostImage.complete) {
+            this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
+        } else if (this.showGameOver && this.gameOverImage.complete) {
+            this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
+            
+            // Game Over Bildschirm mit Restart-Button nur einmal anzeigen
+            if (typeof showGameOverScreen === 'function' && !this.gameOverScreenShown) {
+                showGameOverScreen();
+                this.gameOverScreenShown = true; // Markiere als angezeigt
+            }
+        }
+    }
 
     // Nächsten Frame zeichnen
     let self = this;

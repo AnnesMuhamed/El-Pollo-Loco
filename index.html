@@ -31,11 +31,23 @@
 <body onload="init()">
     <h1>El Pollo Loco</h1>
 
-    <canvas id="canvas" width="720" height="480">
+    <div class="canvas-container">
+        <canvas id="canvas" width="720" height="480">
+        </canvas>
+        
+        <!-- Startbildschirm -->
+        <div id="startScreen" class="start-screen">
+            <div class="start-content">
+                <button id="startButton" class="start-button">START</button>
+            </div>
+        </div>
 
-    </canvas>
-
-
-    
+        <!-- Game Over Bildschirm mit Restart Button -->
+        <div id="gameOverScreen" class="game-over-screen hidden">
+            <div class="game-over-content">
+                <button id="restartButton" class="restart-button">RESTART</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

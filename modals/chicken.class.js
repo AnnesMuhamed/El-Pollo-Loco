@@ -23,13 +23,27 @@ class Chicken extends MovableObject {
 
         this.x = 200 + Math.random() * 500;
         this.speed = Math.random() * 0.5;
-        this.animate();
+        this.startAnimation();
+    }
+
+    startAnimation() {
+        // Bewegung nur starten, wenn das Spiel läuft
+        if (typeof gameRunning !== 'undefined' && gameRunning) {
+            this.animate();
+        } else {
+            // Prüfe alle 100ms, ob das Spiel gestartet wurde
+            setTimeout(() => {
+                this.startAnimation();
+            }, 100);
+        }
     }
 
     animate() {
         if (!this.isDead) {
             setInterval(() => {
-                this.moveLeft();
+                if (gameRunning) {
+                    this.moveLeft();
+                }
             }, 1000 / 60);
         }
         

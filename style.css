@@ -4,6 +4,106 @@ body {
     align-items: center;
 }
 
+.canvas-container {
+    position: relative;
+    display: inline-block;
+}
+
 canvas {
     background-color: black;
+    display: block;
+}
+
+/* Startbildschirm Styles */
+.start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 720px;
+    height: 480px;
+    background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.start-content {
+    text-align: center;
+}
+
+.start-button {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border: 3px solid #FF8C00;
+    border-radius: 15px;
+    color: #8B4513;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 15px 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.start-button:hover {
+    background: linear-gradient(45deg, #FFA500, #FFD700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Game Over Bildschirm Styles */
+.game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 720px;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.game-over-content {
+    text-align: center;
+}
+
+.restart-button {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border: 3px solid #FF8C00;
+    border-radius: 15px;
+    color: #8B4513;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 15px 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.restart-button:hover {
+    background: linear-gradient(45deg, #FFA500, #FFD700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.restart-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Verstecke Bildschirme wenn nicht benötigt */
+.start-screen.hidden,
+.game-over-screen.hidden {
+    display: none;
 }

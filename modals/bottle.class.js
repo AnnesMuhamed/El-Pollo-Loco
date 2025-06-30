@@ -15,7 +15,19 @@ class bottle extends CollectibleObjects {
         this.width = 40;
         this.y = 380;
         
-        this.animate();
+        this.startAnimation();
+    }
+
+    startAnimation() {
+        // Animation nur starten, wenn das Spiel läuft
+        if (typeof gameRunning !== 'undefined' && gameRunning) {
+            this.animate();
+        } else {
+            // Prüfe alle 100ms, ob das Spiel gestartet wurde
+            setTimeout(() => {
+                this.startAnimation();
+            }, 100);
+        }
     }
 
     animate() {
