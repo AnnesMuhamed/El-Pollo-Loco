@@ -94,7 +94,7 @@ class Character extends MovableObject {
           }
 
           // Sound für Laufen abspielen/stoppen
-          if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
+          if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead()) {
               audioManager.playWalkingSound();
           } else {
               audioManager.stopWalkingSound();

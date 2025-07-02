@@ -1,7 +1,7 @@
 class World {
   character = new Character(); // Innerhalb eines Objekts braucht man keine let - var- const.
   endBoss = new Endboss();
-  level = level1;
+  level; // Wird im Constructor gesetzt
   canvas;
   ctx;
   keyboard;
@@ -28,6 +28,7 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas; // Varibale wird in parameter geschrieben obwohl das die gleiche schreibweise ist.
     this.keyboard = keyboard;
+    this.level = level1; // Hier wird das aktuelle level1 gesetzt
     this.loadYouWonImage();
     this.loadGameOverImages();
     this.draw();
