@@ -211,3 +211,34 @@ window.addEventListener('keyup', (e) => {
         keyboard.D = false;
     }
 });
+
+function enterFullscreen(element) {
+  if(element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if(element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  } else if(element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  }
+}
+
+function exitFullscreen() {
+  if(document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if(document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+}
+
+function toggleFullscreen() {
+  const canvas = document.getElementById('canvas');
+  const fullscreenButton = document.getElementById('fullscreenButton');
+  
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    enterFullscreen(canvas);
+    fullscreenButton.textContent = '⛶';
+  } else {
+    exitFullscreen();
+    fullscreenButton.textContent = '⛶';
+  }
+}
