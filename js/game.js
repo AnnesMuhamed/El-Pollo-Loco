@@ -160,6 +160,21 @@ function showGameOverScreen() {
     gameOverScreen.classList.remove('hidden');
 }
 
+function goHome() {
+    // Spiel zurücksetzen
+    gameStarted = false;
+    gameRunning = false;
+    world = null;
+    
+    // Game Over Bildschirm verstecken
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    gameOverScreen.classList.add('hidden');
+    
+    // Startbildschirm anzeigen
+    const startScreen = document.getElementById('startScreen');
+    startScreen.classList.remove('hidden');
+}
+
 window.addEventListener('keydown', (e) => {
     if(e.keyCode == 39) {
         keyboard.RIGHT = true;

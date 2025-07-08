@@ -76,31 +76,40 @@ canvas {
 
 .game-over-content {
     text-align: center;
-}
-
-.restart-button {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-    border: 3px solid #FF8C00;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 40px;
     border-radius: 15px;
-    color: #8B4513;
-    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.restart-button, .home-button {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
     font-weight: bold;
-    padding: 15px 40px;
+    border-radius: 25px;
     cursor: pointer;
-    text-transform: uppercase;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 0 10px;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.restart-button:hover {
-    background: linear-gradient(45deg, #FFA500, #FFD700);
+.restart-button:hover, .home-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(45deg, #ee5a24, #ff6b6b);
 }
 
-.restart-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+.home-button {
+    background: linear-gradient(45deg, #4834d4, #686de0);
+}
+
+.home-button:hover {
+    background: linear-gradient(45deg, #686de0, #4834d4);
 }
 
 .fullscreen-button {
