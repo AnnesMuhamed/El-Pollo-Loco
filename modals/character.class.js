@@ -157,11 +157,13 @@ class Character extends MovableObject {
           }
 
           if (this.world.keyboard.D && this.canThrowBottle) {
-            this.world.throwBottle();
-            this.canThrowBottle = false;
-            setTimeout(() => {
-              this.canThrowBottle = true;
-            }, 500);
+            if (this.world.keyboard.RIGHT || !this.otherDirection) {
+              this.world.throwBottle();
+              this.canThrowBottle = false;
+              setTimeout(() => {
+                this.canThrowBottle = true;
+              }, 500);
+            }
           }
         }
       }
