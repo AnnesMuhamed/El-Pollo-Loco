@@ -168,6 +168,11 @@ class Character extends MovableObject {
     }, 1000 / 60);
 
     setInterval(() => {
+      if (this.world.showGameOver) {
+        // Animation stoppen wenn Game Over angezeigt wird
+        return;
+      }
+      
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
       } else if (this.isHurt()) {

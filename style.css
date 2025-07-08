@@ -1,7 +1,64 @@
+@font-face {
+    font-family: 'Play';
+    src: url('fonts/Play/Play-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Play';
+    src: url('fonts/Play/Play-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Raleway';
+    src: url('fonts/Raleway/Raleway-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Raleway';
+    src: url('fonts/Raleway/Raleway-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
 body {
+    font-family: 'Play', Arial, sans-serif;
+    padding: 20px;
+    background-image: url('img/background_img/9800071_4252907.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .canvas-container {
@@ -22,7 +79,7 @@ canvas {
     width: 720px;
     height: 480px;
     background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     display: flex;
@@ -33,6 +90,11 @@ canvas {
 
 .start-content {
     text-align: center;
+}
+
+.start-button, .restart-button, .home-button, .fullscreen-button {
+    font-family: 'Play', Arial, sans-serif;
+    font-weight: bold;
 }
 
 .start-button {
