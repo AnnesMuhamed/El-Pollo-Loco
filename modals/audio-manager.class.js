@@ -8,6 +8,7 @@ class AudioManager {
     hurtCharacterSound;
     bossHitSound;
     bossDeathSound;
+    snoringSound;
 
     constructor() {
         this.walkingSound = new Audio('audio/footsteps-tap-35682.mp3');
@@ -19,6 +20,7 @@ class AudioManager {
         this.hurtCharacterSound = new Audio('audio/male_hurt7-48124.mp3');
         this.bossHitSound = new Audio('audio/boss_hit.mp3');
         this.bossDeathSound = new Audio('audio/boss_death.mp3');
+        this.snoringSound = new Audio('audio/snoring.mp3');
         
         this.walkingSound.loop = true;
         this.walkingSound.volume = 0.5;
@@ -31,6 +33,7 @@ class AudioManager {
         this.hurtCharacterSound.volume = 0.5;
         this.bossHitSound.volume = 0.5;
         this.bossDeathSound.volume = 0.5;
+        this.snoringSound.volume = 0.5;
     }
 
     playWalkingSound() {
@@ -81,5 +84,15 @@ class AudioManager {
     playBossDeathSound() {
         this.bossDeathSound.currentTime = 0;
         this.bossDeathSound.play();
+    }
+
+    playSnoringSound() {
+        if (this.snoringSound.paused) {
+            this.snoringSound.play();
+        }
+    }
+
+    stopSnoringSound() {
+        this.snoringSound.pause();
     }
 } 

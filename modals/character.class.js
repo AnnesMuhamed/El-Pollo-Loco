@@ -130,6 +130,7 @@ class Character extends MovableObject {
             this.lastMovementTime = Date.now();
             this.isIdle = false;
             this.isLongIdle = false;
+            audioManager.stopSnoringSound();
           } else {
             const currentTime = Date.now();
             const idleTime = currentTime - this.lastMovementTime;
@@ -137,16 +138,19 @@ class Character extends MovableObject {
             if (idleTime > 15000) {
               this.isLongIdle = true;
               this.isIdle = false;
+              audioManager.playSnoringSound();
             } else if (idleTime > 3000) {
               this.isIdle = true;
               this.isLongIdle = false;
+              audioManager.stopSnoringSound();
             } else {
               this.isIdle = false;
               this.isLongIdle = false;
+              audioManager.stopSnoringSound();
             }
           }
 
-          if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead()) {
+          if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver) {
               audioManager.playWalkingSound();
           } else {
               audioManager.stopWalkingSound();
