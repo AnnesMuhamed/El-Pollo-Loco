@@ -153,6 +153,11 @@ function startGame() {
     world.level = window.level1;
     
     world.character.world = world;
+    
+    // Canvas den Fokus geben und Event-Listener hinzufügen
+    canvas.focus();
+    canvas.addEventListener('keydown', handleKeyDown);
+    canvas.addEventListener('keyup', handleKeyUp);
 }
 
 function showGameOverScreen() {
@@ -175,7 +180,7 @@ function goHome() {
     startScreen.classList.remove('hidden');
 }
 
-window.addEventListener('keydown', (e) => {
+function handleKeyDown(e) {
     if(e.keyCode == 39) {
         keyboard.RIGHT = true;
     }
@@ -199,9 +204,13 @@ window.addEventListener('keydown', (e) => {
     if(e.keyCode == 68) {
         keyboard.D = true;
     }
-});
 
-window.addEventListener('keyup', (e) => {
+    if(e.keyCode == 77) {
+        toggleSound();
+    }
+}
+
+function handleKeyUp(e) {
     if(e.keyCode == 39) {
         keyboard.RIGHT = false;
     }
@@ -225,7 +234,11 @@ window.addEventListener('keyup', (e) => {
     if(e.keyCode == 68) {
         keyboard.D = false;
     }
-});
+
+    if(e.keyCode == 77) {
+        // M key released - no action needed for sound toggle
+    }
+}
 
 function enterFullscreen(element) {
   if(element.requestFullscreen) {
@@ -255,5 +268,11 @@ function toggleFullscreen() {
   } else {
     exitFullscreen();
     fullscreenButton.textContent = '⛶';
+  }
+}
+
+function toggleSound() {
+  if (audioManager) {
+    audioManager.toggleSound();
   }
 }

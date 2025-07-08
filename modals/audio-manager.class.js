@@ -9,6 +9,7 @@ class AudioManager {
     bossHitSound;
     bossDeathSound;
     snoringSound;
+    soundEnabled;
 
     constructor() {
         this.walkingSound = new Audio('audio/footsteps-tap-35682.mp3');
@@ -34,6 +35,7 @@ class AudioManager {
         this.bossHitSound.volume = 0.5;
         this.bossDeathSound.volume = 0.5;
         this.snoringSound.volume = 0.5;
+        this.soundEnabled = true;
     }
 
     playWalkingSound() {
@@ -94,5 +96,48 @@ class AudioManager {
 
     stopSnoringSound() {
         this.snoringSound.pause();
+    }
+
+    toggleSound() {
+        this.soundEnabled = !this.soundEnabled;
+        const button = document.getElementById('soundToggleButton');
+        if (this.soundEnabled) {
+            button.textContent = '🔊';
+            this.enableAllSounds();
+        } else {
+            button.textContent = '🔇';
+            this.disableAllSounds();
+        }
+        
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+            canvas.focus();
+        }
+    }
+
+    enableAllSounds() {
+        this.walkingSound.volume = 0.5;
+        this.jumpSound.volume = 0.5;
+        this.throwSound.volume = 0.5;
+        this.collectBottleSound.volume = 0.5;
+        this.collectCoinsSound.volume = 0.5;
+        this.enemyHitSound.volume = 0.5;
+        this.hurtCharacterSound.volume = 0.5;
+        this.bossHitSound.volume = 0.5;
+        this.bossDeathSound.volume = 0.5;
+        this.snoringSound.volume = 0.5;
+    }
+
+    disableAllSounds() {
+        this.walkingSound.volume = 0;
+        this.jumpSound.volume = 0;
+        this.throwSound.volume = 0;
+        this.collectBottleSound.volume = 0;
+        this.collectCoinsSound.volume = 0;
+        this.enemyHitSound.volume = 0;
+        this.hurtCharacterSound.volume = 0;
+        this.bossHitSound.volume = 0;
+        this.bossDeathSound.volume = 0;
+        this.snoringSound.volume = 0;
     }
 } 

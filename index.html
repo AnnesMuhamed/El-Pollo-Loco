@@ -32,10 +32,11 @@
     <h1>El Pollo Loco</h1>
 
     <div class="canvas-container">
-        <canvas id="canvas" width="720" height="480">
+        <canvas id="canvas" width="720" height="480" tabindex="0">
         </canvas>
         
-        <button id="fullscreenButton" class="fullscreen-button" onclick="toggleFullscreen()">⛶</button>
+        <button id="fullscreenButton" class="fullscreen-button" onclick="toggleFullscreen()" tabindex="-1">⛶</button>
+        <button id="soundToggleButton" class="sound-toggle-button" onclick="toggleSound()" title="Press M to toggle sound" tabindex="-1">🔊</button>
         
         <!-- Startbildschirm -->
         <div id="startScreen" class="start-screen">
