@@ -154,7 +154,6 @@ function startGame() {
     
     world.character.world = world;
     
-    // Canvas den Fokus geben und Event-Listener hinzufügen
     canvas.focus();
     canvas.addEventListener('keydown', handleKeyDown);
     canvas.addEventListener('keyup', handleKeyUp);
@@ -166,16 +165,13 @@ function showGameOverScreen() {
 }
 
 function goHome() {
-    // Spiel zurücksetzen
     gameStarted = false;
     gameRunning = false;
     world = null;
     
-    // Game Over Bildschirm verstecken
     const gameOverScreen = document.getElementById('gameOverScreen');
     gameOverScreen.classList.add('hidden');
     
-    // Startbildschirm anzeigen
     const startScreen = document.getElementById('startScreen');
     startScreen.classList.remove('hidden');
 }
@@ -276,3 +272,37 @@ function toggleSound() {
     audioManager.toggleSound();
   }
 }
+
+function toggleSettingsMenu() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (settingsMenu) {
+        settingsMenu.classList.toggle('hidden');
+    }
+}
+
+function showInfo() {
+    const infoModal = document.getElementById('infoModal');
+    if (infoModal) {
+        infoModal.classList.remove('hidden');
+        const settingsMenu = document.getElementById('settingsMenu');
+        if (settingsMenu) {
+            settingsMenu.classList.add('hidden');
+        }
+    }
+}
+
+function hideInfo() {
+    const infoModal = document.getElementById('infoModal');
+    if (infoModal) {
+        infoModal.classList.add('hidden');
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsMenu = document.getElementById('settingsMenu');
+    
+    if (settingsButton && settingsMenu && !settingsButton.contains(event.target) && !settingsMenu.contains(event.target)) {
+        settingsMenu.classList.add('hidden');
+    }
+});
