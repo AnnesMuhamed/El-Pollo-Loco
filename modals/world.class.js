@@ -17,6 +17,8 @@ class World {
   characterDeathTime; // Zeitpunkt, wann der Charakter gestorben ist
   showGameOver = false; // Flag für Game Over Anzeige
   gameOverScreenShown = false; // Flag um zu verfolgen, ob Game Over Bildschirm bereits angezeigt wurde
+  gameWon = false; // Flag um zu verfolgen, ob das Spiel gewonnen wurde
+  victoryScreenShown = false; // Flag um zu verfolgen, ob der Sieg-Bildschirm bereits angezeigt wurde
 
   /**
    * Creates a new World instance
@@ -118,6 +120,7 @@ class World {
         this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
         if (this.endBoss.energy <= 0) {
           this.endBoss.isDead = true;
+          this.gameWon = true;
           audioManager.playBossDeathSound();
         }
       }
@@ -192,6 +195,15 @@ class World {
 
     if (this.endBoss.isDead && this.youWonImage.complete) {
       this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
+      
+      if (!this.victoryScreenShown) {
+        this.victoryScreenShown = true;
+        setTimeout(() => {
+          if (typeof goToStartScreen === 'function') {
+            goToStartScreen();
+          }
+        }, 3000);
+      }
     }
 
     // Game Over Bilder anzeigen, wenn der Charakter tot ist

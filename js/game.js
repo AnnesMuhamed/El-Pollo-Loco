@@ -176,6 +176,15 @@ function goHome() {
     startScreen.classList.remove('hidden');
 }
 
+function goToStartScreen() {
+    gameStarted = false;
+    gameRunning = false;
+    world = null;
+    
+    const startScreen = document.getElementById('startScreen');
+    startScreen.classList.remove('hidden');
+}
+
 function handleKeyDown(e) {
     if(e.keyCode == 39) {
         keyboard.RIGHT = true;

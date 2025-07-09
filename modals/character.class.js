@@ -111,7 +111,7 @@ class Character extends MovableObject {
     setInterval(() => {
       if (gameRunning) {
         this.world.camera_x = -this.x + 100;
-        if (!this.isDead()) {
+        if (!this.isDead() && !this.world.gameWon) {
           let hasMoved = false;
           
           if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -135,7 +135,7 @@ class Character extends MovableObject {
             const currentTime = Date.now();
             const idleTime = currentTime - this.lastMovementTime;
             
-            if (idleTime > 15000) {
+            if (idleTime > 15000 && !this.world.gameWon) {
               this.isLongIdle = true;
               this.isIdle = false;
               audioManager.playSnoringSound();
