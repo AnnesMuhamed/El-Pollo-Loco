@@ -10,7 +10,8 @@ class bottle extends CollectibleObjects {
         super().loadImage(this.IMAGES_BOTTLE[0]);
         this.loadImages(this.IMAGES_BOTTLE);
         this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
-        this.x = 200 + (Math.random() * 1600) * 1;
+        // Bottles werden über die ersten 3 Bildschirme verteilt (nicht im Endboss-Bereich)
+        this.x = 200 + Math.random() * (719 * 2); // 0 bis 1438
         this.height = 50;
         this.width = 40;
         this.y = 380;
