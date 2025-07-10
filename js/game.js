@@ -315,3 +315,4 @@ document.addEventListener('click', function(event) {
         settingsMenu.classList.add('hidden');
     }
 });
+

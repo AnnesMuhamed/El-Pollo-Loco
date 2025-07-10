@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung - El Pollo Loco</title>
+    <style>
+        @font-face {
+            font-family: 'Play';
+            src: url('fonts/Play/Play-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Play';
+            src: url('fonts/Play/Play-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            src: url('fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .document-container {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            min-height: 600px;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .back-arrow:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+        }
+
+        .document-title {
+            font-family: 'Play', Arial, sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .document-subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .document-content {
+            padding: 40px 50px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-family: 'Play', Arial, sans-serif;
+            font-size: 22px;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 5px;
+        }
+
+        .section h3 {
+            font-family: 'Play', Arial, sans-serif;
+            font-size: 18px;
+            color: #34495e;
+            margin: 20px 0 10px 0;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .section ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-family: 'Play', Arial, sans-serif;
+        }
+
+        .contact-info {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .contact-info h3 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .document-container {
+                margin: 10px;
+                min-height: auto;
+            }
+            
+            .document-content {
+                padding: 20px 25px;
+            }
+            
+            .document-header {
+                padding: 15px 20px;
+            }
+            
+            .document-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document-container">
+        <div class="document-header">
+            <button class="back-arrow" onclick="goBack()" title="Zurück zum Spiel">←</button>
+            <h1 class="document-title">Datenschutzerklärung</h1>
+            <p class="document-subtitle">El Pollo Loco - Stand: Juli 2025</p>
+        </div>
+        
+        <div class="document-content">
+            <div class="section">
+                <h2>1. Einleitung</h2>
+                <p>Diese Datenschutzerklärung informiert Sie über die Erhebung, Verarbeitung und Nutzung Ihrer personenbezogenen Daten bei der Nutzung des Browserspiels "El Pollo Loco".</p>
+            </div>
+
+            <div class="section">
+                <h2>2. Verantwortlicher</h2>
+                <p>Verantwortlich für die Datenverarbeitung im Rahmen dieses Spiels ist der Entwickler von "El Pollo Loco".</p>
+            </div>
+
+            <div class="section">
+                <h2>3. Erhebung und Verarbeitung von Daten</h2>
+                <h3>3.1 Lokale Datenspeicherung</h3>
+                <p>Das Spiel "El Pollo Loco" funktioniert vollständig offline und erhebt keine personenbezogenen Daten. Alle Spieldaten werden ausschließlich lokal in Ihrem Browser gespeichert.</p>
+                
+                <h3>3.2 Keine Server-Kommunikation</h3>
+                <p>Es findet keine Übertragung von Daten an externe Server statt. Das Spiel läuft vollständig clientseitig.</p>
+            </div>
+
+            <div class="section">
+                <h2>4. Cookies und Tracking</h2>
+                <p>Das Spiel setzt keine Cookies und verwendet keine Tracking-Tools. Es werden keine Informationen über Ihr Surfverhalten gesammelt oder analysiert.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Wichtiger Hinweis</h4>
+                <p>Da das Spiel vollständig offline funktioniert und keine Daten an externe Server überträgt, fallen keine datenschutzrechtlichen Bedenken an. Ihre Privatsphäre bleibt vollständig gewahrt.</p>
+            </div>
+
+            <div class="section">
+                <h2>5. Ihre Rechte</h2>
+                <p>Da keine personenbezogenen Daten erhoben werden, entfallen die üblichen Betroffenenrechte nach DSGVO. Sie können das Spiel jederzeit schließen, ohne dass Daten zurückbleiben.</p>
+            </div>
+
+            <div class="section">
+                <h2>6. Änderungen der Datenschutzerklärung</h2>
+                <p>Diese Datenschutzerklärung kann bei Bedarf aktualisiert werden. Die jeweils aktuelle Version ist im Spiel verfügbar.</p>
+            </div>
+
+            <div class="contact-info">
+                <h3>Kontakt</h3>
+                <p>Bei Fragen zur Datenschutzerklärung oder zum Spiel können Sie sich gerne an den Entwickler wenden.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 El Pollo Loco - Alle Rechte vorbehalten</p>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Keyboard shortcut für Zurück
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                goBack();
+            }
+        });
+    </script>
+</body>
+</html> 
