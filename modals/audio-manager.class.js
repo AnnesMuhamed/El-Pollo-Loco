@@ -8,6 +8,7 @@ class AudioManager {
     hurtCharacterSound;
     bossHitSound;
     bossDeathSound;
+    bossSquawkSound;
     snoringSound;
     soundEnabled;
 
@@ -21,6 +22,7 @@ class AudioManager {
         this.hurtCharacterSound = new Audio('audio/male_hurt7-48124.mp3');
         this.bossHitSound = new Audio('audio/boss_hit.mp3');
         this.bossDeathSound = new Audio('audio/boss_death.mp3');
+        this.bossSquawkSound = new Audio('audio/chicken-squawk-72188.mp3');
         this.snoringSound = new Audio('audio/snoring.mp3');
         
         this.walkingSound.loop = true;
@@ -34,6 +36,7 @@ class AudioManager {
         this.hurtCharacterSound.volume = 0.5;
         this.bossHitSound.volume = 0.5;
         this.bossDeathSound.volume = 0.5;
+        this.bossSquawkSound.volume = 0.5;
         this.snoringSound.volume = 0.5;
         this.soundEnabled = true;
     }
@@ -86,6 +89,11 @@ class AudioManager {
     playBossDeathSound() {
         this.bossDeathSound.currentTime = 0;
         this.bossDeathSound.play();
+    }
+
+    playBossSquawkSound() {
+        this.bossSquawkSound.currentTime = 0;
+        this.bossSquawkSound.play();
     }
 
     playSnoringSound() {

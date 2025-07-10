@@ -243,6 +243,10 @@ function showGameOverScreen() {
     if (audioManager) {
         audioManager.stopWalkingSound();
         audioManager.stopSnoringSound();
+        if (audioManager.bossSquawkSound) {
+            audioManager.bossSquawkSound.pause();
+            audioManager.bossSquawkSound.currentTime = 0;
+        }
     }
 }
 
@@ -267,6 +271,10 @@ function goToStartScreen() {
     if (audioManager) {
         audioManager.stopWalkingSound();
         audioManager.stopSnoringSound();
+        if (audioManager.bossSquawkSound) {
+            audioManager.bossSquawkSound.pause();
+            audioManager.bossSquawkSound.currentTime = 0;
+        }
     }
     
     const startScreen = document.getElementById('startScreen');

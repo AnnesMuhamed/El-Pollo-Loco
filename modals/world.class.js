@@ -117,9 +117,16 @@ class World {
         this.throwableObject.splice(i, 1);
         this.endBoss.hit();
         audioManager.playBossHitSound();
+        if (Math.abs(this.character.x - this.endBoss.x) < 400) {
+          audioManager.playBossSquawkSound();
+        }
         this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
         if (this.endBoss.energy <= 0) {
           this.endBoss.isDead = true;
+          if (audioManager.bossSquawkSound) {
+            audioManager.bossSquawkSound.pause();
+            audioManager.bossSquawkSound.currentTime = 0;
+          }
           this.gameWon = true;
           audioManager.playBossDeathSound();
         }
