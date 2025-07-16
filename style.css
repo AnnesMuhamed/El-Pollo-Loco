@@ -343,58 +343,7 @@ canvas {
     display: none;
 }
 
-.mobile-controls {
-    position: absolute;
-    left: 50%;
-    bottom: 20px;
-    transform: translateX(-50%);
-    width: 720px;
-    height: 0;
-    pointer-events: none;
-    z-index: 1200;
-}
 
-.mobile-controls-left {
-    position: absolute;
-    left: 0;
-    bottom: 4px;
-    display: flex;
-    pointer-events: auto;
-}
-
-.mobile-controls-right {
-    position: absolute;
-    right: 0;
-    bottom: 4px;
-    display: flex;
-    pointer-events: auto;
-}
-
-.mobile-btn {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-    border: 3px solid #FF8C00;
-    border-radius: 15px;
-    color: #8B4513;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 0px 14px;
-    margin: 0 8px;
-    cursor: pointer;
-    text-transform: uppercase;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    pointer-events: auto;
-    user-select: none;
-}
-
-.mobile-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.mobile-controls.hidden {
-    display: none !important;
-}
 
 @media only screen and (max-width: 760px) {
     body {
@@ -415,9 +364,7 @@ canvas {
         aspect-ratio: 3/2;
     }
     
-    .mobile-controls {
-        width: 100%;
-    }
+
 
 
 
@@ -430,11 +377,7 @@ canvas {
     }
 }
 
-@media only screen and (min-width: 760px) {
-    .mobile-controls {
-        display: none !important;
-    }
-}
+
 
 @media only screen and (max-width: 480px) {
     canvas {

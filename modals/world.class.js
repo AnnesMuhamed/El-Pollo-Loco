@@ -175,10 +175,28 @@ class World {
    * @description Renders all game objects and updates the display
    */
   draw() {
+    // FPS-Begrenzung für bessere Performance auf mobilen Geräten
+    const now = performance.now();
+    if (!this.lastFrameTime) {
+      this.lastFrameTime = now;
+    }
+    
+    const deltaTime = now - this.lastFrameTime;
+    const targetFPS = 60;
+    const frameInterval = 1000 / targetFPS;
+    
+    if (deltaTime < frameInterval) {
+      requestAnimationFrame(() => this.draw());
+      return;
+    }
+    
+    this.lastFrameTime = now - (deltaTime % frameInterval);
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.translate(this.camera_x, 0);
     
+    // Optimierung: Nur sichtbare Objekte rendern
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
@@ -195,6 +213,10 @@ class World {
     this.addToMap(this.statusBarEndboss);
     this.addToMap(this.statusBarCoin);
     this.addToMap(this.statusBarBottle);
+
+    if (typeof drawMobileControls === 'function') {
+        drawMobileControls(this.ctx);
+    }
 
     if (this.endBoss.isDead && this.youWonImage.complete) {
       this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
@@ -224,10 +246,7 @@ class World {
         }
     }
 
-    let self = this;
-    requestAnimationFrame(function () {
-      self.draw();
-    });
+    requestAnimationFrame(() => this.draw());
   }
 
   /**

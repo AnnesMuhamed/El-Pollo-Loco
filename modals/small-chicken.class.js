@@ -50,7 +50,7 @@ class smallChicken extends MovableObject {
         }
         
         setInterval(() => {
-            if (world.showGameOver) {
+            if (world && world.showGameOver) {
                 return;
             }
             

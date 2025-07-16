@@ -50,7 +50,7 @@ class Chicken extends MovableObject {
         }
         
         setInterval(() => {
-            if (world.showGameOver) {
+            if (world && world.showGameOver) {
                 return;
             }
             
