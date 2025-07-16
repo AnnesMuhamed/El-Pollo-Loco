@@ -10,19 +10,17 @@ class Cloud extends MovableObject {
         this.startAnimation();
     }
 
-    startAnimation() {
-        // Animation nur starten, wenn das Spiel läuft
-        if (typeof gameRunning !== 'undefined' && gameRunning) {
-            this.animate();
-        } else {
-            // Prüfe alle 100ms, ob das Spiel gestartet wurde
-            setTimeout(() => {
-                this.startAnimation();
-            }, 100);
-        }
+      startAnimation() {
+    if (typeof gameRunning !== 'undefined' && gameRunning) {
+      this.animate();
+    } else {
+      setTimeout(() => {
+        this.startAnimation();
+      }, 100);
     }
+  }
 
-    animate() { // Wolken bewegen.
+    animate() {
         setInterval(() => {
             if (gameRunning) {
                 this.moveLeft();

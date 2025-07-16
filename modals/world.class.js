@@ -1,7 +1,7 @@
 class World {
-  character = new Character(); // Innerhalb eines Objekts braucht man keine let - var- const.
+  character = new Character();
   endBoss = new Endboss();
-  level; // Wird im Constructor gesetzt
+  level;
   canvas;
   ctx;
   keyboard;
@@ -10,15 +10,15 @@ class World {
   statusBarBottle = new StatusBarBottle();
   statusBarCoin = new StatusBarCoin();
   statusBarEndboss = new StatusBarEndboss();
-  throwableObject = [];  // Leeres Array für geworfene Flaschen
-  youWonImage; // Neues Bild für "You won A.png"
-  youLostImage; // Neues Bild für "You lost b.png"
-  gameOverImage; // Neues Bild für "Game Over.png"
-  characterDeathTime; // Zeitpunkt, wann der Charakter gestorben ist
-  showGameOver = false; // Flag für Game Over Anzeige
-  gameOverScreenShown = false; // Flag um zu verfolgen, ob Game Over Bildschirm bereits angezeigt wurde
-  gameWon = false; // Flag um zu verfolgen, ob das Spiel gewonnen wurde
-  victoryScreenShown = false; // Flag um zu verfolgen, ob der Sieg-Bildschirm bereits angezeigt wurde
+  throwableObject = [];
+  youWonImage;
+  youLostImage;
+  gameOverImage;
+  characterDeathTime;
+  showGameOver = false;
+  gameOverScreenShown = false;
+  gameWon = false;
+  victoryScreenShown = false;
 
   /**
    * Creates a new World instance
@@ -28,9 +28,9 @@ class World {
    */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
-    this.canvas = canvas; // Varibale wird in parameter geschrieben obwohl das die gleiche schreibweise ist.
+    this.canvas = canvas;
     this.keyboard = keyboard;
-    this.level = level1; // Hier wird das aktuelle level1 gesetzt
+    this.level = level1;
     this.loadYouWonImage();
     this.loadGameOverImages();
     this.draw();
@@ -57,6 +57,8 @@ class World {
     this.gameOverImage = new Image();
     this.gameOverImage.src = 'img/You won, you lost/Game Over.png';
   }
+
+
 
   /**
    * Sets the world reference for the character
@@ -101,7 +103,7 @@ class World {
         
         if (this.character.isDead() && !this.characterDeathTime) {
           this.characterDeathTime = new Date().getTime();
-          this.gameOverScreenShown = false; // Reset flag für neuen Game Over
+          this.gameOverScreenShown = false;
           setTimeout(() => {
             this.showGameOver = true;
           }, 3000);
@@ -173,13 +175,10 @@ class World {
    * @description Renders all game objects and updates the display
    */
   draw() {
-    // Canvas leeren
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Kamera-Position setzen
     this.ctx.translate(this.camera_x, 0);
     
-    // Hintergrund und Objekte zeichnen
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
@@ -187,14 +186,11 @@ class World {
     this.addObjectsToMap(this.level.bottle);
     this.addObjectsToMap(this.throwableObject);
     
-    // Character und Endboss zeichnen
     this.addToMap(this.character);
     this.addToMap(this.endBoss);
 
-    // Kamera-Position zurücksetzen für UI-Elemente
     this.ctx.translate(-this.camera_x, 0);
     
-    // UI-Elemente zeichnen
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarEndboss);
     this.addToMap(this.statusBarCoin);
@@ -213,7 +209,6 @@ class World {
       }
     }
 
-    // Game Over Bilder anzeigen, wenn der Charakter tot ist
     if (this.character.isDead() && this.characterDeathTime) {
         const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
         
@@ -222,15 +217,13 @@ class World {
         } else if (this.showGameOver && this.gameOverImage.complete) {
             this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
             
-            // Game Over Bildschirm mit Restart-Button nur einmal anzeigen
             if (typeof showGameOverScreen === 'function' && !this.gameOverScreenShown) {
                 showGameOverScreen();
-                this.gameOverScreenShown = true; // Markiere als angezeigt
+                this.gameOverScreenShown = true;
             }
         }
     }
 
-    // Nächsten Frame zeichnen
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
@@ -299,4 +292,6 @@ class World {
       audioManager.playThrowSound();
     }
   }
+
+
 }

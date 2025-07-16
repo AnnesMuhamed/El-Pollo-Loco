@@ -5,7 +5,7 @@ class MovableObject extends DrawableObject {
   otherDirection = false;
   energy = 100;
   lastHit = 0;
-  hitCooldown = 1000; // 1 Sekunde Cooldown zwischen Treffern
+  hitCooldown = 1000;
 
   /**
    * Applies gravity to the object
@@ -36,17 +36,14 @@ class MovableObject extends DrawableObject {
    * @description Handles special cases for character-enemy collisions
    */
   isColliding(mo) {
-    // Wenn der Character von oben auf einen Enemy springt, keine Kollision
     if (this instanceof Character && (mo instanceof Chicken || mo instanceof smallChicken)) {
       if (this.isJumpingOnEnemy(mo)) {
         return false;
       }
     }
-    // Wenn ein Enemy tot ist, keine Kollision
     if ((mo instanceof Chicken || mo instanceof smallChicken) && mo.isDead) {
       return false;
     }
-    // Spezielle Kollisionserkennung für Flaschen gegen Endboss
     if (this instanceof ThrowableObject && mo instanceof Endboss) {
       return (
         this.x + this.width >= mo.x &&
@@ -55,7 +52,6 @@ class MovableObject extends DrawableObject {
         this.y <= mo.y + mo.height
       );
     }
-    // Prüfe, ob Offsets vorhanden sind (für präzisere Kollisionen)
     if (this.offset && mo.offset) {
       return (
         this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
@@ -64,7 +60,6 @@ class MovableObject extends DrawableObject {
         this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
       );
     }
-    // Standard-Kollisionserkennung (AABB, korrigiert)
     return (
       this.x + this.width > mo.x &&
       this.y + this.height > mo.y &&
@@ -121,7 +116,7 @@ class MovableObject extends DrawableObject {
    * @description Cycles through images based on currentImage counter
    */
   playAnimation(images) {
-    let i = this.currentImage % images.length; // Modulu % Der Mathematische Rest. let i = 0 % 6 =>, Rest 0 (0 / 6 = 0, 0 ist rest). i = 0,1,2,3,4,5,0
+    let i = this.currentImage % images.length;
     let path = images[i];
     this.img = this.imageCash[path];
     this.currentImage++;
@@ -140,7 +135,7 @@ class MovableObject extends DrawableObject {
    * Updates x position based on speed
    */
   moveLeft() {
-    this.x -= this.speed; // Px
+    this.x -= this.speed;
   }
 
   /**

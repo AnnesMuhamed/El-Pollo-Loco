@@ -20,15 +20,13 @@ class ThrowableObject extends MovableObject {
         this.animate();
     }
 
-    animate() {
-        // Rotation der Flasche
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_ROTATION);
-        }, 100);
+      animate() {
+    setInterval(() => {
+      this.playAnimation(this.IMAGES_ROTATION);
+    }, 100);
 
-        // Wurfbewegung
-        setInterval(() => {
-            this.x += this.speed;
-        }, 1000 / 60);
-    }
+    setInterval(() => {
+      this.x += this.speed;
+    }, 1000 / 60);
+  }
 }

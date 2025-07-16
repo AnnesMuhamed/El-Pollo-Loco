@@ -162,11 +162,11 @@ class Character extends MovableObject {
 
           if (this.world.keyboard.D && this.canThrowBottle) {
             if (this.world.keyboard.RIGHT || !this.otherDirection) {
-              this.world.throwBottle();
-              this.canThrowBottle = false;
-              setTimeout(() => {
-                this.canThrowBottle = true;
-              }, 500);
+            this.world.throwBottle();
+            this.canThrowBottle = false;
+            setTimeout(() => {
+              this.canThrowBottle = true;
+            }, 500);
             }
           }
         }
@@ -175,7 +175,6 @@ class Character extends MovableObject {
 
     setInterval(() => {
       if (this.world.showGameOver) {
-        // Animation stoppen wenn Game Over angezeigt wird
         return;
       }
       

@@ -1,21 +1,17 @@
 const level1 = new Level(
     [
-        // Erster Abschnitt (-719)
         new Chicken(),
         new Chicken(),
         new smallChicken(),
         new smallChicken(),
-        // Zweiter Abschnitt (0)
         new Chicken(),
         new Chicken(),
         new smallChicken(),
         new smallChicken(),
-        // Dritter Abschnitt (719)
         new Chicken(),
         new Chicken(),
         new smallChicken(),
         new smallChicken()
-        // Vierter Abschnitt (719*2, 719*3) - nur Endboss, keine anderen Gegner
     ],
 
     [
@@ -48,46 +44,38 @@ const level1 = new Level(
     ],
 
     [
-        // Erster Abschnitt (-719)
         new coins(),
         new coins(),
         new coins(),
         new coins(),
         new coins(),
-        // Zweiter Abschnitt (0)
         new coins(),
         new coins(),
         new coins(),
         new coins(),
         new coins(),
-        // Dritter Abschnitt (719)
         new coins(),
         new coins(),
         new coins(),
         new coins(),
         new coins()
-        // Vierter Abschnitt (719*2, 719*3) - keine Coins
     ],
 
     [
-        // Erster Abschnitt (-719)
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle(),
-        // Zweiter Abschnitt (0)
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle(),
-        // Dritter Abschnitt (719)
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle(),
         new bottle()
-        // Vierter Abschnitt (719*2, 719*3) - keine Bottles
     ]
 );

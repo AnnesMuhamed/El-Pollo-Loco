@@ -7,7 +7,6 @@ class Endboss extends MovableObject {
     lastHit = 0;
     isDead = false;
     
-    // Flags für Animationen
     isPlayingHurtAnimation = false;
     hurtAnimationTimer = null;
     currentAnimationFrame = 0;
@@ -54,11 +53,9 @@ class Endboss extends MovableObject {
     }
 
     startAnimation() {
-        // Animation nur starten, wenn das Spiel läuft
         if (typeof gameRunning !== 'undefined' && gameRunning) {
             this.animate();
         } else {
-            // Prüfe alle 100ms, ob das Spiel gestartet wurde
             setTimeout(() => {
                 this.startAnimation();
             }, 100);
@@ -66,14 +63,12 @@ class Endboss extends MovableObject {
     }
 
     animate() {
-        // Walking-Animation nur starten, wenn der Boss lebt und keine andere Animation läuft
         if (!this.isDead && !this.isPlayingHurtAnimation && !this.walkingInterval) {
             this.startWalkingAnimation();
         }
     }
 
     startWalkingAnimation() {
-        // Stoppe alle anderen Animationen
         this.stopAllAnimations();
         
         if (this.isDead) {

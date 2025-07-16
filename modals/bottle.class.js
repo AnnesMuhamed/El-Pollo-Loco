@@ -10,8 +10,7 @@ class bottle extends CollectibleObjects {
         super().loadImage(this.IMAGES_BOTTLE[0]);
         this.loadImages(this.IMAGES_BOTTLE);
         this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
-        // Bottles werden über die ersten 3 Bildschirme verteilt (nicht im Endboss-Bereich)
-        this.x = 200 + Math.random() * (719 * 2); // 0 bis 1438
+            this.x = 200 + Math.random() * (719 * 2);
         this.height = 50;
         this.width = 40;
         this.y = 380;
@@ -19,17 +18,15 @@ class bottle extends CollectibleObjects {
         this.startAnimation();
     }
 
-    startAnimation() {
-        // Animation nur starten, wenn das Spiel läuft
-        if (typeof gameRunning !== 'undefined' && gameRunning) {
-            this.animate();
-        } else {
-            // Prüfe alle 100ms, ob das Spiel gestartet wurde
-            setTimeout(() => {
-                this.startAnimation();
-            }, 100);
-        }
+      startAnimation() {
+    if (typeof gameRunning !== 'undefined' && gameRunning) {
+      this.animate();
+    } else {
+      setTimeout(() => {
+        this.startAnimation();
+      }, 100);
     }
+  }
 
     animate() {
         setInterval(() => {

@@ -61,41 +61,22 @@ body {
     justify-content: center;
 }
 
-.canvas-container {
-    position: relative;
-    display: inline-block;
-}
+
 
 canvas {
-    background-color: black;
     display: block;
-    outline: none;
-}
-
-/* Startbildschirm Styles */
-.start-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-color: black;
-    background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    outline: none;
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    aspect-ratio: 3/2;
 }
 
-.start-content {
-    position: absolute;
-    top: 54px;
-    left: 20px;
-    text-align: left;
-}
+
+
+
 
 .start-button, .restart-button, .home-button, .fullscreen-button {
     font-family: 'Play', Arial, sans-serif;
@@ -130,10 +111,11 @@ canvas {
 /* Game Over Bildschirm Styles */
 .game-over-screen {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 720px;
+    height: 480px;
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
@@ -248,7 +230,7 @@ canvas {
 
 /* Info Modal Styles */
 .info-modal {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -257,7 +239,7 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 1100;
 }
 
 .info-content {
@@ -359,4 +341,125 @@ canvas {
 .settings-menu.hidden,
 .info-modal.hidden {
     display: none;
+}
+
+.mobile-controls {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    width: 720px;
+    height: 0;
+    pointer-events: none;
+    z-index: 1200;
+}
+
+.mobile-controls-left {
+    position: absolute;
+    left: 0;
+    bottom: 4px;
+    display: flex;
+    pointer-events: auto;
+}
+
+.mobile-controls-right {
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    display: flex;
+    pointer-events: auto;
+}
+
+.mobile-btn {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    border: 3px solid #FF8C00;
+    border-radius: 15px;
+    color: #8B4513;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 0px 14px;
+    margin: 0 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    user-select: none;
+}
+
+.mobile-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-controls.hidden {
+    display: none !important;
+}
+
+@media only screen and (max-width: 760px) {
+    body {
+        min-height: 0;
+    }
+    canvas {
+        max-width: 100%;
+        max-height: 70vh;
+        width: auto;
+        height: auto;
+        aspect-ratio: 3/2;
+    }
+    
+    .game-over-screen {
+        max-width: 100%;
+        max-height: 70vh;
+        width: auto;
+        aspect-ratio: 3/2;
+    }
+    
+    .mobile-controls {
+        width: 100%;
+    }
+
+
+
+    h1 {
+        display: none;
+    }
+
+    .privacy-link-container {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 760px) {
+    .mobile-controls {
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    canvas {
+        max-width: 95vw;
+        max-height: 60vh;
+        width: auto;
+        height: auto;
+        aspect-ratio: 3/2;
+    }
+
+
+}
+
+@media only screen and (max-height: 500px) {
+    canvas {
+        max-height: 70vh;
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-width: 760px) {
+    canvas {
+        max-width: 90vw;
+        max-height: 80vh;
+        width: auto;
+        height: auto;
+        aspect-ratio: 3/2;
+    }
 }

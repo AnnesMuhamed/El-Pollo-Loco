@@ -31,11 +31,9 @@ class Chicken extends MovableObject {
     }
 
     startAnimation() {
-        // Bewegung nur starten, wenn das Spiel läuft
         if (typeof gameRunning !== 'undefined' && gameRunning) {
             this.animate();
         } else {
-            // Prüfe alle 100ms, ob das Spiel gestartet wurde
             setTimeout(() => {
                 this.startAnimation();
             }, 100);

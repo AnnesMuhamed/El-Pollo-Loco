@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google" content="notranslate">
     <meta name="googlebot" content="notranslate">
     <link rel="stylesheet" href="style.css">
@@ -32,61 +32,65 @@
     <script src="./js/game.js"></script>
 </head>
 <body onload="init()">
+
     <h1>El Pollo Loco</h1>
 
-    <div class="canvas-container">
-        <canvas id="canvas" width="720" height="480" tabindex="0">
-        </canvas>
-        
-        <!-- Zahnrad-Menü -->
-        <button id="settingsButton" class="settings-button" onclick="toggleSettingsMenu()" tabindex="-1">⚙️</button>
-        
-        <!-- Settings Menü -->
-        <div id="settingsMenu" class="settings-menu hidden">
-            <button id="soundToggleButton" class="menu-button" onclick="toggleSound()" title="Sound ein/ausschalten">🔊</button>
-            <button id="infoButton" class="menu-button" onclick="showInfo()" title="Spielregeln anzeigen">ℹ️</button>
-            <button id="fullscreenButton" class="menu-button" onclick="toggleFullscreen()" title="Vollbildmodus">⛶</button>
-        </div>
-        
-        <!-- Info Modal -->
-        <div id="infoModal" class="info-modal hidden">
-            <div class="info-content">
-                <h2>Spielregeln</h2>
-                <div class="controls-info">
-                    <h3>Steuerung:</h3>
-                    <ul>
-                        <li><strong>← →</strong> Charakter nach links/rechts bewegen</li>
-                        <li><strong>Leertaste</strong> Springen</li>
-                        <li><strong>D</strong> Flasche werfen (nur nach rechts schauend)</li>
-                        <li><strong>M</strong> Sound ein/ausschalten</li>
-                    </ul>
-                </div>
-                <div class="game-objectives">
-                    <h3>Spielziel:</h3>
-                    <ul>
-                        <li>Sammle alle Münzen</li>
-                        <li>Besiege alle Hühner</li>
-                        <li>Besiege den Endboss</li>
-                        <li>Vermeide es, von Hühnern getroffen zu werden</li>
-                    </ul>
-                </div>
-                <button onclick="hideInfo()" class="close-button">Schließen</button>
-            </div>
-        </div>
-        
-        <!-- Startbildschirm -->
-        <div id="startScreen" class="start-screen">
-            <div class="start-content">
-                <button onclick="startGame()" class="start-button">START</button>
-            </div>
-        </div>
+    <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
 
-        <!-- Game Over Bildschirm mit Restart Button -->
-        <div id="gameOverScreen" class="game-over-screen hidden">
-            <div class="game-over-content">
-                <button onclick="startGame()" class="restart-button">RESTART</button>
-                <button onclick="goHome()" class="home-button">HOME</button>
+    <div class="mobile-controls hidden" id="mobileControls">
+        <div class="mobile-controls-left">
+            <button class="mobile-btn btn-left" id="btnLeft"><</button>
+            <button class="mobile-btn btn-right" id="btnRight">></button>
+        </div>
+        <div class="mobile-controls-right">
+            <button class="mobile-btn btn-jump" id="btnJump">⬆</button>
+            <button class="mobile-btn btn-throw" id="btnThrow">💥</button>
+        </div>
+    </div>
+
+    <!-- Zahnrad-Menü -->
+    <button id="settingsButton" class="settings-button" onclick="toggleSettingsMenu()" tabindex="-1">⚙️</button>
+    
+    <!-- Settings Menü -->
+    <div id="settingsMenu" class="settings-menu hidden">
+        <button id="soundToggleButton" class="menu-button" onclick="toggleSound()" title="Sound ein/ausschalten">🔊</button>
+        <button id="infoButton" class="menu-button" onclick="showInfo()" title="Spielregeln anzeigen">ℹ️</button>
+        <button id="fullscreenButton" class="menu-button" onclick="toggleFullscreen()" title="Vollbildmodus">⛶</button>
+    </div>
+    
+    <!-- Info Modal -->
+    <div id="infoModal" class="info-modal hidden">
+        <div class="info-content">
+            <h2>Spielregeln</h2>
+            <div class="controls-info">
+                <h3>Steuerung:</h3>
+                <ul>
+                    <li><strong>← →</strong> Charakter nach links/rechts bewegen</li>
+                    <li><strong>Leertaste</strong> Springen</li>
+                    <li><strong>D</strong> Flasche werfen (nur nach rechts schauend)</li>
+                    <li><strong>M</strong> Sound ein/ausschalten</li>
+                </ul>
             </div>
+            <div class="game-objectives">
+                <h3>Spielziel:</h3>
+                <ul>
+                    <li>Sammle alle Münzen</li>
+                    <li>Besiege alle Hühner</li>
+                    <li>Besiege den Endboss</li>
+                    <li>Vermeide es, von Hühnern getroffen zu werden</li>
+                </ul>
+            </div>
+            <button onclick="hideInfo()" class="close-button">Schließen</button>
+        </div>
+    </div>
+    
+
+
+    <!-- Game Over Bildschirm mit Restart Button -->
+    <div id="gameOverScreen" class="game-over-screen hidden">
+        <div class="game-over-content">
+            <button onclick="startGame()" class="restart-button">RESTART</button>
+            <button onclick="goHome()" class="home-button">HOME</button>
         </div>
     </div>
     

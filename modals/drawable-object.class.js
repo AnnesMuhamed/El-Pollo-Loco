@@ -13,7 +13,7 @@ class DrawableObject {
    * @description Creates a new Image object and sets its source
    */
   loadImage(path) {
-    this.img = new Image(); // Durch this.img wird ein img in js erzeugt wie im html = document.getElementById('image'); <img id="image">
+    this.img = new Image();
     this.img.src = path;
   }
 
@@ -37,7 +37,6 @@ class DrawableObject {
       this instanceof Chicken ||
       this instanceof smallChicken
     ) {
-      // instanceof greift nur auf die weiligen Characktere ein.
       ctx.beginPath();
       ctx.lineWidth = "5";
       ctx.strokeStyle = "red";
