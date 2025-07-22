@@ -3,9 +3,9 @@ class MovableObject extends DrawableObject {
   speedY = 0;
   acceleration = 2.5;
   otherDirection = false;
-  energy = 100;
+  energy = 1000;  // Von 100 auf 1000 erhöht für besseres Testen
   lastHit = 0;
-  hitCooldown = 1000;
+  hitCooldown = 100;  // Von 1000 auf 100 reduziert für besseres Testen
 
   /**
    * Applies gravity to the object
@@ -78,7 +78,7 @@ class MovableObject extends DrawableObject {
     if (this instanceof Character) {
       let timepassed = new Date().getTime() - this.lastHit;
       if (timepassed > this.hitCooldown) {
-        this.energy -= 20;
+        this.energy -= 5;  // Von 20 auf 5 reduziert für besseres Testen
         if (this.energy < 0) {
           this.energy = 0;
         }

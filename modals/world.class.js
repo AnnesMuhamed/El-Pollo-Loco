@@ -78,7 +78,7 @@ class World {
       this.checkCoinCollisions();
       this.checkBottleCollisions();
       this.checkBossBottleCollision();
-    }, 200);
+    }, 50);  // Von 200ms auf 50ms reduziert für präzisere Erkennung
   }
 
   /**
@@ -87,87 +87,97 @@ class World {
    */
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
-      if (enemy.isDead) {
-        return;
-      }
-
-      if (this.character.isJumpingOnEnemy(enemy)) {
-        enemy.isDead = true;
-        audioManager.playEnemyHitSound();
-        return;
-      }
-
-      if (this.character.isColliding(enemy)) {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
-        
-        if (this.character.isDead() && !this.characterDeathTime) {
-          this.characterDeathTime = new Date().getTime();
-          this.gameOverScreenShown = false;
-          setTimeout(() => {
-            this.showGameOver = true;
-          }, 3000);
-        }
-      }
+      if (enemy.isDead) return;
+      if (this.handleJumpKillCollision(enemy)) return;  // Jump-Kill Kollision
+      this.handleSideCollision(enemy);  // Normale seitliche Kollision
     });
+  }
+
+  handleJumpKillCollision(enemy) {
+    if (this.character.isJumpingOnEnemy(enemy)) {
+      enemy.isDead = true;
+      audioManager.playEnemyHitSound();
+      this.character.speedY = -15;  // Mario-ähnlicher Bounce
+      return true;
+    }
+    return false;
+  }
+
+  handleSideCollision(enemy) {
+    const distance = Math.abs(this.character.x - enemy.x);
+    if (distance < 200 && this.character.isColliding(enemy)) {
+      this.character.hit();
+      this.statusBar.setPercentage(this.character.energy);
+      this.checkCharacterDeath();
+    }
+  }
+
+  checkCharacterDeath() {
+    if (this.character.isDead() && !this.characterDeathTime) {
+      this.characterDeathTime = new Date().getTime();
+      this.gameOverScreenShown = false;
+      setTimeout(() => { this.showGameOver = true; }, 3000);
+    }
   }
 
   checkBossBottleCollision() {
     for (let i = this.throwableObject.length - 1; i >= 0; i--) {
       let bottle = this.throwableObject[i];
       if (bottle.isColliding(this.endBoss)) {
-        this.throwableObject.splice(i, 1);
-        this.endBoss.hit();
-        audioManager.playBossHitSound();
-        if (Math.abs(this.character.x - this.endBoss.x) < 400) {
-          audioManager.playBossSquawkSound();
-        }
-        this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
-        if (this.endBoss.energy <= 0) {
-          this.endBoss.isDead = true;
-          if (audioManager.bossSquawkSound) {
-            audioManager.bossSquawkSound.pause();
-            audioManager.bossSquawkSound.currentTime = 0;
-          }
-          this.gameWon = true;
-          audioManager.playBossDeathSound();
-        }
+        this.handleBossHit(bottle, i);
       }
     }
   }
 
-  /**
-   * Checks for collisions between character and coins
-   * @description Collects coins and updates coin status bar
-   */
+  handleBossHit(bottle, index) {
+    this.throwableObject.splice(index, 1);
+    this.endBoss.hit();
+    audioManager.playBossHitSound();
+    if (Math.abs(this.character.x - this.endBoss.x) < 400) {
+      audioManager.playBossSquawkSound();
+    }
+    this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
+    this.checkBossDeath();
+  }
+
+  checkBossDeath() {
+    if (this.endBoss.energy <= 0) {
+      this.endBoss.isDead = true;
+      if (audioManager.bossSquawkSound) {
+        audioManager.bossSquawkSound.pause();
+        audioManager.bossSquawkSound.currentTime = 0;
+      }
+      this.gameWon = true;
+      audioManager.playBossDeathSound();
+    }
+  }
+
   checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
-        this.level.coins.splice(index, 1);
-        this.statusBarCoin.setCoinStatusbarPercentage(
-          this.statusBarCoin.coinStatusbarPercentage + 20
-        );
-        audioManager.playCollectCoinsSound();
+        this.collectCoin(index);
       }
     });
   }
 
-  /**
-   * Checks for collisions between character and bottles
-   * @description Collects bottles and updates bottle status bar
-   */
+  collectCoin(index) {
+    this.level.coins.splice(index, 1);
+    this.statusBarCoin.setCoinStatusbarPercentage(this.statusBarCoin.coinStatusbarPercentage + 20);
+    audioManager.playCollectCoinsSound();
+  }
+
   checkBottleCollisions() {
     this.level.bottle.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
-        this.level.bottle.splice(index, 1);
-        this.statusBarBottle.setBottleStatusbarPercentage(
-          
-          this.statusBarBottle.bottleStatusbarPercentage + 20
-        );
-        audioManager.playCollectBottleSound();
-
+        this.collectBottle(index);
       }
     });
+  }
+
+  collectBottle(index) {
+    this.level.bottle.splice(index, 1);
+    this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage + 20);
+    audioManager.playCollectBottleSound();
   }
 
   /**

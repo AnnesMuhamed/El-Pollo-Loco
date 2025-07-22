@@ -202,29 +202,23 @@ class Character extends MovableObject {
   }
 
   /**
-   * Checks if the character is jumping on top of an enemy
+   * Checks if the character is jumping on top of an enemy (Mario-style)
    * @param {Object} enemy - The enemy object to check collision with
    * @returns {boolean} True if character is jumping on enemy, false otherwise
-   * @description Determines if the character is landing on an enemy by checking:
-   * - Character's bottom position relative to enemy's top
-   * - Character's center position relative to enemy's width
-   * - Character's falling state (speedY)
+   * @description Mario-style jump-kill: Character falls and hits enemy from any direction
    */
   isJumpingOnEnemy(enemy) {
-    const characterBottom = this.y + this.height;
-    const prevCharacterBottom = this.y + this.height - this.speedY;
-    const enemyTop = enemy.y;
-    const characterLeft = this.x;
-    const characterRight = this.x + this.width;
-    const enemyLeft = enemy.x;
-    const enemyRight = enemy.x + enemy.width;
-    const isFalling = this.speedY > 0.3; 
-    const tolerance = 50;
-
-    const wasAbove = prevCharacterBottom <= enemyTop + tolerance;
-    const isNowBelow = characterBottom >= enemyTop + 1;
-    const horizontalOverlap = characterRight > enemyLeft && characterLeft < enemyRight;
-
-    return isFalling && wasAbove && isNowBelow && horizontalOverlap;
+    const characterBottom = this.y + this.height;  // Untere Kante des Characters
+    const characterLeft = this.x;                   // Linke Kante des Characters
+    const characterRight = this.x + this.width;    // Rechte Kante des Characters
+    const enemyTop = enemy.y;                       // Obere Kante des Enemies
+    const enemyLeft = enemy.x;                      // Linke Kante des Enemies
+    const enemyRight = enemy.x + enemy.width;      // Rechte Kante des Enemies
+    
+    const distance = characterBottom - enemyTop;    // Vertikaler Abstand
+    const verticalCollision = distance >= -15 && distance <= 25;  // Vertikale Kollision prüfen
+    const horizontalOverlap = characterRight > enemyLeft && characterLeft < enemyRight;  // Horizontale Überlappung
+    
+    return verticalCollision && horizontalOverlap;  // Mario-ähnliche Kollision
   }
 }

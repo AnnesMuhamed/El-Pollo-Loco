@@ -6,6 +6,43 @@ let gameStarted = false;
 let gameRunning = false;
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+// Landscape-Warnung für mobile Geräte
+(function() {
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    function isPortrait() {
+        return window.innerHeight > window.innerWidth;
+    }
+    function isSmallScreen() {
+        return window.innerWidth < 760;
+    }
+    function toggleLandscapeWarning() {
+        var warning = document.querySelector('.landscape-warning');
+        var mainContent = document.getElementById('canvas');
+        var body = document.body;
+        if (isMobileDevice() && isPortrait() && isSmallScreen()) {
+            if (warning) warning.style.display = 'flex';
+            if (mainContent) mainContent.style.display = 'none';
+            // Optional: weitere UI-Elemente ausblenden
+            Array.from(document.querySelectorAll('.settings-button, .settings-menu, .game-over-screen, .start-screen, .info-modal')).forEach(function(el) {
+                if (el) el.style.display = 'none';
+            });
+        } else {
+            if (warning) warning.style.display = 'none';
+            if (mainContent) mainContent.style.display = '';
+            // Optional: weitere UI-Elemente wieder einblenden
+            Array.from(document.querySelectorAll('.settings-button, .settings-menu, .game-over-screen, .start-screen, .info-modal')).forEach(function(el) {
+                if (el) el.style.display = '';
+            });
+        }
+    }
+    window.addEventListener('orientationchange', toggleLandscapeWarning);
+    window.addEventListener('resize', toggleLandscapeWarning);
+    document.addEventListener('DOMContentLoaded', toggleLandscapeWarning);
+    setTimeout(toggleLandscapeWarning, 100);
+})();
+
 function init() {
    canvas = document.getElementById('canvas');
    drawStartScreen();
@@ -49,6 +86,7 @@ function drawStartButton(ctx) {
 
 function drawMobileControls(ctx) {
     if (!gameRunning) return;
+    if (window.innerWidth >= 760) return;
     
     const buttonSize = 60;
     const margin = 20;
