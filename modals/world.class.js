@@ -78,6 +78,7 @@ class World {
       this.checkCoinCollisions();
       this.checkBottleCollisions();
       this.checkBossBottleCollision();
+      this.checkEnemyBottleCollision();  // Neue Funktion für Enemy-Bottle Kollisionen
     }, 50);  // Von 200ms auf 50ms reduziert für präzisere Erkennung
   }
 
@@ -127,6 +128,23 @@ class World {
         this.handleBossHit(bottle, i);
       }
     }
+  }
+
+  checkEnemyBottleCollision() {
+    for (let i = this.throwableObject.length - 1; i >= 0; i--) {
+      let bottle = this.throwableObject[i];
+      this.level.enemies.forEach((enemy) => {
+        if (!enemy.isDead && bottle.isColliding(enemy)) {
+          this.handleEnemyBottleHit(bottle, i, enemy);
+        }
+      });
+    }
+  }
+
+  handleEnemyBottleHit(bottle, bottleIndex, enemy) {
+    this.throwableObject.splice(bottleIndex, 1);  // Flasche entfernen
+    enemy.isDead = true;  // Enemy töten
+    audioManager.playEnemyHitSound();  // Sound abspielen
   }
 
   handleBossHit(bottle, index) {
