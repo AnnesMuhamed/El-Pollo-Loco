@@ -13,20 +13,26 @@ class ThrowableObject extends MovableObject {
         this.x = 100;
         this.y = 100;
         this.height = 50;
-        this.width = 50;
-        this.speed = 15;
-        this.speedY = 0;
-        this.acceleration = 0;
+        this.width = 30;
+        this.speed = 0.5;  // Noch langsamer horizontal für längeren Bogen
+        this.speedY = 20;  // Viel stärkere initiale Geschwindigkeit nach oben
+        this.acceleration = 1.2;  // Noch langsamere Gravitation für längeren Bogen
+        this.applyGravity();  // Gravitation anwenden
         this.animate();
     }
 
-      animate() {
-    setInterval(() => {
-      this.playAnimation(this.IMAGES_ROTATION);
-    }, 100);
+    // Überschreibe isAboveGround für Flaschen - sie sollen immer Gravitation haben
+    isAboveGround() {
+        return true;  // Flaschen haben immer Gravitation
+    }
 
-    setInterval(() => {
-      this.x += this.speed;
-    }, 1000 / 60);
-  }
+    animate() {
+        setInterval(() => {
+            this.playAnimation(this.IMAGES_ROTATION);
+        }, 100);
+
+        setInterval(() => {
+            this.x += this.speed;  // Horizontale Bewegung
+        }, 1000 / 60);
+    }
 }

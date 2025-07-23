@@ -316,6 +316,14 @@ class World {
       let bottle = new ThrowableObject();
       bottle.x = this.character.x + 50;
       bottle.y = this.character.y + 100;
+      
+      // Richtung basierend auf Character-Orientierung
+      if (this.character.otherDirection) {
+        bottle.speed = -2;  // Nach links werfen (noch langsamer für höheren Bogen)
+      } else {
+        bottle.speed = 2;   // Nach rechts werfen (noch langsamer für höheren Bogen)
+      }
+      
       this.throwableObject.push(bottle);
       this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 20);
       audioManager.playThrowSound();
