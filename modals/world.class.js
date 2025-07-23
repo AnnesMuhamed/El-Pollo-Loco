@@ -92,6 +92,20 @@ class World {
       if (this.handleJumpKillCollision(enemy)) return;  // Jump-Kill Kollision
       this.handleSideCollision(enemy);  // Normale seitliche Kollision
     });
+    
+    // Boss-Kollision prüfen
+    if (!this.endBoss.isDead && !this.endBoss.isPlayingHurtAnimation) {
+      this.handleBossCollision();
+    }
+  }
+
+  handleBossCollision() {
+    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation) {
+      this.character.hit();
+      this.statusBar.setPercentage(this.character.energy);
+      this.checkCharacterDeath();
+      this.endBoss.startAttackAnimation();  // Boss startet Attack-Animation
+    }
   }
 
   handleJumpKillCollision(enemy) {
@@ -298,7 +312,7 @@ class World {
     }
 
     mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
+    // mo.drawFrame(this.ctx);  // Rote Rahmen entfernt
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);

@@ -42,68 +42,55 @@ class AudioManager {
     }
 
     playWalkingSound() {
-        if (this.walkingSound.paused) {
-            this.walkingSound.play();
-        }
+        this.playAudioSafely(this.walkingSound, 'Walking sound');
     }
 
     stopWalkingSound() {
-        this.walkingSound.pause();
+        this.pauseAudioSafely(this.walkingSound, 'Stop walking sound');
     }
 
     playJumpSound() {
-        this.jumpSound.currentTime = 0;
-        this.jumpSound.play();
+        this.playAudioSafely(this.jumpSound, 'Jump sound');
     }
 
     playThrowSound() {
-        this.throwSound.currentTime = 0;
-        this.throwSound.play();
+        this.playAudioSafely(this.throwSound, 'Throw sound');
     }
 
     playCollectBottleSound() {
-        this.collectBottleSound.currentTime = 0;
-        this.collectBottleSound.play();
+        this.playAudioSafely(this.collectBottleSound, 'Collect bottle sound');
     }
     
     playCollectCoinsSound() {
-        this.collectCoinsSound.currentTime = 0;
-        this.collectCoinsSound.play();
+        this.playAudioSafely(this.collectCoinsSound, 'Collect coins sound');
     }
 
     playhurtCharacterSound () {
-        this.hurtCharacterSound.currentTime = 0;
-        this.hurtCharacterSound.play();
+        this.playAudioSafely(this.hurtCharacterSound, 'Hurt character sound');
     }
 
     playEnemyHitSound () {
-        this.enemyHitSound.currentTime = 0;
-        this.enemyHitSound.play();
+        this.playAudioSafely(this.enemyHitSound, 'Enemy hit sound');
     }
 
     playBossHitSound() {
-        this.bossHitSound.currentTime = 0;
-        this.bossHitSound.play();
+        this.playAudioSafely(this.bossHitSound, 'Boss hit sound');
     }
 
     playBossDeathSound() {
-        this.bossDeathSound.currentTime = 0;
-        this.bossDeathSound.play();
+        this.playAudioSafely(this.bossDeathSound, 'Boss death sound');
     }
 
     playBossSquawkSound() {
-        this.bossSquawkSound.currentTime = 0;
-        this.bossSquawkSound.play();
+        this.playAudioSafely(this.bossSquawkSound, 'Boss squawk sound');
     }
 
     playSnoringSound() {
-        if (this.snoringSound.paused) {
-            this.snoringSound.play();
-        }
+        this.playAudioSafely(this.snoringSound, 'Snoring sound');
     }
 
     stopSnoringSound() {
-        this.snoringSound.pause();
+        this.pauseAudioSafely(this.snoringSound, 'Stop snoring sound');
     }
 
     toggleSound() {
@@ -147,5 +134,23 @@ class AudioManager {
         this.bossHitSound.volume = 0;
         this.bossDeathSound.volume = 0;
         this.snoringSound.volume = 0;
+    }
+
+    // Hilfsmethoden für sicheres Audio
+    async playAudioSafely(audio, name) {
+        try {
+            audio.currentTime = 0;
+            await audio.play();
+        } catch (error) {
+            console.log(`${name} error:`, error);
+        }
+    }
+
+    pauseAudioSafely(audio, name) {
+        try {
+            audio.pause();
+        } catch (error) {
+            console.log(`${name} error:`, error);
+        }
     }
 } 
