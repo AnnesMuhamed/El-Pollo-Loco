@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
   speedY = 0;
   acceleration = 2.5;
   otherDirection = false;
-  energy = 1000;  // Von 100 auf 1000 erhöht für besseres Testen
+  energy = 200;   // Von 100 auf 1000 erhöht für besseres Testen
   lastHit = 0;
   hitCooldown = 100;  // Von 1000 auf 100 reduziert für besseres Testen
 

@@ -51,9 +51,17 @@ function init() {
 
 function drawStartScreen() {
     const ctx = canvas.getContext('2d');
+    
+    // Canvas leeren
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
     const startScreenImage = new Image();
     startScreenImage.onload = function() {
         ctx.drawImage(startScreenImage, 0, 0, canvas.width, canvas.height);
+        drawStartButton(ctx);
+    };
+    startScreenImage.onerror = function() {
+        // Fallback: Nur Button zeichnen
         drawStartButton(ctx);
     };
     startScreenImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
@@ -626,8 +634,15 @@ function goToStartScreen() {
         }
     }
     
+    // Animation stoppen und Start-Screen zeichnen
     drawStartScreen();
+    
+    // Animation-Loop stoppen indem wir gameRunning auf false setzen
+    // und sicherstellen dass keine weiteren requestAnimationFrame aufgerufen werden
 }
+
+// Globale Funktion verfügbar machen
+window.goToStartScreen = goToStartScreen;
 
 function handleKeyDown(e) {
     if(e.keyCode == 39) {

@@ -12,14 +12,17 @@ class Endboss extends MovableObject {
     isPlayingHurtAnimation = false;
     hurtAnimationTimer = null;
     isPlayingAttackAnimation = false;  // Neue Variable für Attack-Animation
+    isPlayingAlertAnimation = false;  // Neue Variable für Alert-Animation
     currentAnimationFrame = 0;
     currentWalkingFrame = 0;
     currentDeadFrame = 0;
     currentAttackFrame = 0;  // Neue Variable für Attack-Frame
+    currentAlertFrame = 0;  // Neue Variable für Alert-Frame
     animationInterval = null;
     walkingInterval = null;
     deadInterval = null;
     attackInterval = null;  // Neue Variable für Attack-Interval
+    alertInterval = null;  // Neue Variable für Alert-Interval
     movementInterval = null;  // Neue Variable für Bewegung
 
     IMAGES_WALKING = [
@@ -27,6 +30,17 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/1_walk/G2.png',
         'img/4_enemie_boss_chicken/1_walk/G3.png',
         'img/4_enemie_boss_chicken/1_walk/G4.png'
+    ];
+
+    IMAGES_ALERT = [
+        'img/4_enemie_boss_chicken/2_alert/G5.png',
+        'img/4_enemie_boss_chicken/2_alert/G6.png',
+        'img/4_enemie_boss_chicken/2_alert/G7.png',
+        'img/4_enemie_boss_chicken/2_alert/G8.png',
+        'img/4_enemie_boss_chicken/2_alert/G9.png',
+        'img/4_enemie_boss_chicken/2_alert/G10.png',
+        'img/4_enemie_boss_chicken/2_alert/G11.png',
+        'img/4_enemie_boss_chicken/2_alert/G12.png'
     ];
 
     IMAGES_ATTACK = [
@@ -54,8 +68,9 @@ class Endboss extends MovableObject {
      * Walking animation is displayed by default and stops during hurt/dead states.
      */
     constructor () {
-        super().loadImage(this.IMAGES_WALKING[0]);
+        super().loadImage(this.IMAGES_ALERT[0]);  // Start mit Alert-Image
         this.loadImages(this.IMAGES_WALKING);
+        this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
@@ -87,9 +102,63 @@ class Endboss extends MovableObject {
     }
 
     animate() {
-        if (!this.isDead && !this.isPlayingHurtAnimation && !this.walkingInterval) {
-            this.startWalkingAnimation();
+        if (this.isDead) {
+            // Dead-Animation läuft bereits, nichts tun
+            return;
         }
+        
+        if (!this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation) {
+            if (!this.isActivated) {
+                // Alert-Animation wenn Boss noch nicht aktiviert
+                if (!this.isPlayingAlertAnimation) {
+                    this.startAlertAnimation();
+                }
+            } else {
+                // Walking-Animation wenn Boss aktiviert
+                if (!this.walkingInterval) {
+                    this.startWalkingAnimation();
+                }
+            }
+        }
+    }
+
+    startAlertAnimation() {
+        this.stopAllAnimations();
+        
+        if (this.isDead) {
+            return;
+        }
+        
+        // Prüfen ob alle Alert-Images geladen sind
+        const allImagesLoaded = this.IMAGES_ALERT.every(path => this.imageCash[path]);
+        if (!allImagesLoaded) {
+            setTimeout(() => this.startAlertAnimation(), 100); // Warten und erneut versuchen
+            return;
+        }
+        
+        this.isPlayingAlertAnimation = true;
+        this.currentAlertFrame = 0;
+        
+        this.alertInterval = setInterval(() => {
+            if (this.isDead || this.isActivated) {
+                this.stopAlertAnimation();
+                return;
+            }
+            
+            this.currentAlertFrame = (this.currentAlertFrame + 1) % this.IMAGES_ALERT.length;
+            const currentImage = this.IMAGES_ALERT[this.currentAlertFrame];
+            if (this.imageCash[currentImage]) {
+                this.img = this.imageCash[currentImage];
+            }
+        }, 200);  // Langsamere Animation für Alert
+    }
+
+    stopAlertAnimation() {
+        if (this.alertInterval) {
+            clearInterval(this.alertInterval);
+            this.alertInterval = null;
+        }
+        this.isPlayingAlertAnimation = false;
     }
 
     startWalkingAnimation() {
@@ -105,8 +174,6 @@ class Endboss extends MovableObject {
             if (!this.isDead && !this.isPlayingHurtAnimation && this.isActivated) {
                 this.img = this.imageCash[this.IMAGES_WALKING[this.currentWalkingFrame]];  // Walk-Animation nur wenn Boss aktiviert ist (sich bewegt)
                 this.currentWalkingFrame = (this.currentWalkingFrame + 1) % this.IMAGES_WALKING.length;
-            } else if (!this.isDead && !this.isPlayingHurtAnimation && !this.isActivated) {
-                this.img = this.imageCash[this.IMAGES_WALKING[0]];  // Stehende Animation wenn Boss noch nicht aktiviert ist
             } else {
                 this.stopWalkingAnimation();
             }
@@ -123,10 +190,14 @@ class Endboss extends MovableObject {
     stopAllAnimations() {
         this.stopWalkingAnimation();
         this.stopAttackAnimation();
+        this.stopAlertAnimation();
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
             this.animationInterval = null;
         }
+    }
+
+    stopDeadAnimation() {
         if (this.deadInterval) {
             clearInterval(this.deadInterval);
             this.deadInterval = null;
@@ -167,11 +238,13 @@ class Endboss extends MovableObject {
 
     startDeadAnimation() {
         this.stopAllAnimations();
+        this.stopDeadAnimation(); // Dead-Animation stoppen falls bereits läuft
         this.isDead = true;
         this.isPlayingHurtAnimation = false;
         
         this.img = this.imageCash[this.IMAGES_DEAD[0]];
         this.currentDeadFrame = 0;
+        
         this.deadInterval = setInterval(() => {
             if (this.currentDeadFrame < this.IMAGES_DEAD.length) {
                 this.img = this.imageCash[this.IMAGES_DEAD[this.currentDeadFrame]];
@@ -180,7 +253,7 @@ class Endboss extends MovableObject {
                 clearInterval(this.deadInterval);
                 this.deadInterval = null;
             }
-        }, 200);
+        }, 300); // Schnellere Dead-Animation (300ms pro Frame)
     }
 
     startHurtAnimation() {
