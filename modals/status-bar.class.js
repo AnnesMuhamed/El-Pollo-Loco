@@ -27,18 +27,20 @@ class StatusBar extends DrawableObject {
   }
 
   resolveImageIndex() {
+    let index;
     if (this.percentage == 100) {
-      return 5;
-    } else if (this.percentage > 80) {
-        return 4;
-    } else if(this.percentage > 60) {
-        return 3;
-    } else if(this.percentage > 40) {
-        return 2;
-    } else if(this.percentage > 20) {
-        return 1;
+      index = 5;  // 100.png (Index 5)
+    } else if (this.percentage >= 80) {
+        index = 4;  // 80.png (Index 4)
+    } else if(this.percentage >= 60) {
+        index = 3;  // 60.png (Index 3)
+    } else if(this.percentage >= 40) {
+        index = 2;  // 40.png (Index 2)
+    } else if(this.percentage >= 20) {
+        index = 1;  // 20.png (Index 1)
     } else {
-        return 0;
+        index = 0;  // 0.png (Index 0)
     }
+    return index;
   }
 }

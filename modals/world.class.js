@@ -19,6 +19,7 @@ class World {
   gameOverScreenShown = false;
   gameWon = false;
   victoryScreenShown = false;
+  hitEnemies = new Set();  // Enemies, die bereits Schaden verursacht haben
 
   /**
    * Creates a new World instance
@@ -100,11 +101,12 @@ class World {
   }
 
   handleBossCollision() {
-    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation) {
+    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation && !this.hitEnemies.has(this.endBoss)) {
       this.character.hit();
-      this.statusBar.setPercentage(this.character.energy);
+      this.statusBar.setPercentage((this.character.energy / 100) * 100);
       this.checkCharacterDeath();
       this.endBoss.startAttackAnimation();  // Boss startet Attack-Animation
+      this.hitEnemies.add(this.endBoss);  // Boss zur Liste der getroffenen hinzufügen
     }
   }
 
@@ -120,10 +122,12 @@ class World {
 
   handleSideCollision(enemy) {
     const distance = Math.abs(this.character.x - enemy.x);
-    if (distance < 200 && this.character.isColliding(enemy)) {
+    if (distance < 200 && this.character.isColliding(enemy) && !this.hitEnemies.has(enemy)) {
       this.character.hit();
-      this.statusBar.setPercentage(this.character.energy);
+      const percentage = (this.character.energy / 100) * 100;
+      this.statusBar.setPercentage(percentage);
       this.checkCharacterDeath();
+      this.hitEnemies.add(enemy);  // Enemy zur Liste der getroffenen hinzufügen
     }
   }
 

@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
   speedY = 0;
   acceleration = 2.5;
   otherDirection = false;
-  energy = 200;   // Von 100 auf 1000 erhöht für besseres Testen
+  energy = 100;   // 100 Leben
   lastHit = 0;
   hitCooldown = 100;  // Von 1000 auf 100 reduziert für besseres Testen
 
@@ -78,7 +78,7 @@ class MovableObject extends DrawableObject {
     if (this instanceof Character) {
       let timepassed = new Date().getTime() - this.lastHit;
       if (timepassed > this.hitCooldown) {
-        this.energy -= 5;  // Von 20 auf 5 reduziert für besseres Testen
+        this.energy -= 20;  // 20 Schaden pro Treffer
         if (this.energy < 0) {
           this.energy = 0;
         }
