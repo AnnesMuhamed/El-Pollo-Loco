@@ -10,6 +10,7 @@ class AudioManager {
     bossDeathSound;
     bossSquawkSound;
     snoringSound;
+    backgroundSound;
     soundEnabled;
 
     constructor() {
@@ -24,6 +25,7 @@ class AudioManager {
         this.bossDeathSound = new Audio('audio/boss_death.mp3');
         this.bossSquawkSound = new Audio('audio/chicken-squawk-72188.mp3');
         this.snoringSound = new Audio('audio/snoring.mp3');
+        this.backgroundSound = new Audio('audio/background-sound.mp3');
         
         this.walkingSound.loop = true;
         this.walkingSound.volume = 0.5;
@@ -38,6 +40,8 @@ class AudioManager {
         this.bossDeathSound.volume = 0.5;
         this.bossSquawkSound.volume = 0.5;
         this.snoringSound.volume = 0.5;
+        this.backgroundSound.volume = 0.3;
+        this.backgroundSound.loop = true;
         this.soundEnabled = true;
     }
 
@@ -73,18 +77,18 @@ class AudioManager {
         this.playAudioSafely(this.enemyHitSound, 'Enemy hit sound');
     }
 
-    playBossHitSound() {
-        this.playAudioSafely(this.bossHitSound, 'Boss hit sound');
-    }
-
     playBossDeathSound() {
         this.playAudioSafely(this.bossDeathSound, 'Boss death sound');
     }
 
     playBossSquawkSound() {
-        if (!this.bossSquawkSound.paused) {
-            this.playAudioSafely(this.bossSquawkSound, 'Boss squawk sound');
-        }
+        this.bossSquawkSound.currentTime = 0;
+        this.playAudioSafely(this.bossSquawkSound, 'Boss squawk sound');
+    }
+
+    playBossHitSound() {
+        this.bossHitSound.currentTime = 0;
+        this.playAudioSafely(this.bossHitSound, 'Boss hit sound');
     }
 
     playSnoringSound() {
@@ -95,12 +99,21 @@ class AudioManager {
         this.pauseAudioSafely(this.snoringSound, 'Stop snoring sound');
     }
 
+    playBackgroundSound() {
+        this.playAudioSafely(this.backgroundSound, 'Background sound');
+    }
+
+    stopBackgroundSound() {
+        this.pauseAudioSafely(this.backgroundSound, 'Stop background sound');
+    }
+
     stopAllSounds() {
         this.pauseAudioSafely(this.walkingSound, 'Stop walking sound');
         this.pauseAudioSafely(this.snoringSound, 'Stop snoring sound');
         this.pauseAudioSafely(this.bossSquawkSound, 'Stop boss squawk sound');
         this.pauseAudioSafely(this.bossHitSound, 'Stop boss hit sound');
         this.pauseAudioSafely(this.bossDeathSound, 'Stop boss death sound');
+        this.pauseAudioSafely(this.backgroundSound, 'Stop background sound');
     }
 
     toggleSound() {
@@ -130,6 +143,7 @@ class AudioManager {
         this.hurtCharacterSound.volume = 0.5;
         this.bossHitSound.volume = 0.5;
         this.bossDeathSound.volume = 0.5;
+        this.backgroundSound.volume = 0.3;
         this.snoringSound.volume = 0.5;
     }
 
@@ -144,6 +158,7 @@ class AudioManager {
         this.bossHitSound.volume = 0;
         this.bossDeathSound.volume = 0;
         this.snoringSound.volume = 0;
+        this.backgroundSound.volume = 0;
     }
 
     // Hilfsmethoden für sicheres Audio

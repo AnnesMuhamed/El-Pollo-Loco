@@ -290,6 +290,11 @@ class Endboss extends MovableObject {
             this.isActivated = true;  // Boss beim ersten Treffer aktivieren
         }
 
+        if (audioManager) {
+            audioManager.playBossHitSound();
+            audioManager.playBossSquawkSound();
+        }
+
         this.energy -= 20;
         if (this.energy <= 0) {
             this.energy = 0;

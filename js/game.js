@@ -575,6 +575,10 @@ function startGame() {
     gameStarted = true;
     gameRunning = true;
     
+    if (audioManager) {
+        audioManager.playBackgroundSound();
+    }
+    
     window.startButtonCoords = null;
     
     const gameOverScreen = document.getElementById('gameOverScreen');
