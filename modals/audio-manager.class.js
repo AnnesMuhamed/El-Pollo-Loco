@@ -82,7 +82,9 @@ class AudioManager {
     }
 
     playBossSquawkSound() {
-        this.playAudioSafely(this.bossSquawkSound, 'Boss squawk sound');
+        if (!this.bossSquawkSound.paused) {
+            this.playAudioSafely(this.bossSquawkSound, 'Boss squawk sound');
+        }
     }
 
     playSnoringSound() {
@@ -91,6 +93,14 @@ class AudioManager {
 
     stopSnoringSound() {
         this.pauseAudioSafely(this.snoringSound, 'Stop snoring sound');
+    }
+
+    stopAllSounds() {
+        this.pauseAudioSafely(this.walkingSound, 'Stop walking sound');
+        this.pauseAudioSafely(this.snoringSound, 'Stop snoring sound');
+        this.pauseAudioSafely(this.bossSquawkSound, 'Stop boss squawk sound');
+        this.pauseAudioSafely(this.bossHitSound, 'Stop boss hit sound');
+        this.pauseAudioSafely(this.bossDeathSound, 'Stop boss death sound');
     }
 
     toggleSound() {

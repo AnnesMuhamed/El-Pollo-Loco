@@ -261,24 +261,22 @@ class World {
     }
 
     if (this.endBoss.isDead && this.youWonImage.complete) {
-      // Dead-Animation und You Won Image anzeigen
-      this.addToMap(this.endBoss); // Dead-Animation zeichnen
+      this.addToMap(this.endBoss);
       this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
       
       if (!this.victoryScreenShown) {
         this.victoryScreenShown = true;
         setTimeout(() => {
-          if (typeof window.goToStartScreen === 'function') {
+          if (typeof window.goToStartScreen === 'function' && !window.goToStartScreenCalled) {
             window.goToStartScreen();
           }
-        }, 5000); // 5 Sekunden für vollständige Dead-Animation
+        }, 5000);
       }
       
-          // Animation fortsetzen für Dead-Animation nur wenn gameRunning true ist
-    if (typeof gameRunning !== 'undefined' && gameRunning) {
+            if (world) {
       requestAnimationFrame(() => this.draw());
     }
-    return; // Animation stoppen nach Sieg
+    return;
     }
 
     if (this.character.isDead() && this.characterDeathTime) {
@@ -296,8 +294,7 @@ class World {
         }
     }
 
-    // Animation nur fortsetzen wenn nicht gewonnen und gameRunning true ist
-    if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning) {
+    if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning && world) {
       requestAnimationFrame(() => this.draw());
     }
   }

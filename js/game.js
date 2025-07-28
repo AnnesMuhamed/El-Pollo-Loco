@@ -52,8 +52,9 @@ function init() {
 function drawStartScreen() {
     const ctx = canvas.getContext('2d');
     
-    // Canvas leeren
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    drawStartButton(ctx);
     
     const startScreenImage = new Image();
     startScreenImage.onload = function() {
@@ -61,8 +62,6 @@ function drawStartScreen() {
         drawStartButton(ctx);
     };
     startScreenImage.onerror = function() {
-        // Fallback: Nur Button zeichnen
-        drawStartButton(ctx);
     };
     startScreenImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
 }
@@ -571,6 +570,8 @@ function startGame() {
         );
     }
     
+    window.goToStartScreenCalled = false;
+    
     gameStarted = true;
     gameRunning = true;
     
@@ -621,24 +622,28 @@ function goHome() {
 }
 
 function goToStartScreen() {
+    if (window.goToStartScreenCalled) {
+        return;
+    }
+    window.goToStartScreenCalled = true;
+    
     gameStarted = false;
     gameRunning = false;
-    world = null;
     
-    if (audioManager) {
-        audioManager.stopWalkingSound();
-        audioManager.stopSnoringSound();
-        if (audioManager.bossSquawkSound) {
-            audioManager.bossSquawkSound.pause();
-            audioManager.bossSquawkSound.currentTime = 0;
-        }
+    if (window.gameAnimationId) {
+        cancelAnimationFrame(window.gameAnimationId);
+        window.gameAnimationId = null;
     }
     
-    // Animation stoppen und Start-Screen zeichnen
-    drawStartScreen();
+    if (world) {
+        world = null;
+    }
     
-    // Animation-Loop stoppen indem wir gameRunning auf false setzen
-    // und sicherstellen dass keine weiteren requestAnimationFrame aufgerufen werden
+    if (audioManager) {
+        audioManager.stopAllSounds();
+    }
+    
+    drawStartScreen();
 }
 
 // Globale Funktion verfügbar machen

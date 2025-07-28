@@ -7,6 +7,9 @@ class Character extends MovableObject {
   lastMovementTime = Date.now();
   isIdle = false;
   isLongIdle = false;
+  isWalkingSoundPlaying = false;
+  lastShouldPlayWalkingSound = false;
+  isSnoringSoundPlaying = false;
   
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -126,11 +129,17 @@ class Character extends MovableObject {
             hasMoved = true;
           }
 
-          if (hasMoved) {
+          // Long-Idle stoppen bei Bewegung, Werfen oder Hit
+          const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt();
+          
+          if (shouldStopLongIdle) {
             this.lastMovementTime = Date.now();
             this.isIdle = false;
             this.isLongIdle = false;
-            audioManager.stopSnoringSound();
+            if (this.isSnoringSoundPlaying) {
+              audioManager.stopSnoringSound();
+              this.isSnoringSoundPlaying = false;
+            }
           } else {
             const currentTime = Date.now();
             const idleTime = currentTime - this.lastMovementTime;
@@ -138,22 +147,31 @@ class Character extends MovableObject {
             if (idleTime > 15000 && !this.world.gameWon) {
               this.isLongIdle = true;
               this.isIdle = false;
-              audioManager.playSnoringSound();
+              if (!this.isSnoringSoundPlaying) {
+                audioManager.playSnoringSound();
+                this.isSnoringSoundPlaying = true;
+              }
             } else if (idleTime > 3000) {
               this.isIdle = true;
               this.isLongIdle = false;
-              audioManager.stopSnoringSound();
             } else {
               this.isIdle = false;
               this.isLongIdle = false;
-              audioManager.stopSnoringSound();
             }
           }
 
-          if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver) {
+          const shouldPlayWalkingSound = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver && !this.world.endBoss.isDead && !this.isAboveGround();
+          
+          if (shouldPlayWalkingSound !== this.lastShouldPlayWalkingSound) {
+              this.lastShouldPlayWalkingSound = shouldPlayWalkingSound;
+          }
+          
+          if (shouldPlayWalkingSound && !this.isWalkingSoundPlaying) {
               audioManager.playWalkingSound();
-          } else {
+              this.isWalkingSoundPlaying = true;
+          } else if (!shouldPlayWalkingSound && this.isWalkingSoundPlaying) {
               audioManager.stopWalkingSound();
+              this.isWalkingSoundPlaying = false;
           }
 
           if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -220,3 +238,4 @@ class Character extends MovableObject {
     return verticalCollision && horizontalOverlap;  // Mario-ähnliche Kollision
   }
 }
+
