@@ -129,10 +129,9 @@ class Endboss extends MovableObject {
             return;
         }
         
-        // Prüfen ob alle Alert-Images geladen sind
         const allImagesLoaded = this.IMAGES_ALERT.every(path => this.imageCash[path]);
         if (!allImagesLoaded) {
-            setTimeout(() => this.startAlertAnimation(), 100); // Warten und erneut versuchen
+            setTimeout(() => this.startAlertAnimation(), 100);
             return;
         }
         
@@ -150,7 +149,7 @@ class Endboss extends MovableObject {
             if (this.imageCash[currentImage]) {
                 this.img = this.imageCash[currentImage];
             }
-        }, 200);  // Langsamere Animation für Alert
+        }, 200); 
     }
 
     stopAlertAnimation() {
@@ -172,7 +171,7 @@ class Endboss extends MovableObject {
         this.currentWalkingFrame = 0;
         this.walkingInterval = setInterval(() => {
             if (!this.isDead && !this.isPlayingHurtAnimation && this.isActivated) {
-                this.img = this.imageCash[this.IMAGES_WALKING[this.currentWalkingFrame]];  // Walk-Animation nur wenn Boss aktiviert ist (sich bewegt)
+                this.img = this.imageCash[this.IMAGES_WALKING[this.currentWalkingFrame]];
                 this.currentWalkingFrame = (this.currentWalkingFrame + 1) % this.IMAGES_WALKING.length;
             } else {
                 this.stopWalkingAnimation();
@@ -238,7 +237,7 @@ class Endboss extends MovableObject {
 
     startDeadAnimation() {
         this.stopAllAnimations();
-        this.stopDeadAnimation(); // Dead-Animation stoppen falls bereits läuft
+        this.stopDeadAnimation();
         this.isDead = true;
         this.isPlayingHurtAnimation = false;
         
@@ -253,7 +252,7 @@ class Endboss extends MovableObject {
                 clearInterval(this.deadInterval);
                 this.deadInterval = null;
             }
-        }, 300); // Schnellere Dead-Animation (300ms pro Frame)
+        }, 300);
     }
 
     startHurtAnimation() {
@@ -287,7 +286,7 @@ class Endboss extends MovableObject {
         }
 
         if (!this.isActivated) {
-            this.isActivated = true;  // Boss beim ersten Treffer aktivieren
+            this.isActivated = true;
         }
 
         if (audioManager) {

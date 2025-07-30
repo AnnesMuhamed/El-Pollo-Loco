@@ -369,6 +369,4 @@ class World {
       audioManager.playThrowSound();
     }
   }
-
-
 }

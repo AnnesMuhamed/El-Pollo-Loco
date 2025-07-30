@@ -129,7 +129,6 @@ class Character extends MovableObject {
             hasMoved = true;
           }
 
-          // Long-Idle stoppen bei Bewegung, Werfen oder Hit
           const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt();
           
           if (shouldStopLongIdle) {
