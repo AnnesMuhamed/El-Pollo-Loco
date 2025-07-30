@@ -164,27 +164,33 @@ function setupCanvasClickHandler() {
         handleButtonRelease(e, 'mouse');
     });
 
-    // Touch events
+    // Touch events - verbesserte Behandlung für echte Smartphones
     canvas.addEventListener('touchstart', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
         // Handle all touch points
         for (let i = 0; i < e.touches.length; i++) {
             const touch = e.touches[i];
             handleButtonPress(touch, 'touch', touch.identifier);
         }
-    });
+    }, { passive: false });
 
     canvas.addEventListener('touchend', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
         // Handle all released touch points
         for (let i = 0; i < e.changedTouches.length; i++) {
             const touch = e.changedTouches[i];
             handleButtonRelease(touch, 'touch', touch.identifier);
         }
-    });
+    }, { passive: false });
 
     canvas.addEventListener('touchmove', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        
         // Update touch positions with throttling for better performance
         if (e.touches.length > 0) {
             for (let i = 0; i < e.touches.length; i++) {
@@ -192,6 +198,20 @@ function setupCanvasClickHandler() {
                 updateTouchPosition(touch, touch.identifier);
             }
         }
+    }, { passive: false });
+
+    // Zusätzliche Touch-Event-Listener für bessere Smartphone-Kompatibilität
+    canvas.addEventListener('touchcancel', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Release all active buttons when touch is cancelled
+        activeButtons.clear();
+        touchPoints.clear();
+        keyboard.LEFT = false;
+        keyboard.RIGHT = false;
+        keyboard.SPACE = false;
+        keyboard.D = false;
     }, { passive: false });
 
     function handleButtonPress(e, type, touchId = null) {
@@ -380,6 +400,8 @@ function resetGame() {
     keyboard = new Keyboard();
     audioManager = new AudioManager();
     
+    resetGameOverStates();
+    
     window.level1 = new Level(
         [
             // Erster Abschnitt (-719)
@@ -475,7 +497,18 @@ function resetGame() {
     );
 }
 
-
+function resetGameOverStates() {
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    if (gameOverScreen) {
+        gameOverScreen.classList.add('hidden');
+    }
+    
+    if (world) {
+        world.showGameOver = false;
+        world.gameOverScreenShown = false;
+        world.characterDeathTime = null;
+    }
+}
 
 function startGame() {
     if (gameStarted) {
@@ -581,8 +614,7 @@ function startGame() {
     
     window.startButtonCoords = null;
     
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    gameOverScreen.classList.add('hidden');
+    resetGameOverStates();
     
     world = new World(canvas, keyboard);
     
@@ -596,8 +628,6 @@ function startGame() {
     canvas.focus();
     canvas.addEventListener('keydown', handleKeyDown);
     canvas.addEventListener('keyup', handleKeyUp);
-
-
 }
 
 function showGameOverScreen() {
@@ -607,6 +637,7 @@ function showGameOverScreen() {
     if (audioManager) {
         audioManager.stopWalkingSound();
         audioManager.stopSnoringSound();
+        audioManager.stopBackgroundSound();
         if (audioManager.bossSquawkSound) {
             audioManager.bossSquawkSound.pause();
             audioManager.bossSquawkSound.currentTime = 0;
@@ -648,6 +679,8 @@ function goToStartScreen() {
     }
     
     drawStartScreen();
+    
+    window.goToStartScreenCalled = false;
 }
 
 // Globale Funktion verfügbar machen

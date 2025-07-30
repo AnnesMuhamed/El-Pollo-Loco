@@ -19,7 +19,7 @@ class World {
   gameOverScreenShown = false;
   gameWon = false;
   victoryScreenShown = false;
-  hitEnemies = new Set();  // Enemies, die bereits Schaden verursacht haben
+  hitEnemies = new Set();
 
   /**
    * Creates a new World instance
@@ -79,8 +79,8 @@ class World {
       this.checkCoinCollisions();
       this.checkBottleCollisions();
       this.checkBossBottleCollision();
-      this.checkEnemyBottleCollision();  // Neue Funktion für Enemy-Bottle Kollisionen
-    }, 50);  // Von 200ms auf 50ms reduziert für präzisere Erkennung
+      this.checkEnemyBottleCollision(); 
+    }, 50); 
   }
 
   /**
@@ -90,23 +90,21 @@ class World {
   checkEnemyCollisions() {
     this.level.enemies.forEach((enemy) => {
       if (enemy.isDead) return;
-      if (this.handleJumpKillCollision(enemy)) return;  // Jump-Kill Kollision
-      this.handleSideCollision(enemy);  // Normale seitliche Kollision
+      if (this.handleJumpKillCollision(enemy)) return; 
+      this.handleSideCollision(enemy);
     });
     
-    // Boss-Kollision prüfen
     if (!this.endBoss.isDead && !this.endBoss.isPlayingHurtAnimation) {
       this.handleBossCollision();
     }
   }
 
   handleBossCollision() {
-    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation && !this.hitEnemies.has(this.endBoss)) {
+    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation) {
       this.character.hit();
       this.statusBar.setPercentage((this.character.energy / 100) * 100);
       this.checkCharacterDeath();
-      this.endBoss.startAttackAnimation();  // Boss startet Attack-Animation
-      this.hitEnemies.add(this.endBoss);  // Boss zur Liste der getroffenen hinzufügen
+      this.endBoss.startAttackAnimation();
     }
   }
 
@@ -114,7 +112,7 @@ class World {
     if (this.character.isJumpingOnEnemy(enemy)) {
       enemy.isDead = true;
       audioManager.playEnemyHitSound();
-      this.character.speedY = -15;  // Mario-ähnlicher Bounce
+      this.character.speedY = -15; 
       return true;
     }
     return false;
@@ -127,7 +125,7 @@ class World {
       const percentage = (this.character.energy / 100) * 100;
       this.statusBar.setPercentage(percentage);
       this.checkCharacterDeath();
-      this.hitEnemies.add(enemy);  // Enemy zur Liste der getroffenen hinzufügen
+      this.hitEnemies.add(enemy);
     }
   }
 
@@ -160,9 +158,9 @@ class World {
   }
 
   handleEnemyBottleHit(bottle, bottleIndex, enemy) {
-    this.throwableObject.splice(bottleIndex, 1);  // Flasche entfernen
-    enemy.isDead = true;  // Enemy töten
-    audioManager.playEnemyHitSound();  // Sound abspielen
+    this.throwableObject.splice(bottleIndex, 1); 
+    enemy.isDead = true; 
+    audioManager.playEnemyHitSound();  
   }
 
   handleBossHit(bottle, index) {
@@ -221,7 +219,6 @@ class World {
    * @description Renders all game objects and updates the display
    */
   draw() {
-    // FPS-Begrenzung für bessere Performance auf mobilen Geräten
     const now = performance.now();
     if (!this.lastFrameTime) {
       this.lastFrameTime = now;
@@ -242,7 +239,6 @@ class World {
 
     this.ctx.translate(this.camera_x, 0);
     
-    // Optimierung: Nur sichtbare Objekte rendern
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
@@ -277,10 +273,10 @@ class World {
         }, 5000);
       }
       
-            if (world) {
-      requestAnimationFrame(() => this.draw());
-    }
-    return;
+      if (world) {
+        requestAnimationFrame(() => this.draw());
+      }
+      return;
     }
 
     if (this.character.isDead() && this.characterDeathTime) {

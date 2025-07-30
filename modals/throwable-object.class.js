@@ -13,10 +13,10 @@ class ThrowableObject extends MovableObject {
         this.x = 100;
         this.y = 100;
         this.height = 50;
-        this.width = 30;
+        this.width = 40;
         this.speed = 0.5;  // Noch langsamer horizontal für längeren Bogen
         this.speedY = 20;  // Viel stärkere initiale Geschwindigkeit nach oben
-        this.acceleration = 1.2;  // Noch langsamere Gravitation für längeren Bogen
+        this.acceleration = 1.5;  // Noch langsamere Gravitation für längeren Bogen
         this.applyGravity();  // Gravitation anwenden
         this.animate();
     }

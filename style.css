@@ -110,12 +110,15 @@ canvas {
 
 /* Game Over Bildschirm Styles */
 .game-over-screen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: relative;
+    bottom: 230px;
+    left: 200px;
     transform: translate(-50%, -50%);
-    width: 720px;
-    height: 480px;
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    aspect-ratio: 3/2;
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
@@ -248,7 +251,7 @@ canvas {
     padding: 30px;
     border-radius: 15px;
     max-width: 500px;
-    max-height: 80vh;
+    max-height: 70vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     animation: modalSlideIn 0.3s ease;
@@ -293,8 +296,24 @@ canvas {
 }
 
 .info-content strong {
-    color: #f39c12;
+    color: #FFD700;
+}
+
+.privacy-info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.privacy-info .privacy-link {
+    color: #FFD700;
+    text-decoration: none;
     font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.privacy-info .privacy-link:hover {
+    color: #FFA500;
+    text-decoration: underline;
 }
 
 .close-button {
@@ -394,12 +413,9 @@ canvas {
         max-width: 100%;
         max-height: 70vh;
         width: auto;
+        height: auto;
         aspect-ratio: 3/2;
     }
-    
-
-
-
 
     h1 {
         display: none;
@@ -410,8 +426,6 @@ canvas {
     }
 }
 
-
-
 @media only screen and (max-width: 480px) {
     canvas {
         max-width: 95vw;
@@ -420,18 +434,36 @@ canvas {
         height: auto;
         aspect-ratio: 3/2;
     }
-
-
+    
+    .game-over-screen {
+        max-width: 95vw;
+        max-height: 60vh;
+        width: auto;
+        height: auto;
+        aspect-ratio: 3/2;
+    }
 }
 
 @media only screen and (max-height: 500px) {
     canvas {
         max-height: 70vh;
     }
+    
+    .game-over-screen {
+        max-height: 70vh;
+    }
 }
 
 @media only screen and (orientation: landscape) and (max-width: 760px) {
     canvas {
+        max-width: 90vw;
+        max-height: 80vh;
+        width: auto;
+        height: auto;
+        aspect-ratio: 3/2;
+    }
+    
+    .game-over-screen {
         max-width: 90vw;
         max-height: 80vh;
         width: auto;
