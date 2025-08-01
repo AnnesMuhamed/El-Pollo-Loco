@@ -32,3 +32,6 @@ class coins extends CollectibleObjects {
     }, 200);
   }
 }
+
+// Make coins class globally available
+window.coins = coins;

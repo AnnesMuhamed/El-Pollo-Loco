@@ -1,3 +1,8 @@
+/**
+ * Enters fullscreen mode for the specified element
+ * @param {HTMLElement} element - The element to make fullscreen
+ * @description Handles fullscreen API with cross-browser compatibility
+ */
 function enterFullscreen(element) {
   if(element.requestFullscreen) {
     element.requestFullscreen();
@@ -8,6 +13,10 @@ function enterFullscreen(element) {
   }
 }
 
+/**
+ * Exits fullscreen mode
+ * @description Handles fullscreen exit with cross-browser compatibility
+ */
 function exitFullscreen() {
   if(document.exitFullscreen) {
     document.exitFullscreen();
@@ -16,6 +25,10 @@ function exitFullscreen() {
   }
 }
 
+/**
+ * Toggles fullscreen mode for the canvas
+ * @description Switches between fullscreen and windowed mode
+ */
 function toggleFullscreen() {
   const canvas = document.getElementById('canvas');
   const fullscreenButton = document.getElementById('fullscreenButton');
@@ -29,12 +42,20 @@ function toggleFullscreen() {
   }
 }
 
+/**
+ * Toggles sound on/off
+ * @description Switches audio state using the audio manager
+ */
 function toggleSound() {
   if (audioManager) {
     audioManager.toggleSound();
   }
 }
 
+/**
+ * Toggles the settings menu visibility
+ * @description Shows or hides the settings dropdown menu
+ */
 function toggleSettingsMenu() {
     const settingsMenu = document.getElementById('settingsMenu');
     if (settingsMenu) {
@@ -42,6 +63,10 @@ function toggleSettingsMenu() {
     }
 }
 
+/**
+ * Shows the info modal with game rules
+ * @description Displays the information modal and hides settings menu
+ */
 function showInfo() {
     const infoModal = document.getElementById('infoModal');
     if (infoModal) {
@@ -53,6 +78,10 @@ function showInfo() {
     }
 }
 
+/**
+ * Hides the info modal
+ * @description Conceals the information modal
+ */
 function hideInfo() {
     const infoModal = document.getElementById('infoModal');
     if (infoModal) {

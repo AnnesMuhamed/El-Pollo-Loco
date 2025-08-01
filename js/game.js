@@ -4,18 +4,40 @@ let keyboard = new Keyboard();
 let audioManager = new AudioManager();
 let gameStarted = false;
 let gameRunning = false;
-let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+// Landscape-Warnung für mobile Geräte
 (function() {
+    /**
+     * Checks if the current device is a mobile device
+     * @returns {boolean} True if mobile device, false otherwise
+     * @description Detects mobile devices using user agent string
+     */
     function isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
+    
+    /**
+     * Checks if the device is in portrait orientation
+     * @returns {boolean} True if portrait, false if landscape
+     * @description Compares window height and width
+     */
     function isPortrait() {
         return window.innerHeight > window.innerWidth;
     }
+    
+    /**
+     * Checks if the screen is small (mobile-sized)
+     * @returns {boolean} True if screen width is less than 760px
+     * @description Determines if device has a small screen
+     */
     function isSmallScreen() {
         return window.innerWidth < 760;
     }
+    
+    /**
+     * Toggles landscape warning visibility
+     * @description Shows/hides landscape warning based on device and orientation
+     */
     function toggleLandscapeWarning() {
         var warning = document.querySelector('.landscape-warning');
         var mainContent = document.getElementById('canvas');
@@ -40,12 +62,24 @@ let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.
     setTimeout(toggleLandscapeWarning, 100);
 })();
 
+/**
+ * Initializes the game
+ * @description Sets up canvas, draws start screen, and sets up event handlers
+ */
 function init() {
    canvas = document.getElementById('canvas');
    drawStartScreen();
    setupCanvasClickHandler();
 }
 
+// Make init function globally available
+window.init = init;
+
+/**
+ * Handles keyboard key down events
+ * @param {KeyboardEvent} e - The keyboard event object
+ * @description Processes key presses and updates keyboard state
+ */
 function handleKeyDown(e) {
     if(e.keyCode == 39) {
         keyboard.RIGHT = true;
@@ -76,6 +110,11 @@ function handleKeyDown(e) {
     }
 }
     
+/**
+ * Handles keyboard key up events
+ * @param {KeyboardEvent} e - The keyboard event object
+ * @description Processes key releases and updates keyboard state
+ */
 function handleKeyUp(e) {
     if(e.keyCode == 39) {
         keyboard.RIGHT = false;
@@ -105,6 +144,12 @@ function handleKeyUp(e) {
     }
 }
 
+window.goToStartScreen = goToStartScreen;
+
+/**
+ * Handles clicks outside of settings menu to close it
+ * @description Closes settings menu when clicking outside of it
+ */
 document.addEventListener('click', function(event) {
     const settingsButton = document.getElementById('settingsButton');
     const settingsMenu = document.getElementById('settingsMenu');

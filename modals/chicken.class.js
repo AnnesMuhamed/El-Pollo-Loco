@@ -15,6 +15,10 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
 
+    /**
+     * Creates a new Chicken enemy instance
+     * @description Initializes chicken with random position and starts animation
+     */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.offset = { top: 10, left: 10, right: 10, bottom: 10 };
@@ -30,6 +34,10 @@ class Chicken extends MovableObject {
         this.startAnimation();
     }
 
+    /**
+     * Starts the chicken animation loop
+     * @description Begins animation if game is running, otherwise retries after 100ms
+     */
     startAnimation() {
         if (typeof gameRunning !== 'undefined' && gameRunning) {
             this.animate();
@@ -40,6 +48,10 @@ class Chicken extends MovableObject {
         }
     }
 
+    /**
+     * Main animation loop for chicken enemy
+     * @description Handles movement and animation states (walking, dead)
+     */
     animate() {
         if (!this.isDead) {
             setInterval(() => {

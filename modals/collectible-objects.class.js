@@ -5,3 +5,6 @@ class CollectibleObjects extends MovableObject {
     
 
 }
+
+// Make CollectibleObjects class globally available
+window.CollectibleObjects = CollectibleObjects;

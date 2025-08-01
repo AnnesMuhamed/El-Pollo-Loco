@@ -1,7 +1,20 @@
+/**
+ * Sets up canvas click and touch event handlers
+ * @description Initializes mouse and touch event listeners for game interaction
+ */
 function setupCanvasClickHandler() {
-    let activeButtons = new Set();
-    let touchPoints = new Map(); // Track touch points by ID
+    window.activeButtons = new Set();
+    window.touchPoints = new Map();
 
+    setupMouseEvents();
+    setupTouchEvents();
+}
+
+/**
+ * Sets up mouse event listeners
+ * @description Initializes mouse down, up, and leave event handlers
+ */
+function setupMouseEvents() {
     canvas.addEventListener('mousedown', function(e) {
         handleButtonPress(e, 'mouse');
     });
@@ -13,7 +26,24 @@ function setupCanvasClickHandler() {
     canvas.addEventListener('mouseleave', function(e) {
         handleButtonRelease(e, 'mouse');
     });
+}
 
+/**
+ * Sets up touch event listeners
+ * @description Initializes touch start, end, move, and cancel event handlers
+ */
+function setupTouchEvents() {
+    setupTouchStartEvent();
+    setupTouchEndEvent();
+    setupTouchMoveEvent();
+    setupTouchCancelEvent();
+}
+
+/**
+ * Sets up touch start event listener
+ * @description Handles touch start events for all touch points
+ */
+function setupTouchStartEvent() {
     canvas.addEventListener('touchstart', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -23,7 +53,13 @@ function setupCanvasClickHandler() {
             handleButtonPress(touch, 'touch', touch.identifier);
         }
     }, { passive: false });
+}
 
+/**
+ * Sets up touch end event listener
+ * @description Handles touch end events for all released touch points
+ */
+function setupTouchEndEvent() {
     canvas.addEventListener('touchend', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -33,7 +69,13 @@ function setupCanvasClickHandler() {
             handleButtonRelease(touch, 'touch', touch.identifier);
         }
     }, { passive: false });
+}
 
+/**
+ * Sets up touch move event listener
+ * @description Handles touch move events with throttling for performance
+ */
+function setupTouchMoveEvent() {
     canvas.addEventListener('touchmove', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -45,181 +87,268 @@ function setupCanvasClickHandler() {
             }
         }
     }, { passive: false });
+}
 
+/**
+ * Sets up touch cancel event listener
+ * @description Handles touch cancel events for all cancelled touch points
+ */
+function setupTouchCancelEvent() {
     canvas.addEventListener('touchcancel', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        activeButtons.clear();
-        touchPoints.clear();
-        keyboard.LEFT = false;
-        keyboard.RIGHT = false;
-        keyboard.SPACE = false;
-        keyboard.D = false;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            const touch = e.changedTouches[i];
+            handleButtonRelease(touch, 'touch', touch.identifier);
+        }
     }, { passive: false });
+}
 
-    function handleButtonPress(e, type, touchId = null) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
-        
-        if (!gameStarted && window.startButtonCoords) {
-            const btn = window.startButtonCoords;
-            if (canvasX >= btn.x && canvasX <= btn.x + btn.width &&
-                canvasY >= btn.y && canvasY <= btn.y + btn.height) {
-                startGame();
-                return;
-            }
-        }
-        
-        if (!gameRunning || !window.mobileButtonCoords) return;
-        
-        const buttons = window.mobileButtonCoords;
-        let buttonPressed = null;
-        
-        if (canvasX >= buttons.left.x && canvasX <= buttons.left.x + buttons.left.width &&
-            canvasY >= buttons.left.y && canvasY <= buttons.left.y + buttons.left.height) {
-            buttonPressed = 'left';
-            keyboard.LEFT = true;
-        } else if (canvasX >= buttons.right.x && canvasX <= buttons.right.x + buttons.right.width &&
-                   canvasY >= buttons.right.y && canvasY <= buttons.right.y + buttons.right.height) {
-            buttonPressed = 'right';
-            keyboard.RIGHT = true;
-        } else if (canvasX >= buttons.jump.x && canvasX <= buttons.jump.x + buttons.jump.width &&
-                   canvasY >= buttons.jump.y && canvasY <= buttons.jump.y + buttons.jump.height) {
-            buttonPressed = 'jump';
-            keyboard.SPACE = true;
-        } else if (canvasX >= buttons.throw.x && canvasX <= buttons.throw.x + buttons.throw.width &&
-                   canvasY >= buttons.throw.y && canvasY <= buttons.throw.y + buttons.throw.height) {
-            buttonPressed = 'throw';
-            keyboard.D = true;
-        }
-        
-        if (buttonPressed) {
-            activeButtons.add(buttonPressed);
-            if (type === 'touch' && touchId !== null) {
-                touchPoints.set(touchId, buttonPressed);
-            }
+/**
+ * Calculates canvas coordinates from event coordinates
+ * @param {Event} e - The event object
+ * @returns {Object} Object containing canvasX and canvasY coordinates
+ * @description Converts screen coordinates to canvas coordinates
+ */
+function calculateCanvasCoordinates(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const canvasX = x * scaleX;
+    const canvasY = y * scaleY;
+    
+    return { canvasX, canvasY };
+}
+
+/**
+ * Checks if start button was clicked
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if start button was clicked
+ * @description Handles start button click detection
+ */
+function handleStartButtonClick(canvasX, canvasY) {
+    if (!gameStarted && window.startButtonCoords) {
+        const btn = window.startButtonCoords;
+        if (canvasX >= btn.x && canvasX <= btn.x + btn.width &&
+            canvasY >= btn.y && canvasY <= btn.y + btn.height) {
+            startGame();
+            return true;
         }
     }
+    return false;
+}
 
-    function handleButtonRelease(e, type, touchId = null) {
-        if (!gameRunning || !window.mobileButtonCoords) return;
+/**
+ * Processes mobile button press detection
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {string|null} The pressed button type or null
+ * @description Detects which mobile button was pressed
+ */
+function detectMobileButtonPress(canvasX, canvasY) {
+    if (!gameRunning || !window.mobileButtonCoords) return null;
+    
+    const buttons = window.mobileButtonCoords;
+    
+    if (canvasX >= buttons.left.x && canvasX <= buttons.left.x + buttons.left.width &&
+        canvasY >= buttons.left.y && canvasY <= buttons.left.y + buttons.left.height) {
+        return 'left';
+    } else if (canvasX >= buttons.right.x && canvasX <= buttons.right.x + buttons.right.width &&
+               canvasY >= buttons.right.y && canvasY <= buttons.right.y + buttons.right.height) {
+        return 'right';
+    } else if (canvasX >= buttons.jump.x && canvasX <= buttons.jump.x + buttons.jump.width &&
+               canvasY >= buttons.jump.y && canvasY <= buttons.jump.y + buttons.jump.height) {
+        return 'jump';
+    } else if (canvasX >= buttons.throw.x && canvasX <= buttons.throw.x + buttons.throw.width &&
+               canvasY >= buttons.throw.y && canvasY <= buttons.throw.y + buttons.throw.height) {
+        return 'throw';
+    }
+    
+    return null;
+}
+
+/**
+ * Updates keyboard state based on button press
+ * @param {string} buttonPressed - The type of button pressed
+ * @description Sets the appropriate keyboard key to true
+ */
+function updateKeyboardOnPress(buttonPressed) {
+    switch (buttonPressed) {
+        case 'left':
+            keyboard.LEFT = true;
+            break;
+        case 'right':
+            keyboard.RIGHT = true;
+            break;
+        case 'jump':
+            keyboard.SPACE = true;
+            break;
+        case 'throw':
+            keyboard.D = true;
+            break;
+    }
+}
+
+/**
+ * Handles button press events for mouse and touch
+ * @param {Event} e - The event object
+ * @param {string} type - The event type ('mouse' or 'touch')
+ * @param {number|null} touchId - The touch identifier for touch events
+ * @description Processes button press events and updates keyboard state
+ */
+function handleButtonPress(e, type, touchId = null) {
+    const { canvasX, canvasY } = calculateCanvasCoordinates(e);
+    
+    if (handleStartButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
+    const buttonPressed = detectMobileButtonPress(canvasX, canvasY);
+    
+    if (buttonPressed) {
+        updateKeyboardOnPress(buttonPressed);
         
         if (type === 'touch' && touchId !== null) {
-            const buttonToRelease = touchPoints.get(touchId);
-            if (buttonToRelease) {
-                activeButtons.delete(buttonToRelease);
-                touchPoints.delete(touchId);
-                
-                if (!activeButtons.has(buttonToRelease)) {
-                    switch (buttonToRelease) {
-                        case 'left':
-                            keyboard.LEFT = false;
-                            break;
-                        case 'right':
-                            keyboard.RIGHT = false;
-                            break;
-                        case 'jump':
-                            keyboard.SPACE = false;
-                            break;
-                        case 'throw':
-                            keyboard.D = false;
-                            break;
-                    }
-                }
-            }
-        } else {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const canvasX = x * scaleX;
-            const canvasY = y * scaleY;
-            
-            const buttons = window.mobileButtonCoords;
-            
-            if (canvasX >= buttons.left.x && canvasX <= buttons.left.x + buttons.left.width &&
-                canvasY >= buttons.left.y && canvasY <= buttons.left.y + buttons.left.height) {
-                activeButtons.delete('left');
-                keyboard.LEFT = false;
-            } else if (canvasX >= buttons.right.x && canvasX <= buttons.right.x + buttons.right.width &&
-                       canvasY >= buttons.right.y && canvasY <= buttons.right.y + buttons.right.height) {
-                activeButtons.delete('right');
-                keyboard.RIGHT = false;
-            } else if (canvasX >= buttons.jump.x && canvasX <= buttons.jump.x + buttons.jump.width &&
-                       canvasY >= buttons.jump.y && canvasY <= buttons.jump.y + buttons.jump.height) {
-                activeButtons.delete('jump');
-                keyboard.SPACE = false;
-            } else if (canvasX >= buttons.throw.x && canvasX <= buttons.throw.x + buttons.throw.width &&
-                       canvasY >= buttons.throw.y && canvasY <= buttons.throw.y + buttons.throw.height) {
-                activeButtons.delete('throw');
-                keyboard.D = false;
-            }
+            window.touchPoints.set(touchId, buttonPressed);
+            window.activeButtons.add(buttonPressed);
+        } else if (type === 'mouse') {
+            window.activeButtons.add(buttonPressed);
         }
     }
+}
 
-    function updateTouchPosition(touch, touchId) {
-        const rect = canvas.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
+/**
+ * Handles touch button release logic
+ * @param {number} touchId - The touch identifier
+ * @description Processes touch button release and updates keyboard state
+ */
+function handleTouchButtonRelease(touchId) {
+    const buttonToRelease = window.touchPoints.get(touchId);
+    if (buttonToRelease) {
+        window.activeButtons.delete(buttonToRelease);
+        window.touchPoints.delete(touchId);
         
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
-        
-        if (!gameRunning || !window.mobileButtonCoords) return;
-        
-        const buttons = window.mobileButtonCoords;
-        const currentButton = touchPoints.get(touchId);
-        
-        let stillOnButton = false;
-        if (currentButton === 'left' && 
-            canvasX >= buttons.left.x && canvasX <= buttons.left.x + buttons.left.width &&
-            canvasY >= buttons.left.y && canvasY <= buttons.left.y + buttons.left.height) {
-            stillOnButton = true;
-        } else if (currentButton === 'right' && 
-                   canvasX >= buttons.right.x && canvasX <= buttons.right.x + buttons.right.width &&
-                   canvasY >= buttons.right.y && canvasY <= buttons.right.y + buttons.right.height) {
-            stillOnButton = true;
-        } else if (currentButton === 'jump' && 
-                   canvasX >= buttons.jump.x && canvasX <= buttons.jump.x + buttons.jump.width &&
-                   canvasY >= buttons.jump.y && canvasY <= buttons.jump.y + buttons.jump.height) {
-            stillOnButton = true;
-        } else if (currentButton === 'throw' && 
-                   canvasX >= buttons.throw.x && canvasX <= buttons.throw.x + buttons.throw.width &&
-                   canvasY >= buttons.throw.y && canvasY <= buttons.throw.y + buttons.throw.height) {
-            stillOnButton = true;
+        if (!window.activeButtons.has(buttonToRelease)) {
+            updateKeyboardOnRelease(buttonToRelease);
         }
+    }
+}
+
+/**
+ * Handles mouse button release logic
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @description Processes mouse button release and updates keyboard state
+ */
+function handleMouseButtonRelease(canvasX, canvasY) {
+    const buttonPressed = detectMobileButtonPress(canvasX, canvasY);
+    
+    if (buttonPressed) {
+        window.activeButtons.delete(buttonPressed);
+        updateKeyboardOnRelease(buttonPressed);
+    }
+}
+
+/**
+ * Updates keyboard state based on button release
+ * @param {string} buttonReleased - The type of button released
+ * @description Sets the appropriate keyboard key to false
+ */
+function updateKeyboardOnRelease(buttonReleased) {
+    switch (buttonReleased) {
+        case 'left':
+            keyboard.LEFT = false;
+            break;
+        case 'right':
+            keyboard.RIGHT = false;
+            break;
+        case 'jump':
+            keyboard.SPACE = false;
+            break;
+        case 'throw':
+            keyboard.D = false;
+            break;
+    }
+}
+
+/**
+ * Handles button release events for mouse and touch
+ * @param {Event} e - The event object
+ * @param {string} type - The event type ('mouse' or 'touch')
+ * @param {number|null} touchId - The touch identifier for touch events
+ * @description Processes button release events and updates keyboard state
+ */
+function handleButtonRelease(e, type, touchId = null) {
+    if (!gameRunning || !window.mobileButtonCoords) return;
+    
+    if (type === 'touch' && touchId !== null) {
+        handleTouchButtonRelease(touchId);
+    } else {
+        const { canvasX, canvasY } = calculateCanvasCoordinates(e);
+        handleMouseButtonRelease(canvasX, canvasY);
+    }
+}
+
+/**
+ * Checks if touch is still on the same button
+ * @param {string} currentButton - The current button being pressed
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if touch is still on button
+ * @description Determines if touch position is still within button bounds
+ */
+function isTouchStillOnButton(currentButton, canvasX, canvasY) {
+    if (!gameRunning || !window.mobileButtonCoords) return false;
+    
+    const buttons = window.mobileButtonCoords;
+    
+    if (currentButton === 'left' && 
+        canvasX >= buttons.left.x && canvasX <= buttons.left.x + buttons.left.width &&
+        canvasY >= buttons.left.y && canvasY <= buttons.left.y + buttons.left.height) {
+        return true;
+    } else if (currentButton === 'right' && 
+               canvasX >= buttons.right.x && canvasX <= buttons.right.x + buttons.right.width &&
+               canvasY >= buttons.right.y && canvasY <= buttons.right.y + buttons.right.height) {
+        return true;
+    } else if (currentButton === 'jump' && 
+               canvasX >= buttons.jump.x && canvasX <= buttons.jump.x + buttons.jump.width &&
+               canvasY >= buttons.jump.y && canvasY <= buttons.jump.y + buttons.jump.height) {
+        return true;
+    } else if (currentButton === 'throw' && 
+               canvasX >= buttons.throw.x && canvasX <= buttons.throw.x + buttons.throw.width &&
+               canvasY >= buttons.throw.y && canvasY <= buttons.throw.y + buttons.throw.height) {
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Updates touch position for continuous button pressing
+ * @param {Touch} touch - The touch object
+ * @param {number} touchId - The touch identifier
+ * @description Monitors touch movement and releases buttons when touch moves off them
+ */
+function updateTouchPosition(touch, touchId) {
+    const { canvasX, canvasY } = calculateCanvasCoordinates(touch);
+    
+    let touchPoints = new Map();
+    const currentButton = touchPoints.get(touchId);
+    
+    const stillOnButton = isTouchStillOnButton(currentButton, canvasX, canvasY);
+    
+    if (!stillOnButton && currentButton) {
+        let activeButtons = new Set();
+        activeButtons.delete(currentButton);
+        touchPoints.delete(touchId);
         
-        if (!stillOnButton && currentButton) {
-            activeButtons.delete(currentButton);
-            touchPoints.delete(touchId);
-            
-            if (!activeButtons.has(currentButton)) {
-                switch (currentButton) {
-                    case 'left':
-                        keyboard.LEFT = false;
-                        break;
-                    case 'right':
-                        keyboard.RIGHT = false;
-                        break;
-                    case 'jump':
-                        keyboard.SPACE = false;
-                        break;
-                    case 'throw':
-                        keyboard.D = false;
-                        break;
-                }
-            }
+        if (!activeButtons.has(currentButton)) {
+            updateKeyboardOnRelease(currentButton);
         }
     }
 } 

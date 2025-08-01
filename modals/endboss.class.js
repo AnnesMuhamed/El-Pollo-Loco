@@ -64,11 +64,11 @@ class Endboss extends MovableObject {
     ];
 
     /**
-     * Handles boss animations: Shows hurt animation when hit and dead animation when energy reaches 0.
-     * Walking animation is displayed by default and stops during hurt/dead states.
+     * Creates a new Endboss instance
+     * @description Initializes boss with all animations and starts movement
      */
     constructor () {
-        super().loadImage(this.IMAGES_ALERT[0]);  // Start mit Alert-Image
+        super().loadImage(this.IMAGES_ALERT[0]); 
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_ATTACK);
@@ -76,9 +76,13 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.x = 2400;
         this.startAnimation();
-        this.startMovement();  // Bewegung starten
+        this.startMovement(); 
     }
 
+    /**
+     * Starts the boss animation loop
+     * @description Begins animation if game is running, otherwise retries after 100ms
+     */
     startAnimation() {
         if (typeof gameRunning !== 'undefined' && gameRunning) {
             this.animate();
@@ -89,6 +93,10 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Starts boss movement towards character
+     * @description Moves boss left when activated and not in special animation states
+     */
     startMovement() {
         if (this.movementInterval) {
             clearInterval(this.movementInterval);
@@ -96,25 +104,22 @@ class Endboss extends MovableObject {
         
         this.movementInterval = setInterval(() => {
             if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated) {
-                this.moveLeft();  // Boss läuft nur nach links wenn aktiviert
+                this.moveLeft(); 
             }
-        }, 1000 / 60);  // 60 FPS für flüssige Bewegung
+        }, 1000 / 60);
     }
 
     animate() {
         if (this.isDead) {
-            // Dead-Animation läuft bereits, nichts tun
             return;
         }
         
         if (!this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation) {
             if (!this.isActivated) {
-                // Alert-Animation wenn Boss noch nicht aktiviert
                 if (!this.isPlayingAlertAnimation) {
                     this.startAlertAnimation();
                 }
             } else {
-                // Walking-Animation wenn Boss aktiviert
                 if (!this.walkingInterval) {
                     this.startWalkingAnimation();
                 }

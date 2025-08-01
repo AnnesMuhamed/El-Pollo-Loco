@@ -99,6 +99,10 @@ class World {
     }
   }
 
+  /**
+   * Handles collision between character and boss
+   * @description Manages boss attacks and character damage
+   */
   handleBossCollision() {
     if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation) {
       this.character.hit();
@@ -108,6 +112,12 @@ class World {
     }
   }
 
+  /**
+   * Handles Mario-style jump-kill collision
+   * @param {Object} enemy - The enemy to check collision with
+   * @returns {boolean} True if jump-kill occurred, false otherwise
+   * @description Kills enemy when character jumps on them
+   */
   handleJumpKillCollision(enemy) {
     if (this.character.isJumpingOnEnemy(enemy)) {
       enemy.isDead = true;
@@ -118,8 +128,14 @@ class World {
     return false;
   }
 
+  /**
+   * Handles side collision between character and enemy
+   * @param {Object} enemy - The enemy to check collision with
+   * @description Manages character damage on side collision with enemies
+   */
   handleSideCollision(enemy) {
     const distance = Math.abs(this.character.x - enemy.x);
+    
     if (distance < 200 && this.character.isColliding(enemy) && !this.hitEnemies.has(enemy)) {
       this.character.hit();
       const percentage = (this.character.energy / 100) * 100;
@@ -129,6 +145,10 @@ class World {
     }
   }
 
+  /**
+   * Checks if character has died and handles death sequence
+   * @description Initiates game over sequence when character dies
+   */
   checkCharacterDeath() {
     if (this.character.isDead() && !this.characterDeathTime) {
       this.characterDeathTime = new Date().getTime();
@@ -137,6 +157,10 @@ class World {
     }
   }
 
+  /**
+   * Checks for collisions between bottles and boss
+   * @description Handles bottle hits on the endboss
+   */
   checkBossBottleCollision() {
     for (let i = this.throwableObject.length - 1; i >= 0; i--) {
       let bottle = this.throwableObject[i];
@@ -146,6 +170,10 @@ class World {
     }
   }
 
+  /**
+   * Checks for collisions between bottles and enemies
+   * @description Handles bottle hits on regular enemies
+   */
   checkEnemyBottleCollision() {
     for (let i = this.throwableObject.length - 1; i >= 0; i--) {
       let bottle = this.throwableObject[i];
@@ -157,12 +185,25 @@ class World {
     }
   }
 
+  /**
+   * Handles bottle hit on enemy
+   * @param {Object} bottle - The bottle that hit the enemy
+   * @param {number} bottleIndex - Index of the bottle in throwableObject array
+   * @param {Object} enemy - The enemy that was hit
+   * @description Removes bottle and kills enemy
+   */
   handleEnemyBottleHit(bottle, bottleIndex, enemy) {
     this.throwableObject.splice(bottleIndex, 1); 
-    enemy.isDead = true; 
+    enemy.isDead = true;
     audioManager.playEnemyHitSound();  
   }
 
+  /**
+   * Handles bottle hit on boss
+   * @param {Object} bottle - The bottle that hit the boss
+   * @param {number} index - Index of the bottle in throwableObject array
+   * @description Removes bottle and damages boss
+   */
   handleBossHit(bottle, index) {
     this.throwableObject.splice(index, 1);
     this.endBoss.hit();
@@ -174,6 +215,10 @@ class World {
     this.checkBossDeath();
   }
 
+  /**
+   * Checks if boss has died and handles victory
+   * @description Sets game as won when boss energy reaches 0
+   */
   checkBossDeath() {
     if (this.endBoss.energy <= 0) {
       this.endBoss.isDead = true;
@@ -186,6 +231,10 @@ class World {
     }
   }
 
+  /**
+   * Checks for collisions between character and coins
+   * @description Handles coin collection
+   */
   checkCoinCollisions() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin)) {
@@ -194,12 +243,21 @@ class World {
     });
   }
 
+  /**
+   * Collects a coin and updates status bar
+   * @param {number} index - Index of the coin to collect
+   * @description Removes coin from level and increases coin counter
+   */
   collectCoin(index) {
     this.level.coins.splice(index, 1);
     this.statusBarCoin.setCoinStatusbarPercentage(this.statusBarCoin.coinStatusbarPercentage + 20);
     audioManager.playCollectCoinsSound();
   }
 
+  /**
+   * Checks for collisions between character and bottles
+   * @description Handles bottle collection
+   */
   checkBottleCollisions() {
     this.level.bottle.forEach((bottle, index) => {
       if (this.character.isColliding(bottle)) {
@@ -208,6 +266,11 @@ class World {
     });
   }
 
+  /**
+   * Collects a bottle and updates status bar
+   * @param {number} index - Index of the bottle to collect
+   * @description Removes bottle from level and increases bottle counter
+   */
   collectBottle(index) {
     this.level.bottle.splice(index, 1);
     this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage + 20);
@@ -215,10 +278,11 @@ class World {
   }
 
   /**
-   * Main draw loop
-   * @description Renders all game objects and updates the display
+   * Manages frame rate for smooth animation
+   * @returns {boolean} True if frame should be drawn, false otherwise
+   * @description Ensures consistent 60 FPS animation
    */
-  draw() {
+  handleFrameRate() {
     const now = performance.now();
     if (!this.lastFrameTime) {
       this.lastFrameTime = now;
@@ -230,15 +294,27 @@ class World {
     
     if (deltaTime < frameInterval) {
       requestAnimationFrame(() => this.draw());
-      return;
+      return false;
     }
     
     this.lastFrameTime = now - (deltaTime % frameInterval);
+    return true;
+  }
 
+  /**
+   * Clears canvas and sets up camera translation
+   * @description Prepares canvas for drawing with camera offset
+   */
+  clearAndSetupCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.ctx.translate(this.camera_x, 0);
-    
+  }
+
+  /**
+   * Draws all game objects on the canvas
+   * @description Renders background, enemies, collectibles, and characters
+   */
+  drawGameObjects() {
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
@@ -248,7 +324,13 @@ class World {
     
     this.addToMap(this.character);
     this.addToMap(this.endBoss);
+  }
 
+  /**
+   * Draws UI elements on the canvas
+   * @description Renders status bars and mobile controls
+   */
+  drawUIElements() {
     this.ctx.translate(-this.camera_x, 0);
     
     this.addToMap(this.statusBar);
@@ -259,7 +341,14 @@ class World {
     if (typeof drawMobileControls === 'function') {
         drawMobileControls(this.ctx);
     }
+  }
 
+  /**
+   * Handles victory screen display
+   * @returns {boolean} True if victory screen is shown, false otherwise
+   * @description Shows victory screen and schedules return to start screen
+   */
+  handleVictoryScreen() {
     if (this.endBoss.isDead && this.youWonImage.complete) {
       this.addToMap(this.endBoss);
       this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
@@ -276,23 +365,50 @@ class World {
       if (world) {
         requestAnimationFrame(() => this.draw());
       }
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Handles game over screen display
+   * @description Shows appropriate game over screen based on game state
+   */
+  handleGameOverScreen() {
+    if (this.showGameOver && this.gameOverImage.complete) {
+      this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
+      
+      if (typeof showGameOverScreen === 'function' && !this.gameOverScreenShown) {
+        showGameOverScreen();
+        this.gameOverScreenShown = true;
+      }
+    } else if (this.character.isDead() && this.characterDeathTime) {
+      const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
+      
+      if (timeSinceDeath < 3000 && this.youLostImage.complete) {
+        this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
+      }
+    }
+  }
+
+  /**
+   * Main drawing loop for the game
+   * @description Orchestrates the entire rendering process
+   */
+  draw() {
+    if (!this.handleFrameRate()) {
       return;
     }
 
-    if (this.character.isDead() && this.characterDeathTime) {
-        const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
-        
-        if (timeSinceDeath < 3000 && this.youLostImage.complete) {
-            this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
-        } else if (this.showGameOver && this.gameOverImage.complete) {
-            this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
-            
-            if (typeof showGameOverScreen === 'function' && !this.gameOverScreenShown) {
-                showGameOverScreen();
-                this.gameOverScreenShown = true;
-            }
-        }
+    this.clearAndSetupCanvas();
+    this.drawGameObjects();
+    this.drawUIElements();
+
+    if (this.handleVictoryScreen()) {
+      return;
     }
+
+    this.handleGameOverScreen();
 
     if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning && world) {
       requestAnimationFrame(() => this.draw());
@@ -320,7 +436,6 @@ class World {
     }
 
     mo.draw(this.ctx);
-    // mo.drawFrame(this.ctx);  // Rote Rahmen entfernt
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);
@@ -357,11 +472,10 @@ class World {
       bottle.x = this.character.x + 50;
       bottle.y = this.character.y + 100;
       
-      // Richtung basierend auf Character-Orientierung
       if (this.character.otherDirection) {
-        bottle.speed = -2;  // Nach links werfen (noch langsamer für höheren Bogen)
+        bottle.speed = -2;
       } else {
-        bottle.speed = 2;   // Nach rechts werfen (noch langsamer für höheren Bogen)
+        bottle.speed = 2;
       }
       
       this.throwableObject.push(bottle);

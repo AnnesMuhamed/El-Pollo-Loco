@@ -1,11 +1,10 @@
 class MovableObject extends DrawableObject {
   speed = 0.15;
+  otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
-  otherDirection = false;
-  energy = 100;  
+  energy = 100;
   lastHit = 0;
-  hitCooldown = 100; 
 
   /**
    * Applies gravity to the object
@@ -35,37 +34,100 @@ class MovableObject extends DrawableObject {
    * @returns {boolean} True if objects are colliding, false otherwise
    * @description Handles special cases for character-enemy collisions
    */
-  isColliding(mo) {
+  checkCharacterEnemyCollision(mo) {
     if (this instanceof Character && (mo instanceof Chicken || mo instanceof smallChicken)) {
-      if (this.isJumpingOnEnemy(mo)) {
-        return false;
-      }
+      return this.isJumpingOnEnemy(mo) || this.checkBasicCollision(mo);
     }
+    return true;
+  }
+
+  /**
+   * Checks if dead enemies should be ignored in collision detection
+   * @param {MovableObject} mo - The object to check
+   * @returns {boolean} True if collision should be checked, false if enemy is dead
+   * @description Prevents collision with dead enemies and handles throwable objects
+   */
+  checkDeadEnemyCollision(mo) {
     if ((mo instanceof Chicken || mo instanceof smallChicken) && mo.isDead) {
       return false;
     }
+    if (this instanceof ThrowableObject) {
+      return true;
+    }
+    return true;
+  }
+
+  /**
+   * Checks collision between throwable objects and boss
+   * @param {MovableObject} mo - The object to check collision with
+   * @returns {boolean|null} True if colliding, false if not, null if not applicable
+   * @description Special collision check for bottles hitting the endboss
+   */
+  checkThrowableBossCollision(mo) {
     if (this instanceof ThrowableObject && mo instanceof Endboss) {
-      return (
-        this.x + this.width >= mo.x &&
-        this.x <= mo.x + mo.width &&
-        this.y + this.height >= mo.y &&
-        this.y <= mo.y + mo.height
-      );
+      return this.x < mo.x + mo.width &&
+             this.x + this.width > mo.x &&
+             this.y < mo.y + mo.height &&
+             this.y + this.height > mo.y;
     }
+    return null;
+  }
+
+  /**
+   * Checks collision with offset consideration
+   * @param {MovableObject} mo - The object to check collision with
+   * @returns {boolean|null} True if colliding, false if not, null if no offset
+   * @description Uses offset values for more precise collision detection
+   */
+  checkOffsetCollision(mo) {
     if (this.offset && mo.offset) {
-      return (
-        this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-        this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-        this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-        this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
-      );
+      return this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+             this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+             this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom &&
+             this.y + this.height - this.offset.bottom > mo.y + mo.offset.top;
     }
-    return (
-      this.x + this.width > mo.x &&
-      this.y + this.height > mo.y &&
-      this.x < mo.x + mo.width &&
-      this.y < mo.y + mo.height
-    );
+    return null;
+  }
+
+  /**
+   * Performs basic AABB collision detection
+   * @param {MovableObject} mo - The object to check collision with
+   * @returns {boolean} True if objects are colliding, false otherwise
+   * @description Standard axis-aligned bounding box collision check
+   */
+  checkBasicCollision(mo) {
+    return this.x < mo.x + mo.width &&
+           this.x + this.width > mo.x &&
+           this.y < mo.y + mo.height &&
+           this.y + this.height > mo.y;
+  }
+
+  /**
+   * Comprehensive collision detection system
+   * @param {MovableObject} mo - The object to check collision with
+   * @returns {boolean} True if objects are colliding, false otherwise
+   * @description Handles all types of collisions with proper priority order
+   */
+  isColliding(mo) {
+    if (!this.checkCharacterEnemyCollision(mo)) {
+      return false;
+    }
+    
+    if (!this.checkDeadEnemyCollision(mo)) {
+      return false;
+    }
+    
+    const throwableBossResult = this.checkThrowableBossCollision(mo);
+    if (throwableBossResult !== null) {
+      return throwableBossResult;
+    }
+    
+    const offsetResult = this.checkOffsetCollision(mo);
+    if (offsetResult !== null) {
+      return offsetResult;
+    }
+    
+    return this.checkBasicCollision(mo);
   }
 
   /**
@@ -75,20 +137,11 @@ class MovableObject extends DrawableObject {
    * Implements a cooldown between hits
    */
   hit() {
-    if (this instanceof Character) {
-      let timepassed = new Date().getTime() - this.lastHit;
-      if (timepassed > this.hitCooldown) {
-        this.energy -= 20; 
-        if (this.energy < 0) {
-          this.energy = 0;
-        }
-        this.lastHit = new Date().getTime();
-      }
+    this.energy -= 20;
+    if (this.energy < 0) {
+      this.energy = 0;
     } else {
-      this.energy -= 20;
-      if (this.energy < 0) {
-        this.energy = 0;
-      }
+      this.lastHit = new Date().getTime();
     }
   }
 
@@ -97,9 +150,9 @@ class MovableObject extends DrawableObject {
    * @returns {boolean} True if object was hit in the last 0.5 seconds
    */
   isHurt() {
-    let timepassed = new Date().getTime() - this.lastHit;
-    timepassed = timepassed / 1000;
-    return timepassed < 0.5;
+    let timePassed = new Date().getTime() - this.lastHit;
+    timePassed = timePassed / 1000;
+    return timePassed < 0.5;
   }
 
   /**
@@ -107,7 +160,7 @@ class MovableObject extends DrawableObject {
    * @returns {boolean} True if energy is 0, false otherwise
    */
   isDead() {
-    return this.energy == 0;
+    return this.energy <= 0;
   }
 
   /**
@@ -149,3 +202,6 @@ class MovableObject extends DrawableObject {
     }
   }
 }
+
+// Make MovableObject class globally available
+window.MovableObject = MovableObject;

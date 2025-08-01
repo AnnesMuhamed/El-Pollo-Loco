@@ -94,6 +94,10 @@ class Character extends MovableObject {
     this.startAnimation();
   }
 
+  /**
+   * Starts the character animation loop
+   * @description Begins animation if game is running, otherwise retries after 100ms
+   */
   startAnimation() {
     if (typeof gameRunning !== 'undefined' && gameRunning) {
       this.animate();
@@ -106,71 +110,158 @@ class Character extends MovableObject {
 
   /**
    * Handles all character animations and movements
-   * Updates camera position based on character movement
-   * Processes keyboard input for movement, jumping and bottle throwing
-   * Manages animation states (walking, jumping, dead, hurt)
+   * @returns {boolean} True if character moved, false otherwise
+   * @description Updates camera position based on character movement and processes keyboard input
+   */
+  handleMovement() {
+    let hasMoved = false;
+    
+    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      this.moveRight();
+      this.otherDirection = false;
+      hasMoved = true;
+    }
+
+    if (this.world.keyboard.LEFT && this.x > 0) {
+      this.moveLeft();
+      this.otherDirection = true;
+      hasMoved = true;
+    }
+    
+    return hasMoved;
+  }
+
+  /**
+   * Manages character idle states and animations
+   * @param {boolean} hasMoved - Whether the character has moved recently
+   * @description Handles transitions between idle, long idle, and active states
+   */
+  handleIdleState(hasMoved) {
+    const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt();
+    
+    if (shouldStopLongIdle) {
+      this.lastMovementTime = Date.now();
+      this.isIdle = false;
+      this.isLongIdle = false;
+      if (this.isSnoringSoundPlaying) {
+        audioManager.stopSnoringSound();
+        this.isSnoringSoundPlaying = false;
+      }
+    } else {
+      this.updateIdleTimers();
+    }
+  }
+
+  /**
+   * Updates idle timers and manages idle state transitions
+   * @description Controls when character enters idle or long idle states
+   */
+  updateIdleTimers() {
+    const currentTime = Date.now();
+    const idleTime = currentTime - this.lastMovementTime;
+    
+    if (idleTime > 15000 && !this.world.gameWon) {
+      this.isLongIdle = true;
+      this.isIdle = false;
+      if (!this.isSnoringSoundPlaying) {
+        audioManager.playSnoringSound();
+        this.isSnoringSoundPlaying = true;
+      }
+    } else if (idleTime > 3000) {
+      this.isIdle = true;
+      this.isLongIdle = false;
+    } else {
+      this.isIdle = false;
+      this.isLongIdle = false;
+    }
+  }
+
+  /**
+   * Manages walking sound playback
+   * @description Starts and stops walking sound based on movement and game state
+   */
+  handleWalkingSound() {
+    const shouldPlayWalkingSound = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver && !this.world.endBoss.isDead && !this.isAboveGround();
+    
+    if (shouldPlayWalkingSound !== this.lastShouldPlayWalkingSound) {
+        this.lastShouldPlayWalkingSound = shouldPlayWalkingSound;
+    }
+    
+    if (shouldPlayWalkingSound && !this.isWalkingSoundPlaying) {
+        audioManager.playWalkingSound();
+        this.isWalkingSoundPlaying = true;
+    } else if (!shouldPlayWalkingSound && this.isWalkingSoundPlaying) {
+        audioManager.stopWalkingSound();
+        this.isWalkingSoundPlaying = false;
+    }
+  }
+
+  /**
+   * Handles jumping and bottle throwing mechanics
+   * @description Processes space key for jumping and D key for bottle throwing
+   */
+  handleJumpAndThrow() {
+    if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+      this.jump();
+    }
+
+    if (this.world.keyboard.D && this.canThrowBottle) {
+      this.world.throwBottle();
+      this.canThrowBottle = false;
+      setTimeout(() => {
+        this.canThrowBottle = true;
+      }, 500);
+    }
+  }
+
+  /**
+   * Manages character animation states
+   * @description Determines which animation to play based on character state
+   */
+  handleAnimation() {
+    if (this.world.showGameOver) {
+      return;
+    }
+    
+    if (this.isDead()) {
+      this.playAnimation(this.IMAGES_DEAD);
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+      if (gameRunning) {
+        audioManager.playhurtCharacterSound();
+      }
+    } else if (this.isAboveGround()) {
+      this.playAnimation(this.IMAGES_JUMPING);
+    } else if (this.world.endBoss.isDead) {
+      this.img = this.imageCash[this.IMAGES_WALKING[0]];
+    } else if (this.isLongIdle) {
+      this.playAnimation(this.IMAGES_LONG_IDLE);
+    } else if (this.isIdle) {
+      this.playAnimation(this.IMAGES_IDLE);
+    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      this.playAnimation(this.IMAGES_WALKING);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
+  }
+
+  /**
+   * Main animation loop for character
+   * @description Handles movement, jumping, bottle throwing and animation states
    */
   animate() {
     setInterval(() => {
       if (gameRunning) {
         this.world.camera_x = -this.x + 100;
         if (!this.isDead() && !this.world.gameWon) {
-          let hasMoved = false;
-          
           if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
             this.moveRight();
             this.otherDirection = false;
-            hasMoved = true;
           }
 
           if (this.world.keyboard.LEFT && this.x > 0) {
             this.moveLeft();
             this.otherDirection = true;
-            hasMoved = true;
-          }
-
-          const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt();
-          
-          if (shouldStopLongIdle) {
-            this.lastMovementTime = Date.now();
-            this.isIdle = false;
-            this.isLongIdle = false;
-            if (this.isSnoringSoundPlaying) {
-              audioManager.stopSnoringSound();
-              this.isSnoringSoundPlaying = false;
-            }
-          } else {
-            const currentTime = Date.now();
-            const idleTime = currentTime - this.lastMovementTime;
-            
-            if (idleTime > 15000 && !this.world.gameWon) {
-              this.isLongIdle = true;
-              this.isIdle = false;
-              if (!this.isSnoringSoundPlaying) {
-                audioManager.playSnoringSound();
-                this.isSnoringSoundPlaying = true;
-              }
-            } else if (idleTime > 3000) {
-              this.isIdle = true;
-              this.isLongIdle = false;
-            } else {
-              this.isIdle = false;
-              this.isLongIdle = false;
-            }
-          }
-
-          const shouldPlayWalkingSound = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver && !this.world.endBoss.isDead && !this.isAboveGround();
-          
-          if (shouldPlayWalkingSound !== this.lastShouldPlayWalkingSound) {
-              this.lastShouldPlayWalkingSound = shouldPlayWalkingSound;
-          }
-          
-          if (shouldPlayWalkingSound && !this.isWalkingSoundPlaying) {
-              audioManager.playWalkingSound();
-              this.isWalkingSoundPlaying = true;
-          } else if (!shouldPlayWalkingSound && this.isWalkingSoundPlaying) {
-              audioManager.stopWalkingSound();
-              this.isWalkingSoundPlaying = false;
           }
 
           if (this.world.keyboard.SPACE && !this.isAboveGround()) {

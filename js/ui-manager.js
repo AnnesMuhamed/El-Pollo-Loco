@@ -1,3 +1,7 @@
+/**
+ * Draws the start screen with background image and start button
+ * @description Renders the initial game screen with background and interactive start button
+ */
 function drawStartScreen() {
     const ctx = canvas.getContext('2d');
     
@@ -15,6 +19,11 @@ function drawStartScreen() {
     startScreenImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
 }
 
+/**
+ * Draws the start button on the canvas
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates a styled start button with gradient background and text
+ */
 function drawStartButton(ctx) {
     const buttonX = 20;
     const buttonY = 20;
@@ -40,6 +49,11 @@ function drawStartButton(ctx) {
     window.startButtonCoords = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
 }
 
+/**
+ * Draws mobile control buttons on the canvas
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Renders touch controls for mobile devices (left, right, jump, throw buttons)
+ */
 function drawMobileControls(ctx) {
     if (!gameRunning) return;
     if (window.innerWidth >= 760) return;
@@ -47,19 +61,14 @@ function drawMobileControls(ctx) {
     const buttonSize = 60;
     const margin = 20;
     const bottomY = ctx.canvas.height - buttonSize - margin;
-    
     const leftX = margin;
     const rightX = leftX + buttonSize + 10;
-    
     const throwX = ctx.canvas.width - buttonSize - margin;
     const jumpX = throwX - buttonSize - 10;
     
     drawControlButton(ctx, leftX, bottomY, buttonSize, '<', '#FFD700', '#FFA500');
-    
     drawControlButton(ctx, rightX, bottomY, buttonSize, '>', '#FFD700', '#FFA500');
-    
     drawControlButton(ctx, jumpX, bottomY, buttonSize, '⬆', '#FFD700', '#FFA500');
-    
     drawControlButton(ctx, throwX, bottomY, buttonSize, '💥', '#FFD700', '#FFA500');
     
     window.mobileButtonCoords = {
@@ -70,6 +79,17 @@ function drawMobileControls(ctx) {
     };
 }
 
+/**
+ * Draws a control button with gradient background and text
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @param {number} x - X coordinate of the button
+ * @param {number} y - Y coordinate of the button
+ * @param {number} size - Size of the button (width and height)
+ * @param {string} text - Text to display on the button
+ * @param {string} color1 - First gradient color
+ * @param {string} color2 - Second gradient color
+ * @description Creates a styled button with gradient background, border, and centered text
+ */
 function drawControlButton(ctx, x, y, size, text, color1, color2) {
     const gradient = ctx.createLinearGradient(x, y, x + size, y + size);
     gradient.addColorStop(0, color1);

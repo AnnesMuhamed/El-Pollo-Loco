@@ -58,3 +58,6 @@ class DrawableObject {
     });
   }
 }
+
+// Make DrawableObject class globally available
+window.DrawableObject = DrawableObject;

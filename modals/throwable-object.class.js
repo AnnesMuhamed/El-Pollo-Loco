@@ -21,9 +21,8 @@ class ThrowableObject extends MovableObject {
         this.animate();
     }
 
-    // Überschreibe isAboveGround für Flaschen - sie sollen immer Gravitation haben
     isAboveGround() {
-        return true;  // Flaschen haben immer Gravitation
+        return true;  
     }
 
     animate() {
@@ -32,7 +31,7 @@ class ThrowableObject extends MovableObject {
         }, 100);
 
         setInterval(() => {
-            this.x += this.speed;  // Horizontale Bewegung
+            this.x += this.speed;
         }, 1000 / 60);
     }
 }

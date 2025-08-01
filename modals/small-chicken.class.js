@@ -15,6 +15,10 @@ class smallChicken extends MovableObject {
         'img/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
+    /**
+     * Creates a new smallChicken enemy instance
+     * @description Initializes small chicken with random position and starts animation
+     */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
@@ -30,6 +34,10 @@ class smallChicken extends MovableObject {
         this.startAnimation();
     }
 
+    /**
+     * Starts the small chicken animation loop
+     * @description Begins animation if game is running, otherwise retries after 100ms
+     */
     startAnimation() {
         if (typeof gameRunning !== 'undefined' && gameRunning) {
             this.animate();
@@ -40,6 +48,10 @@ class smallChicken extends MovableObject {
         }
     }
 
+    /**
+     * Main animation loop for small chicken enemy
+     * @description Handles movement and animation states (walking, dead)
+     */
     animate() {
         if (!this.isDead) {
             setInterval(() => {
