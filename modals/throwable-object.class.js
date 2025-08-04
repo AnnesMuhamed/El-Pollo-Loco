@@ -26,12 +26,16 @@ class ThrowableObject extends MovableObject {
     }
 
     animate() {
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_ROTATION);
+        this.animationInterval = setInterval(() => {
+            if (!window.goToStartScreenCalled) {
+                this.playAnimation(this.IMAGES_ROTATION);
+            }
         }, 100);
 
-        setInterval(() => {
-            this.x += this.speed;
+        this.movementInterval = setInterval(() => {
+            if (!window.goToStartScreenCalled) {
+                this.x += this.speed;
+            }
         }, 1000 / 60);
     }
 }

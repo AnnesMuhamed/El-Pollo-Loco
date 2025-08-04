@@ -103,7 +103,7 @@ class Endboss extends MovableObject {
         }
         
         this.movementInterval = setInterval(() => {
-            if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated) {
+            if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated && !window.goToStartScreenCalled) {
                 this.moveLeft(); 
             }
         }, 1000 / 60);
@@ -144,7 +144,7 @@ class Endboss extends MovableObject {
         this.currentAlertFrame = 0;
         
         this.alertInterval = setInterval(() => {
-            if (this.isDead || this.isActivated) {
+            if (this.isDead || this.isActivated || window.goToStartScreenCalled) {
                 this.stopAlertAnimation();
                 return;
             }
@@ -175,7 +175,7 @@ class Endboss extends MovableObject {
         this.img = this.imageCash[this.IMAGES_WALKING[0]];
         this.currentWalkingFrame = 0;
         this.walkingInterval = setInterval(() => {
-            if (!this.isDead && !this.isPlayingHurtAnimation && this.isActivated) {
+            if (!this.isDead && !this.isPlayingHurtAnimation && this.isActivated && !window.goToStartScreenCalled) {
                 this.img = this.imageCash[this.IMAGES_WALKING[this.currentWalkingFrame]];
                 this.currentWalkingFrame = (this.currentWalkingFrame + 1) % this.IMAGES_WALKING.length;
             } else {
@@ -219,14 +219,14 @@ class Endboss extends MovableObject {
         this.img = this.imageCash[this.IMAGES_ATTACK[0]];
         this.currentAttackFrame = 0;
         this.attackInterval = setInterval(() => {
-            if (this.currentAttackFrame < this.IMAGES_ATTACK.length) {
+            if (this.currentAttackFrame < this.IMAGES_ATTACK.length && !window.goToStartScreenCalled) {
                 this.img = this.imageCash[this.IMAGES_ATTACK[this.currentAttackFrame]];
                 this.currentAttackFrame++;
             } else {
                 clearInterval(this.attackInterval);
                 this.attackInterval = null;
                 this.isPlayingAttackAnimation = false;
-                if (!this.isDead) {
+                if (!this.isDead && !window.goToStartScreenCalled) {
                     this.startWalkingAnimation();
                 }
             }
@@ -250,7 +250,7 @@ class Endboss extends MovableObject {
         this.currentDeadFrame = 0;
         
         this.deadInterval = setInterval(() => {
-            if (this.currentDeadFrame < this.IMAGES_DEAD.length) {
+            if (this.currentDeadFrame < this.IMAGES_DEAD.length && !window.goToStartScreenCalled) {
                 this.img = this.imageCash[this.IMAGES_DEAD[this.currentDeadFrame]];
                 this.currentDeadFrame++;
             } else {
@@ -271,14 +271,14 @@ class Endboss extends MovableObject {
         this.img = this.imageCash[this.IMAGES_HURT[0]];
         this.currentAnimationFrame = 0;
         this.animationInterval = setInterval(() => {
-            if (this.currentAnimationFrame < this.IMAGES_HURT.length) {
+            if (this.currentAnimationFrame < this.IMAGES_HURT.length && !window.goToStartScreenCalled) {
                 this.img = this.imageCash[this.IMAGES_HURT[this.currentAnimationFrame]];
                 this.currentAnimationFrame++;
             } else {
                 clearInterval(this.animationInterval);
                 this.animationInterval = null;
                 this.isPlayingHurtAnimation = false;
-                if (!this.isDead) {
+                if (!this.isDead && !window.goToStartScreenCalled) {
                     this.startWalkingAnimation();
                 }
             }

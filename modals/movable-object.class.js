@@ -12,8 +12,8 @@ class MovableObject extends DrawableObject {
    * Runs every 40ms (1000/25)
    */
   applyGravity() {
-    setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
+    this.gravityInterval = setInterval(() => {
+      if ((this.isAboveGround() || this.speedY > 0) && !window.goToStartScreenCalled) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       }

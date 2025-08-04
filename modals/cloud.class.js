@@ -21,8 +21,8 @@ class Cloud extends MovableObject {
   }
 
     animate() {
-        setInterval(() => {
-            if (gameRunning) {
+        this.movementInterval = setInterval(() => {
+            if (gameRunning && !window.goToStartScreenCalled) {
                 this.moveLeft();
             }
         }, 1000 / 60);

@@ -74,12 +74,14 @@ class World {
    * @description Checks for collisions every 200ms
    */
   checkCollisions() {
-    setInterval(() => {
-      this.checkEnemyCollisions();
-      this.checkCoinCollisions();
-      this.checkBottleCollisions();
-      this.checkBossBottleCollision();
-      this.checkEnemyBottleCollision(); 
+    this.collisionInterval = setInterval(() => {
+      if (!window.goToStartScreenCalled) {
+        this.checkEnemyCollisions();
+        this.checkCoinCollisions();
+        this.checkBottleCollisions();
+        this.checkBossBottleCollision();
+        this.checkEnemyBottleCollision(); 
+      }
     }, 50); 
   }
 
@@ -278,6 +280,18 @@ class World {
   }
 
   /**
+   * Stops the animation loop
+   * @description Cancels the current animation frame and resets frame timing
+   */
+  stopAnimation() {
+    this.lastFrameTime = null;
+    if (this.currentAnimationFrame) {
+      cancelAnimationFrame(this.currentAnimationFrame);
+      this.currentAnimationFrame = null;
+    }
+  }
+
+  /**
    * Manages frame rate for smooth animation
    * @returns {boolean} True if frame should be drawn, false otherwise
    * @description Ensures consistent 60 FPS animation
@@ -293,7 +307,9 @@ class World {
     const frameInterval = 1000 / targetFPS;
     
     if (deltaTime < frameInterval) {
-      requestAnimationFrame(() => this.draw());
+      if (!window.goToStartScreenCalled) {
+        this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
+      }
       return false;
     }
     
@@ -355,6 +371,7 @@ class World {
       
       if (!this.victoryScreenShown) {
         this.victoryScreenShown = true;
+        this.gameWon = true;
         setTimeout(() => {
           if (typeof window.goToStartScreen === 'function' && !window.goToStartScreenCalled) {
             window.goToStartScreen();
@@ -362,8 +379,8 @@ class World {
         }, 5000);
       }
       
-      if (world) {
-        requestAnimationFrame(() => this.draw());
+      if (world && !window.goToStartScreenCalled) {
+        this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
       }
       return true;
     }
@@ -410,8 +427,8 @@ class World {
 
     this.handleGameOverScreen();
 
-    if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning && world) {
-      requestAnimationFrame(() => this.draw());
+    if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning && world && !window.goToStartScreenCalled) {
+      this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
     }
   }
 

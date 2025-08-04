@@ -220,6 +220,21 @@ function resetGameOverStates() {
 }
 
 /**
+ * Resets victory screen states
+ * @description Resets all victory-related flags
+ */
+function resetVictoryStates() {
+    if (world) {
+        world.victoryScreenShown = false;
+        world.gameWon = false;
+        world.showGameOver = false;
+        world.gameOverScreenShown = false;
+        world.characterDeathTime = null;
+    }
+    window.goToStartScreenCalled = false;
+}
+
+/**
  * Creates the initial level for a new game
  * @returns {Level} The created level object
  * @description Creates a new level with enemies, clouds, background, coins, and bottles
@@ -385,6 +400,7 @@ function startGame() {
         window.level1 = createInitialLevel();
     }
     
+    resetVictoryStates();
     initializeGameState();
     setupAudio();
     createGameWorld();
@@ -443,6 +459,10 @@ function goToStartScreen() {
         window.gameAnimationId = null;
     }
     
+    if (world && world.lastFrameTime) {
+        world.stopAnimation();
+    }
+    
     if (world) {
         world = null;
     }
@@ -453,7 +473,9 @@ function goToStartScreen() {
     
     drawStartScreen();
     
-    window.goToStartScreenCalled = false;
+    setTimeout(() => {
+        window.goToStartScreenCalled = false;
+    }, 7000);
 }
 
 window.goToStartScreen = goToStartScreen; 

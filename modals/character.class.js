@@ -250,8 +250,8 @@ class Character extends MovableObject {
    * @description Handles movement, jumping, bottle throwing and animation states
    */
   animate() {
-    setInterval(() => {
-      if (gameRunning) {
+    this.movementInterval = setInterval(() => {
+      if (gameRunning && !window.goToStartScreenCalled) {
         this.world.camera_x = -this.x + 100;
         if (!this.isDead() && !this.world.gameWon) {
           if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -279,8 +279,8 @@ class Character extends MovableObject {
       }
     }, 1000 / 60);
 
-    setInterval(() => {
-      if (this.world.showGameOver) {
+    this.animationInterval = setInterval(() => {
+      if (this.world.showGameOver || window.goToStartScreenCalled) {
         return;
       }
       

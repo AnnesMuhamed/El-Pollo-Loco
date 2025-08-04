@@ -7,16 +7,24 @@ function drawStartScreen() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    drawStartButton(ctx);
-    
-    const startScreenImage = new Image();
-    startScreenImage.onload = function() {
-        ctx.drawImage(startScreenImage, 0, 0, canvas.width, canvas.height);
+    if (!window.startScreenImage) {
+        window.startScreenImage = new Image();
+        window.startScreenImage.onload = function() {
+            drawStartScreen();
+        };
+        window.startScreenImage.onerror = function() {
+            drawStartButton(ctx);
+        };
+        window.startScreenImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
         drawStartButton(ctx);
-    };
-    startScreenImage.onerror = function() {
-    };
-    startScreenImage.src = 'img/9_intro_outro_screens/start/startscreen_1.png';
+        return;
+    }
+    
+    if (window.startScreenImage.complete) {
+        ctx.drawImage(window.startScreenImage, 0, 0, canvas.width, canvas.height);
+    }
+    
+    drawStartButton(ctx);
 }
 
 /**

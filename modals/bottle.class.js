@@ -41,8 +41,10 @@ class bottle extends CollectibleObjects {
      * @description Cycles through bottle images every 200ms
      */
     animate() {
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_BOTTLE);
+        this.animationInterval = setInterval(() => {
+            if (!window.goToStartScreenCalled) {
+                this.playAnimation(this.IMAGES_BOTTLE);
+            }
         }, 200);
     }
 }

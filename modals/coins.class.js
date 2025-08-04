@@ -27,8 +27,10 @@ class coins extends CollectibleObjects {
   }
 
   animate() {
-    setInterval(() => {
-      this.playAnimation(this.IMAGES_COINS);
+    this.animationInterval = setInterval(() => {
+      if (!window.goToStartScreenCalled) {
+        this.playAnimation(this.IMAGES_COINS);
+      }
     }, 200);
   }
 }
