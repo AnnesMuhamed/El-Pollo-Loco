@@ -199,14 +199,9 @@ function resetGame() {
 
 /**
  * Resets all game over related states
- * @description Hides game over screen and resets related flags
+ * @description Resets related flags
  */
 function resetGameOverStates() {
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    if (gameOverScreen) {
-        gameOverScreen.classList.add('hidden');
-    }
-    
     if (world) {
         world.showGameOver = false;
         world.gameOverScreenShown = false;
@@ -407,39 +402,9 @@ function startGame() {
     setupCanvasAndEvents();
 }
 
-/**
- * Shows the game over screen
- * @description Displays game over screen and stops all audio
- */
-function showGameOverScreen() {
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    gameOverScreen.classList.remove('hidden');
-    
-    if (audioManager) {
-        audioManager.stopWalkingSound();
-        audioManager.stopSnoringSound();
-        audioManager.stopBackgroundSound();
-        if (audioManager.bossSquawkSound) {
-            audioManager.bossSquawkSound.pause();
-            audioManager.bossSquawkSound.currentTime = 0;
-        }
-    }
-}
 
-/**
- * Returns to the home screen
- * @description Resets game state and shows start screen
- */
-function goHome() {
-    gameStarted = false;
-    gameRunning = false;
-    world = null;
-    
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    gameOverScreen.classList.add('hidden');
-    
-    drawStartScreen();
-}
+
+
 
 /**
  * Returns to the start screen after victory
@@ -478,4 +443,57 @@ function goToStartScreen() {
     }, 7000);
 }
 
-window.goToStartScreen = goToStartScreen; 
+/**
+ * Restarts the game with complete reset
+ * @description Resets all game states and starts a new game
+ */
+function restartGame() {
+    if (world) {
+        world.stopAnimation();
+        world = null;
+    }
+    
+    if (audioManager) {
+        audioManager.stopAllSounds();
+    }
+    
+    resetGameOverStates();
+    resetVictoryStates();
+    
+    gameStarted = false;
+    gameRunning = false;
+    
+    window.level1 = createInitialLevel();
+    resetVictoryStates();
+    initializeGameState();
+    setupAudio();
+    createGameWorld();
+    setupCanvasAndEvents();
+}
+
+/**
+ * Returns to home screen from game over
+ * @description Resets game state and shows start screen
+ */
+function goHome() {
+    if (world) {
+        world.stopAnimation();
+        world = null;
+    }
+    
+    if (audioManager) {
+        audioManager.stopAllSounds();
+    }
+    
+    resetGameOverStates();
+    resetVictoryStates();
+    
+    gameStarted = false;
+    gameRunning = false;
+    
+    drawStartScreen();
+}
+
+window.goToStartScreen = goToStartScreen;
+window.restartGame = restartGame;
+window.goHome = goHome; 

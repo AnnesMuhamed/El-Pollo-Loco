@@ -115,4 +115,55 @@ function drawControlButton(ctx, x, y, size, text, color1, color2) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, x + size/2, y + size/2);
+}
+
+/**
+ * Draws restart and home buttons on game over screen
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates restart and home buttons with gradient backgrounds and text
+ */
+function drawGameOverButtons(ctx) {
+    const buttonWidth = 120;
+    const buttonHeight = 40;
+    const centerX = ctx.canvas.width / 2;
+    const buttonY = ctx.canvas.height - 80;
+    
+    const restartX = centerX - buttonWidth - 20;
+    const homeX = centerX + 20;
+    
+    drawGameOverButton(ctx, restartX, buttonY, buttonWidth, buttonHeight, 'RESTART');
+    drawGameOverButton(ctx, homeX, buttonY, buttonWidth, buttonHeight, 'HOME');
+    
+    window.gameOverButtonCoords = {
+        restart: { x: restartX, y: buttonY, width: buttonWidth, height: buttonHeight },
+        home: { x: homeX, y: buttonY, width: buttonWidth, height: buttonHeight }
+    };
+}
+
+/**
+ * Draws a game over button with gradient background and text
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @param {number} x - X coordinate of the button
+ * @param {number} y - Y coordinate of the button
+ * @param {number} width - Width of the button
+ * @param {number} height - Height of the button
+ * @param {string} text - Text to display on the button
+ * @description Creates a styled button with gradient background, border, and centered text
+ */
+function drawGameOverButton(ctx, x, y, width, height, text) {
+    const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+    gradient.addColorStop(0, '#FFD700');
+    gradient.addColorStop(1, '#FFA500');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, y, width, height);
+    
+    ctx.strokeStyle = '#FF8C00';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, width, height);
+    
+    ctx.fillStyle = '#8B4513';
+    ctx.font = 'bold 16px Play, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + width/2, y + height/2);
 } 

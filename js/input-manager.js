@@ -144,6 +144,33 @@ function handleStartButtonClick(canvasX, canvasY) {
 }
 
 /**
+ * Checks if game over buttons were clicked
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if game over button was clicked
+ * @description Handles restart and home button click detection
+ */
+function handleGameOverButtonClick(canvasX, canvasY) {
+    if (world && world.showGameOver && window.gameOverButtonCoords) {
+        const restartBtn = window.gameOverButtonCoords.restart;
+        const homeBtn = window.gameOverButtonCoords.home;
+        
+        if (canvasX >= restartBtn.x && canvasX <= restartBtn.x + restartBtn.width &&
+            canvasY >= restartBtn.y && canvasY <= restartBtn.y + restartBtn.height) {
+            restartGame();
+            return true;
+        }
+        
+        if (canvasX >= homeBtn.x && canvasX <= homeBtn.x + homeBtn.width &&
+            canvasY >= homeBtn.y && canvasY <= homeBtn.y + homeBtn.height) {
+            goHome();
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Processes mobile button press detection
  * @param {number} canvasX - X coordinate on canvas
  * @param {number} canvasY - Y coordinate on canvas
@@ -205,6 +232,10 @@ function handleButtonPress(e, type, touchId = null) {
     const { canvasX, canvasY } = calculateCanvasCoordinates(e);
     
     if (handleStartButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
+    if (handleGameOverButtonClick(canvasX, canvasY)) {
         return;
     }
     

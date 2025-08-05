@@ -395,15 +395,33 @@ class World {
     if (this.showGameOver && this.gameOverImage.complete) {
       this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
       
-      if (typeof showGameOverScreen === 'function' && !this.gameOverScreenShown) {
-        showGameOverScreen();
+      if (!this.gameOverScreenShown) {
         this.gameOverScreenShown = true;
+        this.stopGameOverAudio();
       }
+      
+      drawGameOverButtons(this.ctx);
     } else if (this.character.isDead() && this.characterDeathTime) {
       const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
       
       if (timeSinceDeath < 3000 && this.youLostImage.complete) {
         this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
+      }
+    }
+  }
+
+  /**
+   * Stops all audio when game over occurs
+   * @description Stops walking, snoring, background, and boss sounds
+   */
+  stopGameOverAudio() {
+    if (window.audioManager) {
+      window.audioManager.stopWalkingSound();
+      window.audioManager.stopSnoringSound();
+      window.audioManager.stopBackgroundSound();
+      if (window.audioManager.bossSquawkSound) {
+        window.audioManager.bossSquawkSound.pause();
+        window.audioManager.bossSquawkSound.currentTime = 0;
       }
     }
   }
@@ -427,7 +445,7 @@ class World {
 
     this.handleGameOverScreen();
 
-    if (!this.victoryScreenShown && typeof gameRunning !== 'undefined' && gameRunning && world && !window.goToStartScreenCalled) {
+    if (!this.victoryScreenShown && !this.showGameOver && typeof gameRunning !== 'undefined' && gameRunning && world && !window.goToStartScreenCalled) {
       this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
     }
   }
