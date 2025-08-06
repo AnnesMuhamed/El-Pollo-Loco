@@ -46,7 +46,21 @@ class AudioManager {
         this.snoringSound.volume = 0.5;
         this.backgroundSound.volume = 0.3;
         this.backgroundSound.loop = true;
-        this.soundEnabled = true;
+        
+        this.loadSoundState();
+    }
+
+    /**
+     * Loads sound state from localStorage
+     * @description Initializes sound enabled state from browser storage
+     */
+    loadSoundState() {
+        const savedState = localStorage.getItem('soundEnabled');
+        this.soundEnabled = savedState === null ? true : savedState === 'true';
+        
+        if (!this.soundEnabled) {
+            this.disableAllSounds();
+        }
     }
 
     /**
@@ -190,12 +204,14 @@ class AudioManager {
      */
     toggleSound() {
         this.soundEnabled = !this.soundEnabled;
-        const button = document.getElementById('soundToggleButton');
+        localStorage.setItem('soundEnabled', this.soundEnabled.toString());
+        
         if (this.soundEnabled) {
-            button.textContent = '🔊';
             this.enableAllSounds();
+            if (gameRunning && gameStarted) {
+                this.playBackgroundSound();
+            }
         } else {
-            button.textContent = '🔇';
             this.disableAllSounds();
         }
         

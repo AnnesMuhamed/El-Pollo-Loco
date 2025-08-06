@@ -25,6 +25,11 @@ function drawStartScreen() {
     }
     
     drawStartButton(ctx);
+    drawSettingsButton(ctx);
+    
+    if (window.settingsDropdownVisible) {
+        drawSettingsDropdown(ctx);
+    }
 }
 
 /**
@@ -55,6 +60,109 @@ function drawStartButton(ctx) {
     ctx.fillText('START', buttonX + buttonWidth/2, buttonY + buttonHeight/2);
     
     window.startButtonCoords = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
+}
+
+/**
+ * Draws the settings button on the canvas
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates a styled settings button with gear icon
+ */
+function drawSettingsButton(ctx) {
+    const buttonX = canvas.width - 60;
+    const buttonY = 20;
+    const buttonWidth = 40;
+    const buttonHeight = 40;
+    
+    const gradient = ctx.createLinearGradient(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+    gradient.addColorStop(0, '#4A90E2');
+    gradient.addColorStop(1, '#357ABD');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+    
+    ctx.strokeStyle = '#2E5A8A';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 20px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚙️', buttonX + buttonWidth/2, buttonY + buttonHeight/2);
+    
+    window.settingsButtonCoords = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
+}
+
+/**
+ * Draws the settings dropdown menu on the canvas
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates a dropdown menu with sound, info, and fullscreen options
+ */
+function drawSettingsDropdown(ctx) {
+    const menuX = canvas.width - 150;
+    const menuY = 70;
+    const menuWidth = 130;
+    const menuHeight = 150;
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fillRect(menuX, menuY, menuWidth, menuHeight);
+    
+    ctx.strokeStyle = '#4A90E2';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(menuX, menuY, menuWidth, menuHeight);
+    
+    const buttonHeight = 35;
+    const buttonSpacing = 8;
+    let currentY = menuY + 15;
+    
+    drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '🔊 Sound', 'sound');
+    currentY += buttonHeight + buttonSpacing;
+    
+    drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, 'ℹ️ Info', 'info');
+    currentY += buttonHeight + buttonSpacing;
+    
+    drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '⛶ Fullscreen', 'fullscreen');
+}
+
+/**
+ * Draws a dropdown menu button
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @param {number} x - X coordinate of the button
+ * @param {number} y - Y coordinate of the button
+ * @param {number} width - Width of the button
+ * @param {number} height - Height of the button
+ * @param {string} text - Text to display on the button
+ * @param {string} action - Action identifier for the button
+ * @description Creates a styled dropdown button with hover effect
+ */
+function drawDropdownButton(ctx, x, y, width, height, text, action) {
+    const isHovered = window.hoveredDropdownButton === action;
+    
+    const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+    if (isHovered) {
+        gradient.addColorStop(0, '#5A9FE2');
+        gradient.addColorStop(1, '#4A90E2');
+    } else {
+        gradient.addColorStop(0, '#4A90E2');
+        gradient.addColorStop(1, '#357ABD');
+    }
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, y, width, height);
+    
+    ctx.strokeStyle = '#2E5A8A';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, width, height);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + 10, y + height/2);
+    
+    if (!window.dropdownButtonCoords) {
+        window.dropdownButtonCoords = {};
+    }
+    window.dropdownButtonCoords[action] = { x, y, width, height };
 }
 
 /**

@@ -8,6 +8,19 @@ function setupCanvasClickHandler() {
 
     setupMouseEvents();
     setupTouchEvents();
+    setupClickOutsideHandler();
+}
+
+/**
+ * Sets up click outside handler for dropdown
+ * @description Closes dropdown when clicking outside of it
+ */
+function setupClickOutsideHandler() {
+    document.addEventListener('click', function(event) {
+        if (window.settingsDropdownVisible && !canvas.contains(event.target)) {
+            hideSettingsDropdown();
+        }
+    });
 }
 
 /**
@@ -26,6 +39,35 @@ function setupMouseEvents() {
     canvas.addEventListener('mouseleave', function(e) {
         handleButtonRelease(e, 'mouse');
     });
+
+    canvas.addEventListener('mousemove', function(e) {
+        handleMouseMove(e);
+    });
+}
+
+/**
+ * Handles mouse move events for hover effects
+ * @param {Event} e - The mouse event object
+ * @description Updates hover state for dropdown buttons
+ */
+function handleMouseMove(e) {
+    if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
+        const { canvasX, canvasY } = calculateCanvasCoordinates(e);
+        let hoveredButton = null;
+        
+        for (const [action, coords] of Object.entries(window.dropdownButtonCoords)) {
+            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
+                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+                hoveredButton = action;
+                break;
+            }
+        }
+        
+        if (hoveredButton !== window.hoveredDropdownButton) {
+            window.hoveredDropdownButton = hoveredButton;
+            drawStartScreen();
+        }
+    }
 }
 
 /**
@@ -171,6 +213,96 @@ function handleGameOverButtonClick(canvasX, canvasY) {
 }
 
 /**
+ * Checks if settings button was clicked
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if settings button was clicked
+ * @description Handles settings button click detection
+ */
+function handleSettingsButtonClick(canvasX, canvasY) {
+    if (!gameStarted && window.settingsButtonCoords) {
+        const btn = window.settingsButtonCoords;
+        if (canvasX >= btn.x && canvasX <= btn.x + btn.width &&
+            canvasY >= btn.y && canvasY <= btn.y + btn.height) {
+            toggleSettingsDropdown();
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Checks if dropdown buttons were clicked
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if dropdown button was clicked
+ * @description Handles dropdown menu button click detection
+ */
+function handleDropdownButtonClick(canvasX, canvasY) {
+    if (!gameStarted && window.dropdownButtonCoords && window.settingsDropdownVisible) {
+        for (const [action, coords] of Object.entries(window.dropdownButtonCoords)) {
+            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
+                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+                handleDropdownAction(action);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ * Handles dropdown menu actions
+ * @param {string} action - The action to perform
+ * @description Executes the selected dropdown menu action
+ */
+function handleDropdownAction(action) {
+    switch (action) {
+        case 'sound':
+            toggleSound();
+            break;
+        case 'info':
+            showInfo();
+            break;
+        case 'fullscreen':
+            toggleFullscreen();
+            break;
+    }
+    hideSettingsDropdown();
+}
+
+/**
+ * Toggles settings dropdown visibility
+ * @description Shows or hides the settings dropdown menu
+ */
+function toggleSettingsDropdown() {
+    if (window.settingsDropdownVisible) {
+        hideSettingsDropdown();
+    } else {
+        showSettingsDropdown();
+    }
+}
+
+/**
+ * Shows settings dropdown menu
+ * @description Displays the settings dropdown on canvas
+ */
+function showSettingsDropdown() {
+    window.settingsDropdownVisible = true;
+    drawStartScreen();
+}
+
+/**
+ * Hides settings dropdown menu
+ * @description Hides the settings dropdown and redraws start screen
+ */
+function hideSettingsDropdown() {
+    window.settingsDropdownVisible = false;
+    window.hoveredDropdownButton = null;
+    drawStartScreen();
+}
+
+/**
  * Processes mobile button press detection
  * @param {number} canvasX - X coordinate on canvas
  * @param {number} canvasY - Y coordinate on canvas
@@ -236,6 +368,14 @@ function handleButtonPress(e, type, touchId = null) {
     }
     
     if (handleGameOverButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
+    if (handleSettingsButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
+    if (handleDropdownButtonClick(canvasX, canvasY)) {
         return;
     }
     

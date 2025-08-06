@@ -146,16 +146,3 @@ function handleKeyUp(e) {
 
 window.goToStartScreen = goToStartScreen;
 
-/**
- * Handles clicks outside of settings menu to close it
- * @description Closes settings menu when clicking outside of it
- */
-document.addEventListener('click', function(event) {
-    const settingsButton = document.getElementById('settingsButton');
-    const settingsMenu = document.getElementById('settingsMenu');
-    
-    if (settingsButton && settingsMenu && !settingsButton.contains(event.target) && !settingsMenu.contains(event.target)) {
-        settingsMenu.classList.add('hidden');
-    }
-});
-

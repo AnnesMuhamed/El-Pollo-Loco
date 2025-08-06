@@ -31,14 +31,11 @@ function exitFullscreen() {
  */
 function toggleFullscreen() {
   const canvas = document.getElementById('canvas');
-  const fullscreenButton = document.getElementById('fullscreenButton');
   
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     enterFullscreen(canvas);
-    fullscreenButton.textContent = '⛶';
   } else {
     exitFullscreen();
-    fullscreenButton.textContent = '⛶';
   }
 }
 
@@ -53,28 +50,13 @@ function toggleSound() {
 }
 
 /**
- * Toggles the settings menu visibility
- * @description Shows or hides the settings dropdown menu
- */
-function toggleSettingsMenu() {
-    const settingsMenu = document.getElementById('settingsMenu');
-    if (settingsMenu) {
-        settingsMenu.classList.toggle('hidden');
-    }
-}
-
-/**
  * Shows the info modal with game rules
- * @description Displays the information modal and hides settings menu
+ * @description Displays the information modal
  */
 function showInfo() {
     const infoModal = document.getElementById('infoModal');
     if (infoModal) {
         infoModal.classList.remove('hidden');
-        const settingsMenu = document.getElementById('settingsMenu');
-        if (settingsMenu) {
-            settingsMenu.classList.add('hidden');
-        }
     }
 }
 
