@@ -20,11 +20,14 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
-  IMAGES_JUMPING = [
+  IMAGES_JUMPING_UP = [
     "img/2_character_pepe/3_jump/J-31.png",
     "img/2_character_pepe/3_jump/J-32.png",
     "img/2_character_pepe/3_jump/J-33.png",
     "img/2_character_pepe/3_jump/J-34.png",
+  ];
+
+  IMAGES_JUMPING_DOWN = [
     "img/2_character_pepe/3_jump/J-35.png",
     "img/2_character_pepe/3_jump/J-36.png",
     "img/2_character_pepe/3_jump/J-37.png",
@@ -77,6 +80,10 @@ class Character extends MovableObject {
   currentImage = 0;
   world;
 
+  isJumpingUp = false;
+  isJumpingDown = false;
+  jumpStartY = 0;
+
   /**
    * Creates a new Character instance
    * Initializes the character with walking, jumping, dead and hurt animations
@@ -85,7 +92,8 @@ class Character extends MovableObject {
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
     this.loadImages(this.IMAGES_WALKING);
-    this.loadImages(this.IMAGES_JUMPING);
+    this.loadImages(this.IMAGES_JUMPING_UP);
+    this.loadImages(this.IMAGES_JUMPING_DOWN);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_IDLE);
@@ -160,7 +168,7 @@ class Character extends MovableObject {
     const currentTime = Date.now();
     const idleTime = currentTime - this.lastMovementTime;
     
-    if (idleTime > 15000 && !this.world.gameWon) {
+    if (idleTime > 10000 && !this.world.gameWon) {
       this.isLongIdle = true;
       this.isIdle = false;
       if (!this.isSnoringSoundPlaying) {
@@ -231,7 +239,7 @@ class Character extends MovableObject {
         audioManager.playhurtCharacterSound();
       }
     } else if (this.isAboveGround()) {
-      this.playAnimation(this.IMAGES_JUMPING);
+      this.handleJumpAnimation();
     } else if (this.world.endBoss.isDead) {
       this.img = this.imageCash[this.IMAGES_WALKING[0]];
     } else if (this.isLongIdle) {
@@ -246,6 +254,20 @@ class Character extends MovableObject {
   }
 
   /**
+   * Handles jump animation phases
+   * @description Determines whether to play up or down jump animation
+   */
+  handleJumpAnimation() {
+    if (this.isJumpingUp) {
+      this.playAnimation(this.IMAGES_JUMPING_UP);
+    } else if (this.isJumpingDown) {
+      this.playAnimation(this.IMAGES_JUMPING_DOWN);
+    } else {
+      this.playAnimation(this.IMAGES_JUMPING_UP);
+    }
+  }
+
+  /**
    * Main animation loop for character
    * @description Handles movement, jumping, bottle throwing and animation states
    */
@@ -254,27 +276,10 @@ class Character extends MovableObject {
       if (gameRunning && !window.goToStartScreenCalled) {
         this.world.camera_x = -this.x + 100;
         if (!this.isDead() && !this.world.gameWon) {
-          if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-            this.moveRight();
-            this.otherDirection = false;
-          }
-
-          if (this.world.keyboard.LEFT && this.x > 0) {
-            this.moveLeft();
-            this.otherDirection = true;
-          }
-
-          if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-            this.jump();
-          }
-
-          if (this.world.keyboard.D && this.canThrowBottle) {
-            this.world.throwBottle();
-            this.canThrowBottle = false;
-            setTimeout(() => {
-              this.canThrowBottle = true;
-            }, 500);
-          }
+          const hasMoved = this.handleMovement();
+          this.handleIdleState(hasMoved);
+          this.handleWalkingSound();
+          this.handleJumpAndThrow();
         }
       }
     }, 1000 / 60);
@@ -284,27 +289,43 @@ class Character extends MovableObject {
         return;
       }
       
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        if (gameRunning) {
-          audioManager.playhurtCharacterSound();
-        }
-      } else if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
-      } else if (this.world.endBoss.isDead) {
-        this.img = this.imageCash[this.IMAGES_WALKING[0]];
-      } else if (this.isLongIdle) {
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-      } else if (this.isIdle) {
-        this.playAnimation(this.IMAGES_IDLE);
-      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
+      this.updateJumpPhase();
+      this.handleAnimation();
+    }, 100);
+  }
+
+  /**
+   * Makes character jump with phase tracking
+   * @description Initiates jump and sets up phase tracking
+   */
+  jump() {
+    if (!this.isAboveGround()) {
+      this.speedY = 30;
+      this.jumpStartY = this.y;
+      this.isJumpingUp = true;
+      this.isJumpingDown = false;
+      this.currentImage = 0;
+      audioManager.playJumpSound();
+    }
+  }
+
+  /**
+   * Updates jump phase based on vertical movement
+   * @description Tracks whether character is going up or down during jump
+   */
+  updateJumpPhase() {
+    if (this.isAboveGround()) {
+      if (this.speedY > 0) {
+        this.isJumpingUp = true;
+        this.isJumpingDown = false;
       } else {
-        this.playAnimation(this.IMAGES_IDLE);
+        this.isJumpingUp = false;
+        this.isJumpingDown = true;
       }
-    }, 50);
+    } else {
+      this.isJumpingUp = false;
+      this.isJumpingDown = false;
+    }
   }
 
   /**

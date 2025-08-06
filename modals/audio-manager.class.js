@@ -44,6 +44,7 @@ class AudioManager {
         this.bossDeathSound.volume = 0.5;
         this.bossSquawkSound.volume = 0.5;
         this.snoringSound.volume = 0.5;
+        this.snoringSound.loop = true;
         this.backgroundSound.volume = 0.3;
         this.backgroundSound.loop = true;
         
