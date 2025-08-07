@@ -232,11 +232,11 @@ function handleSettingsButtonClick(canvasX, canvasY) {
 }
 
 /**
- * Checks if dropdown buttons were clicked
+ * Handles dropdown button clicks
  * @param {number} canvasX - X coordinate on canvas
  * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if dropdown button was clicked
- * @description Handles dropdown menu button click detection
+ * @returns {boolean} True if a dropdown button was clicked
+ * @description Detects clicks on dropdown menu buttons
  */
 function handleDropdownButtonClick(canvasX, canvasY) {
     if (!gameStarted && window.dropdownButtonCoords && window.settingsDropdownVisible) {
@@ -260,15 +260,17 @@ function handleDropdownAction(action) {
     switch (action) {
         case 'sound':
             toggleSound();
+            hideSettingsDropdown();
             break;
         case 'info':
-            showInfo();
+            hideSettingsDropdown();
+            setTimeout(() => show('infoModal'), 100);
             break;
         case 'fullscreen':
             toggleFullscreen();
+            hideSettingsDropdown();
             break;
     }
-    hideSettingsDropdown();
 }
 
 /**

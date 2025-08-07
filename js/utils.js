@@ -50,23 +50,18 @@ function toggleSound() {
 }
 
 /**
- * Shows the info modal with game rules
- * @description Displays the information modal
+ * Handles ESC key press for modals
+ * @description Closes modals when ESC key is pressed
  */
-function showInfo() {
-    const infoModal = document.getElementById('infoModal');
-    if (infoModal) {
-        infoModal.classList.remove('hidden');
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const impressumModal = document.getElementById('impressumModal');
+        const infoModal = document.getElementById('infoModal');
+        
+        if (impressumModal && !impressumModal.classList.contains('hidden')) {
+            hide('impressumModal');
+        } else if (infoModal && !infoModal.classList.contains('hidden')) {
+            hide('infoModal');
+        }
     }
-}
-
-/**
- * Hides the info modal
- * @description Conceals the information modal
- */
-function hideInfo() {
-    const infoModal = document.getElementById('infoModal');
-    if (infoModal) {
-        infoModal.classList.add('hidden');
-    }
-} 
+}); 

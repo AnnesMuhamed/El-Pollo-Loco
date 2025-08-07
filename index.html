@@ -34,6 +34,16 @@
     <script src="./js/input-manager.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/game.js"></script>
+    <script>
+        // Simple modal functions
+        function show(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+        
+        function hide(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
 </head>
 <body onload="init()">
     <div class="landscape-warning" style="display:none;">
@@ -48,7 +58,7 @@
     <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
 
     <!-- Info Modal -->
-    <div id="infoModal" class="info-modal hidden">
+    <div id="infoModal" class="info-modal hidden" onclick="if(event.target === this) hide('infoModal')">
         <div class="info-content">
             <h2>Spielregeln</h2>
             <div class="controls-info">
@@ -70,19 +80,77 @@
                 </ul>
             </div>
             <div class="privacy-info">
-                <a href="privacy.html" class="privacy-link">Datenschutz</a>
+                <button onclick="show('impressumModal')" class="impressum-link">Impressum</button>
             </div>
-            <button onclick="hideInfo()" class="close-button">Schließen</button>
+            <button onclick="hide('infoModal')" class="close-button">Schließen</button>
         </div>
     </div>
-    
 
+    <!-- Impressum Modal -->
+    <div id="impressumModal" class="impressum-modal hidden" onclick="if(event.target === this) hide('impressumModal')">
+        <div class="impressum-content">
+            <div class="impressum-header">
+                <h1>Impressum</h1>
+                <p class="impressum-subtitle">El Pollo Loco - Stand: Juli 2025</p>
+                <button onclick="hide('impressumModal')" class="close-button">×</button>
+            </div>
+            
+            <div class="impressum-body">
+                <div class="impressum-section">
+                    <h2>1. Angaben gemäß § 5 TMG</h2>
+                    <p>Entwickler und Verantwortlicher für das Browserspiel "El Pollo Loco":</p>
+                    <p><strong>Name:</strong> [Ihr Name]<br>
+                    <strong>E-Mail:</strong> [Ihre E-Mail-Adresse]<br>
+                    <strong>Website:</strong> [Ihre Website]</p>
+                </div>
 
+                <div class="impressum-section">
+                    <h2>2. Verantwortlich für den Inhalt</h2>
+                    <p>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV ist der oben genannte Entwickler.</p>
+                </div>
 
-    
+                <div class="impressum-section">
+                    <h2>3. Haftungsausschluss</h2>
+                    <h3>3.1 Haftung für Inhalte</h3>
+                    <p>Die Inhalte des Spiels wurden sorgfältig geprüft. Dennoch kann keine Gewähr für die Richtigkeit, Vollständigkeit und Aktualität der bereitgestellten Inhalte übernommen werden.</p>
+                    
+                    <h3>3.2 Haftung für Links</h3>
+                    <p>Das Spiel enthält keine externen Links. Sollten in Zukunft Links zu externen Websites hinzugefügt werden, so haben wir keinen Einfluss auf deren Inhalt und übernehmen keine Haftung dafür.</p>
+                </div>
+
+                <div class="impressum-section">
+                    <h2>4. Urheberrecht</h2>
+                    <p>Die durch den Entwickler erstellten Inhalte und Werke auf dieser Website unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+                </div>
+
+                <div class="impressum-highlight">
+                    <h4>Wichtiger Hinweis</h4>
+                    <p>Das Spiel "El Pollo Loco" ist ein privates Projekt und dient ausschließlich zu Demonstrations- und Lernzwecken. Es werden keine kommerziellen Interessen verfolgt.</p>
+                </div>
+
+                <div class="impressum-section">
+                    <h2>5. Datenschutz</h2>
+                    <p>Das Spiel funktioniert vollständig offline und erhebt keine personenbezogenen Daten. Alle Spieldaten werden ausschließlich lokal in Ihrem Browser gespeichert.</p>
+                </div>
+
+                <div class="impressum-section">
+                    <h2>6. Technische Informationen</h2>
+                    <p><strong>Entwicklung:</strong> JavaScript, HTML5, CSS3<br>
+                    <strong>Browser-Kompatibilität:</strong> Moderne Browser mit JavaScript-Unterstützung<br>
+                    <strong>Offline-Funktionalität:</strong> Vollständig clientseitig, keine Server-Kommunikation</p>
+                </div>
+
+                <div class="impressum-contact">
+                    <h3>Kontakt</h3>
+                    <p>Bei Fragen zum Spiel oder diesem Impressum können Sie sich gerne an den Entwickler wenden.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Datenschutzlink -->
     <div class="privacy-link-container">
-        <a href="privacy.html" class="privacy-link">Datenschutz</a>
+        <button onclick="show('impressumModal')" class="impressum-link">Impressum</button>
     </div>
 </body>
 </html>
