@@ -104,7 +104,9 @@ class Endboss extends MovableObject {
         
         this.movementInterval = setInterval(() => {
             if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated && !window.goToStartScreenCalled) {
-                this.moveLeft(); 
+                if (typeof world !== 'undefined' && world.character && this.x > world.character.x + 0) {
+                    this.moveLeft(); 
+                }
             }
         }, 1000 / 60);
     }
