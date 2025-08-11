@@ -36,7 +36,12 @@ class MovableObject extends DrawableObject {
    */
   checkCharacterEnemyCollision(mo) {
     if (this instanceof Character && (mo instanceof Chicken || mo instanceof smallChicken)) {
-      return this.isJumpingOnEnemy(mo) || this.checkBasicCollision(mo);
+      // Nur Jump-Kill wenn Character von oben kommt, sonst normale Kollision
+      const jumpKillResult = this.isJumpingOnEnemy(mo);
+      if (jumpKillResult) {
+        return true; // Jump-Kill erfolgreich
+      }
+      return this.checkBasicCollision(mo); // Normale Kollision prüfen
     }
     return true;
   }

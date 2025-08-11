@@ -336,17 +336,20 @@ class Character extends MovableObject {
    */
   isJumpingOnEnemy(enemy) {
     const characterBottom = this.y + this.height;  // Untere Kante des Characters
-    const characterLeft = this.x;                   // Linke Kante des Characters
-    const characterRight = this.x + this.width;    // Rechte Kante des Characters
-    const enemyTop = enemy.y;                       // Obere Kante des Enemies
-    const enemyLeft = enemy.x;                      // Linke Kante des Enemies
-    const enemyRight = enemy.x + enemy.width;      // Rechte Kante des Enemies
-    
-    const distance = characterBottom - enemyTop;    // Vertikaler Abstand
-    const verticalCollision = distance >= -15 && distance <= 25;  // Vertikale Kollision prüfen
-    const horizontalOverlap = characterRight > enemyLeft && characterLeft < enemyRight;  // Horizontale Überlappung
-    
-    return verticalCollision && horizontalOverlap;  // Mario-ähnliche Kollision
+  const characterLeft = this.x;                   // Linke Kante des Characters
+  const characterRight = this.x + this.width;    // Rechte Kante des Characters
+  const enemyTop = enemy.y;                       // Obere Kante des Enemies
+  const enemyLeft = enemy.x;                      // Linke Kante des Enemies
+  const enemyRight = enemy.x + enemy.width;      // Rechte Kante des Enemies
+
+  const distance = characterBottom - enemyTop;    // Vertikaler Abstand
+  const verticalCollision = distance >= -15 && distance <= 25;  // Vertikale Kollision prüfen
+  const horizontalOverlap = characterRight > enemyLeft && characterLeft < enemyRight;  // Horizontale Überlappung
+
+  // checken, ob der Charakter gerade fällt (speedY negativ, wenn fallend)
+  const isFalling = this.speedY < 0;
+
+  return verticalCollision && horizontalOverlap && isFalling;
   }
 }
 
