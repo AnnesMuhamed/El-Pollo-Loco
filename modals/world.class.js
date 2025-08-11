@@ -124,7 +124,18 @@ class World {
     if (this.character.isJumpingOnEnemy(enemy)) {
       enemy.isDead = true;
       audioManager.playEnemyHitSound();
-      this.character.speedY = -15; 
+      this.character.speedY = -40;
+      const targetY = 180;
+      const bounceDown = () => {
+        if (this.character.y < targetY) {
+          this.character.y += 2; 
+          requestAnimationFrame(bounceDown);
+        } else {
+          this.character.y = targetY; 
+          this.character.speedY = 0; 
+        }
+      };
+      bounceDown();
       return true;
     }
     return false;
