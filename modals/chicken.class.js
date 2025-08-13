@@ -25,8 +25,10 @@ class Chicken extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
+        // Sicherstellen, dass keine Chicken links vom Character spawnen (x=120)
+        // Character startet bei x=120, also Enemies ab x=400 (280px Sicherheitsabstand)
         if (Math.random() < 0.7) {
-            this.x = 200 + Math.random() * (719 * 2);
+            this.x = 400 + Math.random() * (719 * 2);
         } else {
             this.x = 1438 + Math.random() * 719;
         }
