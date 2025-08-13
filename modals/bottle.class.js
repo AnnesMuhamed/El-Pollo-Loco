@@ -13,7 +13,7 @@ class bottle extends CollectibleObjects {
     constructor() {
         super().loadImage(this.IMAGES_BOTTLE[0]);
         this.loadImages(this.IMAGES_BOTTLE);
-        this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
+        this.offset = { top: 0, left: 0, right: 0, bottom: 0 };
         this.x = 200 + Math.random() * (719 * 2);
         this.height = 50;
         this.width = 40;

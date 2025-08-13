@@ -1,7 +1,7 @@
 class Character extends MovableObject {
   y = 180;
   height = 200;
-  width = 70;
+  width = 100;
   speed = 10;
   canThrowBottle = true;
   lastMovementTime = Date.now();
