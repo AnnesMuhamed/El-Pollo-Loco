@@ -27,20 +27,18 @@ class StatusBarBottle extends DrawableObject {
   }
 
   resolveBottleImageIndex() {
-    if (this.bottleStatusbarPercentage == 0) {
+    if (this.bottleStatusbarPercentage <= 0) {
       return 0;
-    } else if (this.bottleStatusbarPercentage == 1) {
-      return 1;
-    } else if (this.bottleStatusbarPercentage == 2) {
-      return 2;
-    } else if (this.bottleStatusbarPercentage == 3) {
-      return 3;
-    } else if (this.bottleStatusbarPercentage == 4) {
-      return 4;
-    } else if (this.bottleStatusbarPercentage >= 5) {
-      return 5;
+    } else if (this.bottleStatusbarPercentage <= 2) {
+      return 1; // 20%
+    } else if (this.bottleStatusbarPercentage <= 4) {
+      return 2; // 40%
+    } else if (this.bottleStatusbarPercentage <= 6) {
+      return 3; // 60%
+    } else if (this.bottleStatusbarPercentage <= 8) {
+      return 4; // 80%
     } else {
-      return 0;
+      return 5; // 100% for 9-10+
     }
   }
 }
