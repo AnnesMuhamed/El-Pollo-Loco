@@ -96,31 +96,11 @@ function createCoinsArray() {
         new window.coins(),
         new window.coins(),
         new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
         new window.coins()
     ];
 
     if (!isMobile) {
         coins.push(
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
             new window.coins(),
             new window.coins(),
             new window.coins(),
@@ -143,31 +123,11 @@ function createBottlesArray() {
         new window.bottle(),
         new window.bottle(),
         new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
         new window.bottle()
     ];
 
     if (!isMobile) {
         bottles.push(
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
             new window.bottle(),
             new window.bottle(),
             new window.bottle(),
@@ -289,19 +249,11 @@ function createInitialLevel() {
         new window.coins(),
         new window.coins(),
         new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
         new window.coins()
     ];
 
     if (!isMobile) {
         coins.push(
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
             new window.coins(),
             new window.coins(),
             new window.coins(),
@@ -315,19 +267,11 @@ function createInitialLevel() {
         new window.bottle(),
         new window.bottle(),
         new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
         new window.bottle()
     ];
 
     if (!isMobile) {
         bottles.push(
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
             new window.bottle(),
             new window.bottle(),
             new window.bottle(),

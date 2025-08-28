@@ -263,7 +263,7 @@ class World {
    */
   collectCoin(index) {
     this.level.coins.splice(index, 1);
-    this.statusBarCoin.setCoinStatusbarPercentage(this.statusBarCoin.coinStatusbarPercentage + 20);
+    this.statusBarCoin.setCoinStatusbarPercentage(this.statusBarCoin.coinStatusbarPercentage + 1);
     audioManager.playCollectCoinsSound();
   }
 
@@ -286,7 +286,7 @@ class World {
    */
   collectBottle(index) {
     this.level.bottle.splice(index, 1);
-    this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage + 20);
+    this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage + 1);
     audioManager.playCollectBottleSound();
   }
 
@@ -525,7 +525,7 @@ class World {
       }
       
       this.throwableObject.push(bottle);
-      this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 20);
+      this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 1);
       audioManager.playThrowSound();
     }
   }

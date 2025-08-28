@@ -101,7 +101,9 @@ class AudioManager {
      * @description Plays sound when character collects bottle
      */
     playCollectBottleSound() {
-        this.playAudioSafely(this.collectBottleSound, 'Collect bottle sound');
+        const newCollectBottleSound = new Audio('audio/get-bottle-351945.mp3');
+        newCollectBottleSound.volume = 0.5;
+        this.playAudioSafely(newCollectBottleSound, 'Collect bottle sound');
     }
     
     /**
@@ -109,7 +111,9 @@ class AudioManager {
      * @description Plays sound when character collects coin
      */
     playCollectCoinsSound() {
-        this.playAudioSafely(this.collectCoinsSound, 'Collect coins sound');
+        const newCollectCoinsSound = new Audio('audio/coin-pick-up-38258.mp3');
+        newCollectCoinsSound.volume = 0.5;
+        this.playAudioSafely(newCollectCoinsSound, 'Collect coins sound');
     }
 
     /**
