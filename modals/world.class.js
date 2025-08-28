@@ -11,6 +11,7 @@ class World {
   statusBarCoin = new StatusBarCoin();
   statusBarEndboss = new StatusBarEndboss();
   throwableObject = [];
+  splashes = [];
   youWonImage;
   youLostImage;
   gameOverImage;
@@ -193,6 +194,7 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (!enemy.isDead && bottle.isColliding(enemy)) {
           this.handleEnemyBottleHit(bottle, i, enemy);
+          this.spawnBottleSplash(bottle);
         }
       });
     }
@@ -226,6 +228,22 @@ class World {
     }
     this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
     this.checkBossDeath();
+    this.spawnBottleSplash(bottle);
+  }
+
+  /**
+   * Spawns a bottle splash effect at the bottle's impact position
+   * @param {ThrowableObject} bottle
+   */
+  spawnBottleSplash(bottle) {
+    const x = bottle.x + bottle.width * 0.5 - 30;
+    const y = bottle.y + bottle.height * 0.5 - 30;
+    const splash = new BottleSplash(x, y);
+    this.splashes.push(splash);
+    setTimeout(() => {
+      const idx = this.splashes.indexOf(splash);
+      if (idx !== -1) this.splashes.splice(idx, 1);
+    }, 500);
   }
 
   /**
@@ -351,6 +369,7 @@ class World {
     
     this.addToMap(this.character);
     this.addToMap(this.endBoss);
+    this.addObjectsToMap(this.splashes);
   }
 
   /**
@@ -447,6 +466,7 @@ class World {
     }
 
     this.clearAndSetupCanvas();
+    this.enforceEndbossBlocking();
     this.drawGameObjects();
     this.drawUIElements();
 
@@ -458,6 +478,18 @@ class World {
 
     if (!this.victoryScreenShown && !this.showGameOver && typeof gameRunning !== 'undefined' && gameRunning && world && !window.goToStartScreenCalled) {
       this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
+    }
+  }
+
+  /**
+   * Prevents the character from passing the endboss horizontally
+   */
+  enforceEndbossBlocking() {
+    if (this.character && this.endBoss) {
+      const maxCharacterX = this.endBoss.x - this.character.width;
+      if (this.character.x > maxCharacterX) {
+        this.character.x = maxCharacterX;
+      }
     }
   }
 
