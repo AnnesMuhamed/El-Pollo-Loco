@@ -172,7 +172,7 @@ function drawDropdownButton(ctx, x, y, width, height, text, action) {
  */
 function drawMobileControls(ctx) {
     if (!gameRunning || world.showGameOver || world.gameWon) return;
-    if (window.innerWidth >= 770) return;
+    if (window.innerWidth >= 1025) return;
     
     const buttonSize = 40;
     const margin = 20;
