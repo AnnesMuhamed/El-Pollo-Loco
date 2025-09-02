@@ -194,7 +194,6 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (!enemy.isDead && bottle.isColliding(enemy)) {
           this.handleEnemyBottleHit(bottle, i, enemy);
-          this.spawnBottleSplash(bottle);
         }
       });
     }
