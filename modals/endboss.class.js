@@ -69,6 +69,7 @@ class Endboss extends MovableObject {
      */
     constructor () {
         super().loadImage(this.IMAGES_ALERT[0]); 
+        this.offset = { top: 15, left: 25, right: 25, bottom: 15 };
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_ATTACK);

@@ -91,6 +91,7 @@ class Character extends MovableObject {
    */
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
+    this.offset = { top: 15, left: 25, right: 25, bottom: 15 };
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING_UP);
     this.loadImages(this.IMAGES_JUMPING_DOWN);
@@ -145,7 +146,8 @@ class Character extends MovableObject {
    * @description Handles transitions between idle, long idle, and active states
    */
   handleIdleState(hasMoved) {
-    const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt();
+    const touchingBoss = this.world && this.world.endBoss && this.isColliding(this.world.endBoss);
+    const shouldStopLongIdle = hasMoved || (this.world.keyboard.D && this.canThrowBottle) || this.isHurt() || touchingBoss;
     
     if (shouldStopLongIdle) {
       this.lastMovementTime = Date.now();

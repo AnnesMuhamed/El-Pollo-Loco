@@ -211,6 +211,7 @@ class World {
     this.throwableObject.splice(bottleIndex, 1); 
     enemy.isDead = true;
     audioManager.playEnemyHitSound();  
+    this.spawnBottleSplash(bottle, enemy);
   }
 
   /**
@@ -228,16 +229,53 @@ class World {
     }
     this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
     this.checkBossDeath();
-    this.spawnBottleSplash(bottle);
+    this.spawnBottleSplash(bottle, this.endBoss);
   }
 
   /**
    * Spawns a bottle splash effect at the bottle's impact position
    * @param {ThrowableObject} bottle
    */
-  spawnBottleSplash(bottle) {
-    const x = bottle.x + bottle.width * 0.5 - 30;
-    const y = bottle.y + bottle.height * 0.5 - 30;
+  spawnBottleSplash(bottle, target) {
+    const splashWidth = 60;
+    const splashHeight = 60;
+    const insideOverlap = 16; // stärker in die Hitbox hinein
+
+    let x;
+    let y;
+
+    if (target && typeof bottle.speed === 'number') {
+      const oLeft = (target.offset && target.offset.left) ? target.offset.left : 0;
+      const oRight = (target.offset && target.offset.right) ? target.offset.right : 0;
+      const oTop = (target.offset && target.offset.top) ? target.offset.top : 0;
+      const oBottom = (target.offset && target.offset.bottom) ? target.offset.bottom : 0;
+
+      const hitboxLeft = target.x + oLeft;
+      const hitboxRight = target.x + target.width - oRight;
+      const hitboxTop = target.y + oTop;
+      const hitboxBottom = target.y + target.height - oBottom;
+      const impactCenterY = bottle.y + bottle.height * 0.5;
+      const clampedImpactTop = Math.max(hitboxTop, Math.min(impactCenterY - splashHeight * 0.5, hitboxBottom - splashHeight));
+
+      // Horizontal exakt an der Zielkante ausrichten
+      if (bottle.speed > 0) {
+        // Bottle kam von links -> Splash rechte Kante an Hitbox-Left, dann insideOverlap in das Ziel
+        x = hitboxLeft - splashWidth + insideOverlap;
+      } else if (bottle.speed < 0) {
+        // Bottle kam von rechts -> Splash linke Kante an Hitbox-Right, dann insideOverlap in das Ziel
+        x = hitboxRight - insideOverlap;
+      } else {
+        // Fallback: mittig um die Bottle
+        x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
+      }
+      // Vertikal an der Impact-Höhe ausrichten (innerhalb der Hitbox clampen)
+      y = clampedImpactTop;
+    } else {
+      // Fallback ohne Ziel: um die Bottle zentrieren
+      x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
+      y = bottle.y + bottle.height * 0.5 - splashHeight * 0.5;
+    }
+
     const splash = new BottleSplash(x, y);
     this.splashes.push(splash);
     setTimeout(() => {
@@ -486,7 +524,10 @@ class World {
    */
   enforceEndbossBlocking() {
     if (this.character && this.endBoss) {
-      const maxCharacterX = this.endBoss.x - this.character.width;
+      const charRightOffset = (this.character.offset && this.character.offset.right) ? this.character.offset.right : 0;
+      const bossLeftOffset = (this.endBoss.offset && this.endBoss.offset.left) ? this.endBoss.offset.left : 0;
+      const requiredOverlapPx = 5; // minimale Überlappung für extrem nahen ersten Hit
+      const maxCharacterX = this.endBoss.x - this.character.width + charRightOffset + bossLeftOffset + requiredOverlapPx;
       if (this.character.x > maxCharacterX) {
         this.character.x = maxCharacterX;
       }

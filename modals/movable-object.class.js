@@ -69,11 +69,18 @@ class MovableObject extends DrawableObject {
    * @description Special collision check for bottles hitting the endboss
    */
   checkThrowableBossCollision(mo) {
-    if (this instanceof ThrowableObject && mo instanceof Endboss) {
-      return this.x < mo.x + mo.width &&
-             this.x + this.width > mo.x &&
-             this.y < mo.y + mo.height &&
-             this.y + this.height > mo.y;
+     if (this instanceof ThrowableObject && mo instanceof Endboss) {
+      const aLeft = this.x + (this.offset && this.offset.left ? this.offset.left : 0);
+      const aRight = this.x + this.width - (this.offset && this.offset.right ? this.offset.right : 0);
+      const aTop = this.y + (this.offset && this.offset.top ? this.offset.top : 0);
+      const aBottom = this.y + this.height - (this.offset && this.offset.bottom ? this.offset.bottom : 0);
+
+      const bLeft = mo.x + (mo.offset && mo.offset.left ? mo.offset.left : 0);
+      const bRight = mo.x + mo.width - (mo.offset && mo.offset.right ? mo.offset.right : 0);
+      const bTop = mo.y + (mo.offset && mo.offset.top ? mo.offset.top : 0);
+      const bBottom = mo.y + mo.height - (mo.offset && mo.offset.bottom ? mo.offset.bottom : 0);
+
+      return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
     }
     return null;
   }
