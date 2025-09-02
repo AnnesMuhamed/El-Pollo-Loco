@@ -308,6 +308,15 @@ class Character extends MovableObject {
       this.isJumpingDown = false;
       this.currentImage = 0;
       audioManager.playJumpSound();
+      
+      // Reset idle timers when jumping
+      this.lastMovementTime = Date.now();
+      this.isIdle = false;
+      this.isLongIdle = false;
+      if (this.isSnoringSoundPlaying) {
+        audioManager.stopSnoringSound();
+        this.isSnoringSoundPlaying = false;
+      }
     }
   }
 
