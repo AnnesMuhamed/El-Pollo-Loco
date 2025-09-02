@@ -114,7 +114,10 @@ function drawSettingsDropdown(ctx) {
     const buttonSpacing = 8;
     let currentY = menuY + 15;
     
-    drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '🔊 Sound', 'sound');
+    // Korrekte audioManager-Referenz verwenden
+    const soundOn = (typeof audioManager !== 'undefined' && audioManager) ? audioManager.soundEnabled : true;
+    const soundText = soundOn ? '🔊 Sound' : '🔇 Muted';
+    drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, soundText, 'sound');
     currentY += buttonHeight + buttonSpacing;
     
     drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, 'ℹ️ Info', 'info');
