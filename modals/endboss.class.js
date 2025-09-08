@@ -7,7 +7,16 @@ class Endboss extends MovableObject {
     lastHit = 0;
     isDead = false;
     speed = 1.1;  // Langsamer als vorher (2)
+    baseSpeed = 1.1;  // Grundgeschwindigkeit für Reset
     isActivated = false;  // Boss wird erst nach erstem Treffer aktiv
+    jumpTowardsCharacter = false;  // Sprung in Richtung Character
+    originalY = 60;  // Original Y-Position
+    jumpHeight = 0;  // Aktuelle Sprung-Höhe
+    jumpSpeed = 6;  // Sprung-Geschwindigkeit
+    isJumping = false;  // Sprung aktiv
+    jumpSpeedY = 0;  // Vertikale Geschwindigkeit (wie bei Flasche)
+    jumpGravity = 0.4;  // Schwerkraft (wie bei Flasche)
+    jumpInterval = null;  // Sprung-Interval Referenz
     
     isPlayingHurtAnimation = false;
     hurtAnimationTimer = null;
@@ -106,7 +115,14 @@ class Endboss extends MovableObject {
         this.movementInterval = setInterval(() => {
             if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated && !window.goToStartScreenCalled) {
                 if (typeof world !== 'undefined' && world.character && this.x > world.character.x + 0) {
-                    this.moveLeft(); 
+                    // Normale Bewegung oder Sprung in Richtung Character
+                    if (this.jumpTowardsCharacter) {
+                        // Aggressiver Sprung: 2x schneller bewegung
+                        this.x -= this.speed * 2;
+                    } else {
+                        // Normale Bewegung
+                        this.moveLeft(); 
+                    }
                 }
             }
         }, 1000 / 60);
@@ -204,6 +220,20 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Stoppt alle Animationen inklusive Sprung (nur für Dead-Animation)
+     */
+    stopAllAnimationsIncludingJump() {
+        this.stopAllAnimations();
+        // Sprung-Interval nur stoppen wenn Boss stirbt
+        if (this.jumpInterval) {
+            clearInterval(this.jumpInterval);
+            this.jumpInterval = null;
+            this.isJumping = false;
+            this.jumpTowardsCharacter = false;
+        }
+    }
+
     stopDeadAnimation() {
         if (this.deadInterval) {
             clearInterval(this.deadInterval);
@@ -244,7 +274,7 @@ class Endboss extends MovableObject {
     }
 
     startDeadAnimation() {
-        this.stopAllAnimations();
+        this.stopAllAnimationsIncludingJump(); // Jetzt mit Sprung-Stopp
         this.stopDeadAnimation();
         this.isDead = true;
         this.isPlayingHurtAnimation = false;
@@ -302,6 +332,12 @@ class Endboss extends MovableObject {
             audioManager.playBossSquawkSound();
         }
 
+        // Geschwindigkeit nach jedem Treffer erhöhen (maximal 3x der Grundgeschwindigkeit)
+        this.speed = Math.min(this.speed + 0.3, this.baseSpeed * 3);
+
+        // Sprung in Richtung Character starten
+        this.startJumpAttack();
+
         this.energy -= 20;
         if (this.energy <= 0) {
             this.energy = 0;
@@ -310,5 +346,41 @@ class Endboss extends MovableObject {
             this.startHurtAnimation();
         }
         this.lastHit = new Date().getTime();
+    }
+
+    /**
+     * Startet Sprung-Angriff in Richtung Character (wie Flasche-Physik)
+     */
+    startJumpAttack() {
+        if (this.isJumping) return;
+        
+        this.isJumping = true;
+        this.jumpTowardsCharacter = true;
+        
+        // Sprung-Physik wie bei der Flasche
+        this.jumpSpeedY = 8;  // Initial-Geschwindigkeit nach oben (niedriger als Flasche)
+        this.y = this.originalY;
+        
+        // Sprung-Animation mit Physik
+        this.jumpInterval = setInterval(() => {
+            // Vertikale Bewegung (Parabel wie Flasche)
+            this.y -= this.jumpSpeedY;
+            this.jumpSpeedY -= this.jumpGravity;
+            
+            // Horizontale Bewegung während des Sprungs (in Richtung Character)
+            if (typeof world !== 'undefined' && world.character && this.x > world.character.x + 0) {
+                this.x -= this.speed * 3; // 3x schneller während Sprung
+            }
+            
+            // Landung prüfen
+            if (this.y >= this.originalY) {
+                this.y = this.originalY;
+                this.jumpSpeedY = 0;
+                this.isJumping = false;
+                this.jumpTowardsCharacter = false;
+                clearInterval(this.jumpInterval);
+                this.jumpInterval = null;
+            }
+        }, 1000 / 60); // 60 FPS für smooth physics
     }
 }
