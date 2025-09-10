@@ -424,6 +424,16 @@ class World {
     if (typeof drawMobileControls === 'function') {
         drawMobileControls(this.ctx);
     }
+    
+    // Settings Button auch im Spiel anzeigen
+    if (typeof drawInGameSettingsButton === 'function') {
+        drawInGameSettingsButton(this.ctx);
+    }
+    
+    // Settings Dropdown im Spiel anzeigen
+    if (window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') {
+        drawInGameSettingsDropdown(this.ctx);
+    }
   }
 
   /**

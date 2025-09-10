@@ -75,6 +75,21 @@ function handleMouseMove(e) {
             drawStartScreen();
         }
     }
+    
+    // In-Game Dropdown-Hover-Logik
+    if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
+        let hoveredButton = null;
+        for (const [action, coords] of Object.entries(window.inGameDropdownButtonCoords)) {
+            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
+                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+                hoveredButton = action;
+                break;
+            }
+        }
+        if (hoveredButton !== window.hoveredInGameDropdownButton) {
+            window.hoveredInGameDropdownButton = hoveredButton;
+        }
+    }
 }
 
 /**
@@ -90,15 +105,29 @@ function isOverAnyClickable(canvasX, canvasY) {
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
 
-    // Settings button
+    // Settings button (Hauptmenü)
     if (!gameStarted && window.settingsButtonCoords) {
         const b = window.settingsButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
 
-    // Dropdown buttons
+    // In-Game Settings button
+    if (gameStarted && window.inGameSettingsButtonCoords) {
+        const b = window.inGameSettingsButtonCoords;
+        if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
+    }
+
+    // Dropdown buttons (Hauptmenü)
     if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
         for (const coords of Object.values(window.dropdownButtonCoords)) {
+            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
+                canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
+        }
+    }
+
+    // In-Game Dropdown buttons
+    if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
+        for (const coords of Object.values(window.inGameDropdownButtonCoords)) {
             if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
                 canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
         }
@@ -306,6 +335,45 @@ function handleDropdownButtonClick(canvasX, canvasY) {
 }
 
 /**
+ * Checks if in-game settings button was clicked
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if in-game settings button was clicked
+ * @description Handles in-game settings button click detection
+ */
+function handleInGameSettingsButtonClick(canvasX, canvasY) {
+    if (gameStarted && window.inGameSettingsButtonCoords) {
+        const btn = window.inGameSettingsButtonCoords;
+        if (canvasX >= btn.x && canvasX <= btn.x + btn.width &&
+            canvasY >= btn.y && canvasY <= btn.y + btn.height) {
+            toggleSettingsDropdown();
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Handles in-game dropdown button clicks
+ * @param {number} canvasX - X coordinate on canvas
+ * @param {number} canvasY - Y coordinate on canvas
+ * @returns {boolean} True if a dropdown button was clicked
+ * @description Detects clicks on in-game dropdown menu buttons
+ */
+function handleInGameDropdownButtonClick(canvasX, canvasY) {
+    if (gameStarted && window.inGameDropdownButtonCoords && window.settingsDropdownVisible) {
+        for (const [action, coords] of Object.entries(window.inGameDropdownButtonCoords)) {
+            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
+                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+                handleDropdownAction(action);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
  * Handles dropdown menu actions
  * @param {string} action - The action to perform
  * @description Executes the selected dropdown menu action
@@ -431,7 +499,15 @@ function handleButtonPress(e, type, touchId = null) {
         return;
     }
     
+    if (handleInGameSettingsButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
     if (handleDropdownButtonClick(canvasX, canvasY)) {
+        return;
+    }
+    
+    if (handleInGameDropdownButtonClick(canvasX, canvasY)) {
         return;
     }
     

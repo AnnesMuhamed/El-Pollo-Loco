@@ -199,6 +199,116 @@ function drawMobileControls(ctx) {
 }
 
 /**
+ * Draws the settings button during gameplay
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates a settings button in the top-right corner during gameplay
+ */
+function drawInGameSettingsButton(ctx) {
+    if (!gameRunning || world.showGameOver || world.gameWon) return;
+    
+    const buttonX = ctx.canvas.width / 2 - 20; // Mittig horizontal (minus halbe Button-Breite)
+    const buttonY = 20;
+    const buttonWidth = 40;
+    const buttonHeight = 40;
+    
+    const gradient = ctx.createLinearGradient(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+    gradient.addColorStop(0, '#4A90E2');
+    gradient.addColorStop(1, '#357ABD');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
+    
+    ctx.strokeStyle = '#2E5A8A';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(buttonX, buttonY, buttonWidth, buttonHeight);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 20px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('⚙️', buttonX + buttonWidth/2, buttonY + buttonHeight/2);
+    
+    window.inGameSettingsButtonCoords = { x: buttonX, y: buttonY, width: buttonWidth, height: buttonHeight };
+}
+
+/**
+ * Draws the settings dropdown menu during gameplay
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @description Creates a dropdown menu during gameplay with sound, info, and fullscreen options
+ */
+function drawInGameSettingsDropdown(ctx) {
+    if (!gameRunning || world.showGameOver || world.gameWon) return;
+    
+    const menuX = ctx.canvas.width / 2 - 65; // Mittig horizontal (minus halbe Menu-Breite)
+    const menuY = 70;
+    const menuWidth = 130;
+    const menuHeight = 150;
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fillRect(menuX, menuY, menuWidth, menuHeight);
+    
+    ctx.strokeStyle = '#4A90E2';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(menuX, menuY, menuWidth, menuHeight);
+    
+    const buttonHeight = 35;
+    const buttonSpacing = 8;
+    let currentY = menuY + 15;
+    
+    // Korrekte audioManager-Referenz verwenden
+    const soundOn = (typeof audioManager !== 'undefined' && audioManager) ? audioManager.soundEnabled : true;
+    const soundText = soundOn ? '🔊 Sound' : '🔇 Muted';
+    drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, soundText, 'sound');
+    currentY += buttonHeight + buttonSpacing;
+    
+    drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, 'ℹ️ Info', 'info');
+    currentY += buttonHeight + buttonSpacing;
+    
+    drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '⛶ Fullscreen', 'fullscreen');
+}
+
+/**
+ * Draws a dropdown menu button for in-game settings
+ * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
+ * @param {number} x - X coordinate of the button
+ * @param {number} y - Y coordinate of the button
+ * @param {number} width - Width of the button
+ * @param {number} height - Height of the button
+ * @param {string} text - Text to display on the button
+ * @param {string} action - Action identifier for the button
+ * @description Creates a styled dropdown button for in-game settings with hover effect
+ */
+function drawInGameDropdownButton(ctx, x, y, width, height, text, action) {
+    const isHovered = window.hoveredInGameDropdownButton === action;
+    
+    const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+    if (isHovered) {
+        gradient.addColorStop(0, '#5A9FE2');
+        gradient.addColorStop(1, '#4A90E2');
+    } else {
+        gradient.addColorStop(0, '#4A90E2');
+        gradient.addColorStop(1, '#357ABD');
+    }
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x, y, width, height);
+    
+    ctx.strokeStyle = '#2E5A8A';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, width, height);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + 10, y + height/2);
+    
+    if (!window.inGameDropdownButtonCoords) {
+        window.inGameDropdownButtonCoords = {};
+    }
+    window.inGameDropdownButtonCoords[action] = { x, y, width, height };
+}
+
+/**
  * Draws a control button with gradient background and text
  * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on
  * @param {number} x - X coordinate of the button
