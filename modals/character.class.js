@@ -347,20 +347,23 @@ class Character extends MovableObject {
    */
   isJumpingOnEnemy(enemy) {
     const characterBottom = this.y + this.height;  // Untere Kante des Characters
-  const characterLeft = this.x;                   // Linke Kante des Characters
-  const characterRight = this.x + this.width;    // Rechte Kante des Characters
-  const enemyTop = enemy.y;                       // Obere Kante des Enemies
-  const enemyLeft = enemy.x;                      // Linke Kante des Enemies
-  const enemyRight = enemy.x + enemy.width;      // Rechte Kante des Enemies
+    const enemyTop = enemy.y;                       // Obere Kante des Enemies
+    const enemyLeft = enemy.x;                      // Linke Kante des Enemies
+    const enemyRight = enemy.x + enemy.width;      // Rechte Kante des Enemies
 
-  const distance = characterBottom - enemyTop;    // Vertikaler Abstand
-  const verticalCollision = distance >= -15 && distance <= 25;  // Vertikale Kollision prüfen
-  const horizontalOverlap = characterRight > enemyLeft && characterLeft < enemyRight;  // Horizontale Überlappung
+    // Nur mittlerer Bereich des Characters für Jump-Kill (40px breit)
+    const characterCenterX = this.x + this.width / 2;  // Mitte des Characters
+    const jumpKillLeft = characterCenterX - 20;        // 20px links der Mitte  
+    const jumpKillRight = characterCenterX + 20;       // 20px rechts der Mitte
 
-  // checken, ob der Charakter gerade fällt (speedY negativ, wenn fallend)
-  const isFalling = this.speedY < 0;
+    const distance = characterBottom - enemyTop;    // Vertikaler Abstand
+    const verticalCollision = distance >= -15 && distance <= 25;  // Vertikale Kollision prüfen
+    const horizontalOverlap = jumpKillRight > enemyLeft && jumpKillLeft < enemyRight;  // Präzisere horizontale Überlappung
 
-  return verticalCollision && horizontalOverlap && isFalling;
+    // checken, ob der Charakter gerade fällt (speedY negativ, wenn fallend)
+    const isFalling = this.speedY < 0;
+
+    return verticalCollision && horizontalOverlap && isFalling;
   }
 }
 

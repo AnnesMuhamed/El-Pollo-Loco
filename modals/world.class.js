@@ -77,10 +77,10 @@ class World {
   checkCollisions() {
     this.collisionInterval = setInterval(() => {
       if (!window.goToStartScreenCalled) {
-        this.checkEnemyCollisions();
-        this.checkCoinCollisions();
-        this.checkBottleCollisions();
-        this.checkBossBottleCollision();
+      this.checkEnemyCollisions();
+      this.checkCoinCollisions();
+      this.checkBottleCollisions();
+      this.checkBossBottleCollision();
         this.checkEnemyBottleCollision(); 
       }
     }, 50); 
@@ -91,11 +91,37 @@ class World {
    * @description Handles enemy death when jumped on and character damage on side collision
    */
   checkEnemyCollisions() {
-    this.level.enemies.forEach((enemy) => {
-      if (enemy.isDead) return;
-      if (this.handleJumpKillCollision(enemy)) return; 
-      this.handleSideCollision(enemy);
-    });
+    // Finde nächstgelegenen Enemy im Jump-Bereich
+    let closestEnemy = null;
+    let closestDistance = Infinity;
+    let jumpKillOccurred = false;
+
+    for (let enemy of this.level.enemies) {
+      if (enemy.isDead) continue;
+      
+      // Prüfe ob Character auf Enemy springt
+      if (this.character.isJumpingOnEnemy(enemy)) {
+        let distance = Math.abs(this.character.x - enemy.x);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestEnemy = enemy;
+        }
+      }
+    }
+
+    // Nur den nächstgelegenen Enemy treffen
+    if (closestEnemy) {
+      this.handleJumpKillCollision(closestEnemy);
+      jumpKillOccurred = true;
+    }
+
+    // Side-Collisions nur prüfen wenn kein Jump-Kill stattfand
+    if (!jumpKillOccurred) {
+      for (let enemy of this.level.enemies) {
+        if (enemy.isDead) continue;
+        this.handleSideCollision(enemy);
+      }
+    }
     
     if (!this.endBoss.isDead && !this.endBoss.isPlayingHurtAnimation) {
       this.handleBossCollision();
@@ -122,21 +148,17 @@ class World {
    * @description Kills enemy when character jumps on them
    */
   handleJumpKillCollision(enemy) {
-    if (this.character.isJumpingOnEnemy(enemy)) {
-      enemy.isDead = true;
-      audioManager.playEnemyHitSound();
-      this.character.speedY = -40;
-      const targetY = 180;
-      const bounceDown = () => {
-        if (this.character.y < targetY) {
-          this.character.y += 2; 
-          requestAnimationFrame(bounceDown);
-        } else {
-          this.character.y = targetY; 
-          this.character.speedY = 0; 
-        }
-      };
-      bounceDown();
+      if (this.character.isJumpingOnEnemy(enemy)) {
+        enemy.isDead = true;
+        audioManager.playEnemyHitSound();
+      
+      // Character springt nach Jump-Kill wieder hoch (niedriger als normaler Sprung)
+      this.character.speedY = 20;  // Niedriger als Space-Sprung (30)
+      this.character.jumpStartY = this.character.y;
+      this.character.isJumpingUp = true;
+      this.character.isJumpingDown = false;
+      this.character.currentImage = 0;  // Reset Jump-Animation
+      
       return true;
     }
     return false;
@@ -151,7 +173,7 @@ class World {
     const distance = Math.abs(this.character.x - enemy.x);
     
     if (distance < 200 && this.character.isColliding(enemy) && !this.hitEnemies.has(enemy)) {
-      this.character.hit();
+        this.character.hit();
       const percentage = (this.character.energy / 100) * 100;
       this.statusBar.setPercentage(percentage);
       this.checkCharacterDeath();
@@ -164,11 +186,11 @@ class World {
    * @description Initiates game over sequence when character dies
    */
   checkCharacterDeath() {
-    if (this.character.isDead() && !this.characterDeathTime) {
-      this.characterDeathTime = new Date().getTime();
-      this.gameOverScreenShown = false;
+        if (this.character.isDead() && !this.characterDeathTime) {
+          this.characterDeathTime = new Date().getTime();
+          this.gameOverScreenShown = false;
       setTimeout(() => { this.showGameOver = true; }, 3000);
-    }
+        }
   }
 
   /**
@@ -221,12 +243,12 @@ class World {
    */
   handleBossHit(bottle, index) {
     this.throwableObject.splice(index, 1);
-    this.endBoss.hit();
-    audioManager.playBossHitSound();
-    if (Math.abs(this.character.x - this.endBoss.x) < 400) {
-      audioManager.playBossSquawkSound();
-    }
-    this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
+        this.endBoss.hit();
+        audioManager.playBossHitSound();
+        if (Math.abs(this.character.x - this.endBoss.x) < 400) {
+          audioManager.playBossSquawkSound();
+        }
+        this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
     this.checkBossDeath();
     this.spawnBottleSplash(bottle, this.endBoss);
   }
@@ -288,14 +310,14 @@ class World {
    * @description Sets game as won when boss energy reaches 0
    */
   checkBossDeath() {
-    if (this.endBoss.energy <= 0) {
-      this.endBoss.isDead = true;
-      if (audioManager.bossSquawkSound) {
-        audioManager.bossSquawkSound.pause();
-        audioManager.bossSquawkSound.currentTime = 0;
-      }
-      this.gameWon = true;
-      audioManager.playBossDeathSound();
+        if (this.endBoss.energy <= 0) {
+          this.endBoss.isDead = true;
+          if (audioManager.bossSquawkSound) {
+            audioManager.bossSquawkSound.pause();
+            audioManager.bossSquawkSound.currentTime = 0;
+          }
+          this.gameWon = true;
+          audioManager.playBossDeathSound();
     }
   }
 
@@ -424,7 +446,7 @@ class World {
     if (typeof drawMobileControls === 'function') {
         drawMobileControls(this.ctx);
     }
-    
+
     // Settings Button auch im Spiel anzeigen
     if (typeof drawInGameSettingsButton === 'function') {
         drawInGameSettingsButton(this.ctx);
@@ -479,10 +501,10 @@ class World {
       
       drawGameOverButtons(this.ctx);
     } else if (this.character.isDead() && this.characterDeathTime) {
-      const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
-      
-      if (timeSinceDeath < 3000 && this.youLostImage.complete) {
-        this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
+        const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
+        
+        if (timeSinceDeath < 3000 && this.youLostImage.complete) {
+            this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
       }
     }
   }
