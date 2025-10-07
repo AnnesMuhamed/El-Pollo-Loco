@@ -123,8 +123,13 @@ class World {
       }
     }
     
-    if (!this.endBoss.isDead && !this.endBoss.isPlayingHurtAnimation) {
-      this.handleBossCollision();
+    // Endboss Kollision prüfen (ohne Hurt-Animation Einschränkung für kontinuierlichen Schaden)
+    if (!this.endBoss.isDead) {
+      const bossCollisionActive = this.handleBossCollision();
+      // Blocking nur wenn keine Kollision aktiv ist
+      if (!bossCollisionActive) {
+        this.enforceEndbossBlocking();
+      }
     }
   }
 
@@ -133,12 +138,17 @@ class World {
    * @description Manages boss attacks and character damage
    */
   handleBossCollision() {
-    if (this.character.isColliding(this.endBoss) && !this.endBoss.isPlayingAttackAnimation) {
-      this.character.hit();
-      this.statusBar.setPercentage((this.character.energy / 100) * 100);
-      this.checkCharacterDeath();
-      this.endBoss.startAttackAnimation();
+    if (this.character.isColliding(this.endBoss)) {
+      if (!this.endBoss.isPlayingAttackAnimation) {
+        this.character.hit();
+        this.statusBar.setPercentage((this.character.energy / 100) * 100);
+        this.checkCharacterDeath();
+        this.endBoss.startAttackAnimation();
+      }
+      // Während Kollision: Kein Blocking, Character kann Schaden nehmen
+      return true; // Kollision aktiv
     }
+    return false; // Keine Kollision
   }
 
   /**
@@ -535,7 +545,6 @@ class World {
     }
 
     this.clearAndSetupCanvas();
-    this.enforceEndbossBlocking();
     this.drawGameObjects();
     this.drawUIElements();
 
@@ -555,10 +564,11 @@ class World {
    */
   enforceEndbossBlocking() {
     if (this.character && this.endBoss) {
-      const charRightOffset = (this.character.offset && this.character.offset.right) ? this.character.offset.right : 0;
-      const bossLeftOffset = (this.endBoss.offset && this.endBoss.offset.left) ? this.endBoss.offset.left : 0;
-      const requiredOverlapPx = 5; // minimale Überlappung für extrem nahen ersten Hit
-      const maxCharacterX = this.endBoss.x - this.character.width + charRightOffset + bossLeftOffset + requiredOverlapPx;
+      // Berücksichtige Offsets für präzise Bild-zu-Bild Kollision
+      const charRightOffset = this.character.offset ? this.character.offset.right : 0;
+      const bossLeftOffset = this.endBoss.offset ? this.endBoss.offset.left : 0;
+      
+      const maxCharacterX = this.endBoss.x + bossLeftOffset - this.character.width + charRightOffset;
       if (this.character.x > maxCharacterX) {
         this.character.x = maxCharacterX;
       }

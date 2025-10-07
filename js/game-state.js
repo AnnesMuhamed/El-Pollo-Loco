@@ -310,6 +310,12 @@ function setupAudio() {
  */
 function createGameWorld() {
     resetGameOverStates();
+    
+    // Cleanup alte World-Instanz falls vorhanden
+    if (world && world.endBoss) {
+        world.endBoss.cleanup();
+    }
+    
     world = new World(canvas, keyboard);
     world.level = window.level1;
     world.character.world = world;

@@ -78,7 +78,9 @@ class Endboss extends MovableObject {
      */
     constructor () {
         super().loadImage(this.IMAGES_ALERT[0]); 
-        this.offset = { top: 15, left: 25, right: 25, bottom: 15 };
+        // Angepasste Offsets für sichtbare Bildteile (ohne transparente Bereiche)
+        // Größerer bottom-Offset um transparenten unteren Bereich zu vermeiden
+        this.offset = { top: 80, left: 30, right: 30, bottom: 50 };
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ALERT);
         this.loadImages(this.IMAGES_ATTACK);
@@ -241,6 +243,30 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Cleans up all intervals and resets endboss state
+     * @description Stops all animations and intervals, used when restarting game
+     */
+    cleanup() {
+        this.stopAllAnimationsIncludingJump();
+        this.stopDeadAnimation();
+        
+        // Reset all intervals
+        if (this.movementInterval) {
+            clearInterval(this.movementInterval);
+            this.movementInterval = null;
+        }
+        
+        // Reset endboss state
+        this.isDead = false;
+        this.isActivated = false;
+        this.energy = 100;
+        this.speed = this.baseSpeed;
+        this.isJumping = false;
+        this.jumpTowardsCharacter = false;
+        this.y = this.originalY;
+    }
+
     startAttackAnimation() {
         if (this.isDead) {
             return;
@@ -325,6 +351,7 @@ class Endboss extends MovableObject {
 
         if (!this.isActivated) {
             this.isActivated = true;
+            this.startMovement(); // Bewegung starten nach Aktivierung
         }
 
         if (audioManager) {
