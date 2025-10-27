@@ -20,7 +20,6 @@ class World {
   gameOverScreenShown = false;
   gameWon = false;
   victoryScreenShown = false;
-  hitEnemies = new Set();
 
   /**
    * Creates a new World instance
@@ -91,7 +90,6 @@ class World {
    * @description Handles enemy death when jumped on and character damage on side collision
    */
   checkEnemyCollisions() {
-    // Finde nächstgelegenen Enemy im Jump-Bereich
     let closestEnemy = null;
     let closestDistance = Infinity;
     let jumpKillOccurred = false;
@@ -99,7 +97,6 @@ class World {
     for (let enemy of this.level.enemies) {
       if (enemy.isDead) continue;
       
-      // Prüfe ob Character auf Enemy springt
       if (this.character.isJumpingOnEnemy(enemy)) {
         let distance = Math.abs(this.character.x - enemy.x);
         if (distance < closestDistance) {
@@ -109,13 +106,11 @@ class World {
       }
     }
 
-    // Nur den nächstgelegenen Enemy treffen
     if (closestEnemy) {
       this.handleJumpKillCollision(closestEnemy);
       jumpKillOccurred = true;
     }
 
-    // Side-Collisions nur prüfen wenn kein Jump-Kill stattfand
     if (!jumpKillOccurred) {
       for (let enemy of this.level.enemies) {
         if (enemy.isDead) continue;
@@ -123,10 +118,8 @@ class World {
       }
     }
     
-    // Endboss Kollision prüfen (ohne Hurt-Animation Einschränkung für kontinuierlichen Schaden)
     if (!this.endBoss.isDead) {
       const bossCollisionActive = this.handleBossCollision();
-      // Blocking nur wenn keine Kollision aktiv ist
       if (!bossCollisionActive) {
         this.enforceEndbossBlocking();
       }
@@ -145,10 +138,9 @@ class World {
         this.checkCharacterDeath();
         this.endBoss.startAttackAnimation();
       }
-      // Während Kollision: Kein Blocking, Character kann Schaden nehmen
-      return true; // Kollision aktiv
+      return true;
     }
-    return false; // Keine Kollision
+    return false;
   }
 
   /**
@@ -161,13 +153,11 @@ class World {
       if (this.character.isJumpingOnEnemy(enemy)) {
         enemy.isDead = true;
         audioManager.playEnemyHitSound();
-      
-      // Character springt nach Jump-Kill wieder hoch (niedriger als normaler Sprung)
-      this.character.speedY = 20;  // Niedriger als Space-Sprung (30)
+      this.character.speedY = 20; 
       this.character.jumpStartY = this.character.y;
       this.character.isJumpingUp = true;
       this.character.isJumpingDown = false;
-      this.character.currentImage = 0;  // Reset Jump-Animation
+      this.character.currentImage = 0;
       
       return true;
     }
@@ -181,13 +171,14 @@ class World {
    */
   handleSideCollision(enemy) {
     const distance = Math.abs(this.character.x - enemy.x);
+    const timeSinceLastHit = new Date().getTime() - enemy.lastHit;
     
-    if (distance < 200 && this.character.isColliding(enemy) && !this.hitEnemies.has(enemy)) {
-        this.character.hit();
+    if (distance < 200 && this.character.isColliding(enemy) && timeSinceLastHit > 800) {
+      this.character.hit();
       const percentage = (this.character.energy / 100) * 100;
       this.statusBar.setPercentage(percentage);
       this.checkCharacterDeath();
-      this.hitEnemies.add(enemy);
+      enemy.lastHit = new Date().getTime();
     }
   }
 
