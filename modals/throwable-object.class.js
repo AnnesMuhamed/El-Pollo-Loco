@@ -18,7 +18,11 @@ class ThrowableObject extends MovableObject {
         this.height = 50;
         this.width = 40;
         this.speed = 0.5;  // Noch langsamer horizontal für längeren Bogen
+<<<<<<< HEAD
         this.speedY = 20;  // Viel stärkere initiale Geschwindigkeit nach oben
+=======
+        this.speedY = 24;  // Viel stärkere initiale Geschwindigkeit nach oben
+>>>>>>> de83683 (The thrown bottle's vertical trajectory height has been increased.)
         this.acceleration = 1.5;  // Noch langsamere Gravitation für längeren Bogen
         this.applyGravity();  // Gravitation anwenden
         this.animate();
