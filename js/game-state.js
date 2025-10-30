@@ -25,121 +25,6 @@ function createNewInstances() {
 }
 
 /**
- * Creates enemies array for the level
- * @returns {Array} Array of enemy objects
- * @description Creates enemies with mobile/desktop differentiation
- */
-function createEnemiesArray() {
-    const enemies = [
-        new Chicken(),
-        new smallChicken(),
-        new Chicken(),
-        new smallChicken(),
-        new Chicken(),
-        new smallChicken()
-    ];
-
-    if (!isMobile) {
-        enemies.push(
-            new Chicken(),
-            new smallChicken(),
-            new Chicken(),
-            new smallChicken(),
-            new Chicken(),
-            new smallChicken()
-        );
-    }
-
-    return enemies;
-}
-
-/**
- * Creates background objects array for the level
- * @returns {Array} Array of background objects
- * @description Creates layered background objects with proper positioning
- */
-function createBackgroundObjectsArray() {
-    return [
-        new BackgroundObject('img/5_background/layers/air.png', -719),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
-
-        new BackgroundObject('img/5_background/layers/air.png', 0),
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/air.png', 719),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719),
-
-        new BackgroundObject('img/5_background/layers/air.png', 719*2),
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/air.png', 719*3),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*3),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*3),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*3)
-    ];
-}
-
-/**
- * Creates coins array for the level
- * @returns {Array} Array of coin objects
- * @description Creates coins with mobile/desktop differentiation
- */
-function createCoinsArray() {
-    const coins = [
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins()
-    ];
-
-    if (!isMobile) {
-        coins.push(
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins()
-        );
-    }
-
-    return coins;
-}
-
-/**
- * Creates bottles array for the level
- * @returns {Array} Array of bottle objects
- * @description Creates bottles with mobile/desktop differentiation
- */
-function createBottlesArray() {
-    const bottles = [
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle()
-    ];
-
-    if (!isMobile) {
-        bottles.push(
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle()
-        );
-    }
-
-    return bottles;
-}
-
-/**
  * Resets the game state and initializes a new game
  * @description Resets all game variables, creates new level, and prepares for a new game session
  */
@@ -148,13 +33,7 @@ function resetGame() {
     resetGameOverStates();
     createNewInstances();
     
-    const enemies = createEnemiesArray();
-    const clouds = [new Cloud()];
-    const backgroundObjects = createBackgroundObjectsArray();
-    const coins = createCoinsArray();
-    const bottles = createBottlesArray();
-
-    window.level1 = new Level(enemies, clouds, backgroundObjects, coins, bottles);
+    window.level1 = initLevel1();
 }
 
 /**
@@ -195,92 +74,7 @@ function resetVictoryStates() {
  * @description Creates a new level with enemies, clouds, background, coins, and bottles
  */
 function createInitialLevel() {
-    const enemies = [
-        new Chicken(),
-        new smallChicken(),
-        new Chicken(),
-        new smallChicken(),
-        new Chicken(),
-        new smallChicken(),
-        new Chicken(),
-        new smallChicken()
-    ];
-
-    if (!isMobile) {
-        enemies.push(
-            new Chicken(),
-            new smallChicken(),
-            new Chicken(),
-            new smallChicken()
-        );
-    }
-
-    const clouds = [
-        new Cloud()
-    ];
-
-    const backgroundObjects = [
-        new BackgroundObject('img/5_background/layers/air.png', -719),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', -719),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', -719),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', -719),
-
-        new BackgroundObject('img/5_background/layers/air.png', 0),
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/air.png', 719),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719),
-
-        new BackgroundObject('img/5_background/layers/air.png', 719*2),
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719*2),
-        new BackgroundObject('img/5_background/layers/air.png', 719*3),
-        new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719*3),
-        new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719*3),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719*3)
-    ];
-
-    const coins = [
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins(),
-        new window.coins()
-    ];
-
-    if (!isMobile) {
-        coins.push(
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins(),
-            new window.coins()
-        );
-    }
-
-    const bottles = [
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle(),
-        new window.bottle()
-    ];
-
-    if (!isMobile) {
-        bottles.push(
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle(),
-            new window.bottle()
-        );
-    }
-
-    return new Level(enemies, clouds, backgroundObjects, coins, bottles);
+    return initLevel1();
 }
 
 /**
@@ -310,8 +104,6 @@ function setupAudio() {
  */
 function createGameWorld() {
     resetGameOverStates();
-    
-    // Cleanup alte World-Instanz falls vorhanden
     if (world && world.endBoss) {
         world.endBoss.cleanup();
     }
@@ -351,10 +143,6 @@ function startGame() {
     createGameWorld();
     setupCanvasAndEvents();
 }
-
-
-
-
 
 /**
  * Returns to the start screen after victory
@@ -444,6 +232,7 @@ function goHome() {
     drawStartScreen();
 }
 
+window.startGame = startGame;
 window.goToStartScreen = goToStartScreen;
 window.restartGame = restartGame;
 window.goHome = goHome; 
