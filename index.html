@@ -56,7 +56,24 @@
 
     <h1>El Pollo Loco</h1>
 
+    <div class="game-container">
     <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
+
+    <div id="mobile-controls" class="mobile-controls" style="display:none;">
+        <button class="mc-btn" id="btn-left"
+            onpointerdown="pressKey('LEFT')" onpointerup="releaseKey('LEFT')" onpointerleave="releaseKey('LEFT')"
+            onclick="return false">◀</button>
+        <button class="mc-btn" id="btn-right"
+            onpointerdown="pressKey('RIGHT')" onpointerup="releaseKey('RIGHT')" onpointerleave="releaseKey('RIGHT')"
+            onclick="return false">▶</button>
+        <button class="mc-btn" id="btn-jump"
+            onpointerdown="pressKey('SPACE')" onpointerup="releaseKey('SPACE')" onpointerleave="releaseKey('SPACE')"
+            onclick="return false">⬆</button>
+        <button class="mc-btn" id="btn-throw"
+            onpointerdown="pressKey('D')" onpointerup="releaseKey('D')" onpointerleave="releaseKey('D')"
+            onclick="return false">💥</button>
+    </div>
+    </div>
 
     <!-- Info Modal -->
     <div id="infoModal" class="info-modal hidden" onclick="if(event.target === this) hide('infoModal')">
@@ -154,4 +171,43 @@
         <button onclick="show('impressumModal')" class="impressum-link">Impressum</button>
     </div>
 </body>
+<script>
+    /**
+     * Sets a keyboard key to pressed state
+     * @param {keyof Keyboard} key
+     */
+    function pressKey(key) {
+        if (typeof keyboard !== 'undefined' && keyboard) {
+            keyboard[key] = true;
+        }
+    }
+
+    /**
+     * Releases a keyboard key
+     * @param {keyof Keyboard} key
+     */
+    function releaseKey(key) {
+        if (typeof keyboard !== 'undefined' && keyboard) {
+            keyboard[key] = false;
+        }
+    }
+
+    (function setupMobileControlsVisibility() {
+        const el = document.getElementById('mobile-controls');
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const apply = () => {
+            const small = window.innerWidth < 1025;
+            const active = !!(el && isTouch && small);
+            if (el) el.style.display = active ? 'flex' : 'none';
+            if (active) {
+                window.domMobileControlsEnabled = true;
+                document.body.classList.add('mobile-controls-active');
+            } else {
+                document.body.classList.remove('mobile-controls-active');
+            }
+        };
+        apply();
+        window.addEventListener('resize', apply);
+    })();
+</script>
 </html>

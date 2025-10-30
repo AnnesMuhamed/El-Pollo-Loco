@@ -174,6 +174,9 @@ function drawDropdownButton(ctx, x, y, width, height, text, action) {
  * @description Renders touch controls for mobile devices (left, right, jump, throw buttons)
  */
 function drawMobileControls(ctx) {
+    if (window.domMobileControlsEnabled) return;
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isTouch) return;
     if (!gameRunning || world.showGameOver || world.gameWon) return;
     if (window.innerWidth >= 1025) return;
     

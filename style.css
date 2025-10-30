@@ -74,6 +74,84 @@ canvas {
     aspect-ratio: 3/2;
 }
 
+.game-container {
+    width: 100%;
+    max-width: 740px;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: transparent;
+    border-radius: 12px;
+}
+
+@media only screen and (max-width: 325px) {
+    .game-container {
+        padding: 0;
+    }
+}
+
+/* Mobile Controls (DOM unter dem Canvas) */
+.mobile-controls {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    display: none;
+    gap: 10px;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+}
+
+.mobile-controls .mc-btn {
+    width: clamp(36px, 10vw, 56px);
+    aspect-ratio: 1 / 1;
+    font-size: clamp(10px, 3vw, 18px);
+    border-radius: clamp(6px, 1vw, 10px);
+    border: 2px solid #2E5A8A;
+    background: linear-gradient(180deg, #FFD700, #FFA500);
+    color: #222;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+@media (max-width: 1024px) {
+    body { padding: 0; }
+    .mobile-controls { display: flex; justify-content: space-evenly; flex-wrap: nowrap; gap: 8px; }
+    .mobile-controls .mc-btn { font-size: clamp(10px, 2.4vw, 18px); }
+}
+
+@media (max-width: 600px) {
+    .mobile-controls { gap: 6px; }
+    .mobile-controls .mc-btn { font-size: clamp(10px, 2vw, 16px); }
+}
+
+/* Höhenbasierte Skalierung für sehr kleine Bildschirme */
+@media (max-height: 700px) {
+    /* Buttons skalieren bereits prozentual; keine Mindestgrößen nötig */
+}
+
+@media (max-height: 600px) {
+    .mobile-controls { gap: 8px; }
+}
+
+@media (max-height: 500px) {
+    .mobile-controls { gap: 6px; }
+    canvas { max-height: 65vh; }
+}
+
+@media (max-height: 420px) {
+    .mobile-controls { gap: 6px; }
+    canvas { max-height: 58vh; }
+}
+
+@media (max-height: 360px) {
+    canvas { max-height: 55vh; }
+}
+
 
 
 
@@ -538,6 +616,9 @@ canvas {
     body {
         min-height: 0;
     }
+    body.mobile-controls-active h1 {
+        display: none;
+    }
     canvas {
         max-width: 100%;
         max-height: 70vh;
@@ -560,6 +641,13 @@ canvas {
 
     .privacy-link-container {
         display: none;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    body {
+        background-size: cover;
+        background-position: center;
     }
 }
 
@@ -626,5 +714,14 @@ canvas {
     
     .impressum-header h1 {
         font-size: 24px;
+    }
+}
+
+@media (max-width: 1024px) {
+    h1 {
+        display: none;
+    }
+    .privacy-link-container {
+        display: none;
     }
 }
