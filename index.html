@@ -36,7 +36,6 @@
     <script src="./js/utils.js"></script>
     <script src="./js/game.js"></script>
     <script>
-        // Simple modal functions
         function show(id) {
             document.getElementById(id).classList.remove('hidden');
         }
@@ -74,8 +73,6 @@
             onclick="return false">💥</button>
     </div>
     </div>
-
-    <!-- Info Modal -->
     <div id="infoModal" class="info-modal hidden" onclick="if(event.target === this) hide('infoModal')">
         <div class="info-content">
             <h2>Spielregeln</h2>
@@ -103,8 +100,6 @@
             <button onclick="hide('infoModal')" class="close-button">Schließen</button>
         </div>
     </div>
-
-    <!-- Impressum Modal -->
     <div id="impressumModal" class="impressum-modal hidden" onclick="if(event.target === this) hide('impressumModal')">
         <div class="impressum-content">
             <div class="impressum-header">
@@ -165,8 +160,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Datenschutzlink -->
     <div class="privacy-link-container">
         <button onclick="show('impressumModal')" class="impressum-link">Impressum</button>
     </div>

@@ -93,7 +93,6 @@ class MovableObject extends DrawableObject {
    */
   checkOffsetCollision(mo) {
     if (this.offset && mo.offset) {
-      // Präzise Kollision mit angepassten Offsets für sichtbare Bildteile
       return this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
              this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
              this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom &&
@@ -135,7 +134,6 @@ class MovableObject extends DrawableObject {
       return throwableBossResult;
     }
     
-    // Verwende Offset-Kollision für präzise Bild-zu-Bild Berührung
     const offsetResult = this.checkOffsetCollision(mo);
     if (offsetResult !== null) {
       return offsetResult;
@@ -217,5 +215,4 @@ class MovableObject extends DrawableObject {
   }
 }
 
-// Make MovableObject class globally available
 window.MovableObject = MovableObject;

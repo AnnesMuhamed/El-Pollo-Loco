@@ -48,6 +48,4 @@ class bottle extends CollectibleObjects {
         }, 200);
     }
 }
-
-// Make bottle class globally available
 window.bottle = bottle;

@@ -6,33 +6,32 @@ class Endboss extends MovableObject {
     energy = 100;
     lastHit = 0;
     isDead = false;
-    speed = 1.1;  // Langsamer als vorher (2)
-    baseSpeed = 1.1;  // Grundgeschwindigkeit für Reset
-    isActivated = false;  // Boss wird erst nach erstem Treffer aktiv
-    jumpTowardsCharacter = false;  // Sprung in Richtung Character
-    originalY = 60;  // Original Y-Position
-    jumpHeight = 0;  // Aktuelle Sprung-Höhe
-    jumpSpeed = 6;  // Sprung-Geschwindigkeit
-    isJumping = false;  // Sprung aktiv
-    jumpSpeedY = 0;  // Vertikale Geschwindigkeit (wie bei Flasche)
-    jumpGravity = 0.4;  // Schwerkraft (wie bei Flasche)
-    jumpInterval = null;  // Sprung-Interval Referenz
-    
+    speed = 1.1;  
+    baseSpeed = 1.1; 
+    isActivated = false; 
+    jumpTowardsCharacter = false; 
+    originalY = 60; 
+    jumpHeight = 0; 
+    jumpSpeed = 6; 
+    isJumping = false; 
+    jumpSpeedY = 0; 
+    jumpGravity = 0.4; 
+    jumpInterval = null;  
     isPlayingHurtAnimation = false;
     hurtAnimationTimer = null;
-    isPlayingAttackAnimation = false;  // Neue Variable für Attack-Animation
-    isPlayingAlertAnimation = false;  // Neue Variable für Alert-Animation
+    isPlayingAttackAnimation = false;  
+    isPlayingAlertAnimation = false;  
     currentAnimationFrame = 0;
     currentWalkingFrame = 0;
     currentDeadFrame = 0;
-    currentAttackFrame = 0;  // Neue Variable für Attack-Frame
-    currentAlertFrame = 0;  // Neue Variable für Alert-Frame
+    currentAttackFrame = 0;  
+    currentAlertFrame = 0;  
     animationInterval = null;
     walkingInterval = null;
     deadInterval = null;
-    attackInterval = null;  // Neue Variable für Attack-Interval
-    alertInterval = null;  // Neue Variable für Alert-Interval
-    movementInterval = null;  // Neue Variable für Bewegung
+    attackInterval = null;  
+    alertInterval = null;  
+    movementInterval = null; 
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -78,8 +77,6 @@ class Endboss extends MovableObject {
      */
     constructor () {
         super().loadImage(this.IMAGES_ALERT[0]); 
-        // Angepasste Offsets für sichtbare Bildteile (ohne transparente Bereiche)
-        // Größerer bottom-Offset um transparenten unteren Bereich zu vermeiden
         this.offset = { top: 80, left: 30, right: 30, bottom: 50 };
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ALERT);
@@ -117,12 +114,9 @@ class Endboss extends MovableObject {
         this.movementInterval = setInterval(() => {
             if (!this.isDead && !this.isPlayingHurtAnimation && !this.isPlayingAttackAnimation && gameRunning && this.isActivated && !window.goToStartScreenCalled) {
                 if (typeof world !== 'undefined' && world.character && this.x > world.character.x + 0) {
-                    // Normale Bewegung oder Sprung in Richtung Character
                     if (this.jumpTowardsCharacter) {
-                        // Aggressiver Sprung: 2x schneller bewegung
                         this.x -= this.speed * 2;
                     } else {
-                        // Normale Bewegung
                         this.moveLeft(); 
                     }
                 }
@@ -227,7 +221,6 @@ class Endboss extends MovableObject {
      */
     stopAllAnimationsIncludingJump() {
         this.stopAllAnimations();
-        // Sprung-Interval nur stoppen wenn Boss stirbt
         if (this.jumpInterval) {
             clearInterval(this.jumpInterval);
             this.jumpInterval = null;
@@ -250,14 +243,11 @@ class Endboss extends MovableObject {
     cleanup() {
         this.stopAllAnimationsIncludingJump();
         this.stopDeadAnimation();
-        
-        // Reset all intervals
         if (this.movementInterval) {
             clearInterval(this.movementInterval);
             this.movementInterval = null;
         }
         
-        // Reset endboss state
         this.isDead = false;
         this.isActivated = false;
         this.energy = 100;
@@ -300,7 +290,7 @@ class Endboss extends MovableObject {
     }
 
     startDeadAnimation() {
-        this.stopAllAnimationsIncludingJump(); // Jetzt mit Sprung-Stopp
+        this.stopAllAnimationsIncludingJump(); 
         this.stopDeadAnimation();
         this.isDead = true;
         this.isPlayingHurtAnimation = false;
@@ -351,7 +341,7 @@ class Endboss extends MovableObject {
 
         if (!this.isActivated) {
             this.isActivated = true;
-            this.startMovement(); // Bewegung starten nach Aktivierung
+            this.startMovement(); 
         }
 
         if (audioManager) {
@@ -359,12 +349,8 @@ class Endboss extends MovableObject {
             audioManager.playBossSquawkSound();
         }
 
-        // Geschwindigkeit nach jedem Treffer erhöhen (maximal 3x der Grundgeschwindigkeit)
         this.speed = Math.min(this.speed + 0.3, this.baseSpeed * 3);
-
-        // Sprung in Richtung Character starten
         this.startJumpAttack();
-
         this.energy -= 20;
         if (this.energy <= 0) {
             this.energy = 0;
@@ -383,23 +369,16 @@ class Endboss extends MovableObject {
         
         this.isJumping = true;
         this.jumpTowardsCharacter = true;
-        
-        // Sprung-Physik wie bei der Flasche
-        this.jumpSpeedY = 8;  // Initial-Geschwindigkeit nach oben (niedriger als Flasche)
+        this.jumpSpeedY = 8;
         this.y = this.originalY;
-        
-        // Sprung-Animation mit Physik
         this.jumpInterval = setInterval(() => {
-            // Vertikale Bewegung (Parabel wie Flasche)
             this.y -= this.jumpSpeedY;
             this.jumpSpeedY -= this.jumpGravity;
-            
-            // Horizontale Bewegung während des Sprungs (in Richtung Character)
+        
             if (typeof world !== 'undefined' && world.character && this.x > world.character.x + 0) {
-                this.x -= this.speed * 3; // 3x schneller während Sprung
+                this.x -= this.speed * 3;
             }
             
-            // Landung prüfen
             if (this.y >= this.originalY) {
                 this.y = this.originalY;
                 this.jumpSpeedY = 0;
@@ -408,6 +387,6 @@ class Endboss extends MovableObject {
                 clearInterval(this.jumpInterval);
                 this.jumpInterval = null;
             }
-        }, 1000 / 60); // 60 FPS für smooth physics
+        }, 1000 / 60);
     }
 }

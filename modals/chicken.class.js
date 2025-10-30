@@ -22,13 +22,10 @@ class Chicken extends MovableObject {
      */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
-        // Angepasste Offsets für sichtbare Bildteile (ohne transparente Bereiche)
         this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
-
-        // Sicherstellen, dass keine Chicken links vom Character spawnen (x=120)
-        // Character startet bei x=120, also Enemies ab x=400 (280px Sicherheitsabstand)
+        
         if (Math.random() < 0.7) {
             this.x = 400 + Math.random() * (719 * 2);
         } else {

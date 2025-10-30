@@ -52,15 +52,11 @@ function setupMouseEvents() {
  */
 function handleMouseMove(e) {
     const { canvasX, canvasY } = calculateCanvasCoordinates(e);
-
-    // Cursor-Update je nach Hover-Zustand
     if (isOverAnyClickable(canvasX, canvasY)) {
         canvas.style.cursor = 'pointer';
     } else {
         canvas.style.cursor = 'default';
     }
-
-    // Bestehende Dropdown-Hover-Logik beibehalten
     if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
         let hoveredButton = null;
         for (const [action, coords] of Object.entries(window.dropdownButtonCoords)) {
@@ -75,8 +71,6 @@ function handleMouseMove(e) {
             drawStartScreen();
         }
     }
-    
-    // In-Game Dropdown-Hover-Logik
     if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
         let hoveredButton = null;
         for (const [action, coords] of Object.entries(window.inGameDropdownButtonCoords)) {
@@ -99,49 +93,36 @@ function handleMouseMove(e) {
  * @returns {boolean}
  */
 function isOverAnyClickable(canvasX, canvasY) {
-    // Start button
     if (!gameStarted && window.startButtonCoords) {
         const b = window.startButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
-
-    // Settings button (Hauptmenü)
     if (!gameStarted && window.settingsButtonCoords) {
         const b = window.settingsButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
-
-    // In-Game Settings button
     if (gameStarted && window.inGameSettingsButtonCoords) {
         const b = window.inGameSettingsButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
-
-    // Dropdown buttons (Hauptmenü)
     if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
         for (const coords of Object.values(window.dropdownButtonCoords)) {
             if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
                 canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
         }
     }
-
-    // In-Game Dropdown buttons
     if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
         for (const coords of Object.values(window.inGameDropdownButtonCoords)) {
             if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
                 canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
         }
     }
-
-    // Game over buttons
     if (world && world.showGameOver && window.gameOverButtonCoords) {
         const r = window.gameOverButtonCoords.restart;
         const h = window.gameOverButtonCoords.home;
         if (r && canvasX >= r.x && canvasX <= r.x + r.width && canvasY >= r.y && canvasY <= r.y + r.height) return true;
         if (h && canvasX >= h.x && canvasX <= h.x + h.width && canvasY >= h.y && canvasY <= h.y + h.height) return true;
     }
-
-    // Mobile controls (während des Spiels)
     if (gameRunning && window.mobileButtonCoords) {
         const m = window.mobileButtonCoords;
         if (m.left && canvasX >= m.left.x && canvasX <= m.left.x + m.left.width && canvasY >= m.left.y && canvasY <= m.left.y + m.left.height) return true;

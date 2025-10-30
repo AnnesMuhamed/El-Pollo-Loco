@@ -28,17 +28,17 @@ class StatusBarEndboss extends DrawableObject {
 
     resolveImageIndex() {
         if (this.endbossStatusbarPercentage == 100) {
-            return 0;  // blue100.png
+            return 0;  
         } else if (this.endbossStatusbarPercentage >= 80) {
-            return 1;  // blue80.png
+            return 1; 
         } else if(this.endbossStatusbarPercentage >= 60) {
-            return 2;  // blue60.png
+            return 2;  
         } else if(this.endbossStatusbarPercentage >= 40) {
-            return 3;  // blue40.png
+            return 3; 
         } else if(this.endbossStatusbarPercentage >= 20) {
-            return 4;  // blue20.png
+            return 4;  
         } else {
-            return 5;  // blue0.png
+            return 5; 
         }
     }
 }

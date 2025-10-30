@@ -279,21 +279,15 @@ class World {
       const impactCenterY = bottle.y + bottle.height * 0.5;
       const clampedImpactTop = Math.max(hitboxTop, Math.min(impactCenterY - splashHeight * 0.5, hitboxBottom - splashHeight));
 
-      // Horizontal exakt an der Zielkante ausrichten
       if (bottle.speed > 0) {
-        // Bottle kam von links -> Splash rechte Kante an Hitbox-Left, dann insideOverlap in das Ziel
         x = hitboxLeft - splashWidth + insideOverlap;
       } else if (bottle.speed < 0) {
-        // Bottle kam von rechts -> Splash linke Kante an Hitbox-Right, dann insideOverlap in das Ziel
         x = hitboxRight - insideOverlap;
       } else {
-        // Fallback: mittig um die Bottle
         x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
       }
-      // Vertikal an der Impact-Höhe ausrichten (innerhalb der Hitbox clampen)
       y = clampedImpactTop;
     } else {
-      // Fallback ohne Ziel: um die Bottle zentrieren
       x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
       y = bottle.y + bottle.height * 0.5 - splashHeight * 0.5;
     }
@@ -448,12 +442,10 @@ class World {
         drawMobileControls(this.ctx);
     }
 
-    // Settings Button auch im Spiel anzeigen
     if (typeof drawInGameSettingsButton === 'function') {
         drawInGameSettingsButton(this.ctx);
     }
     
-    // Settings Dropdown im Spiel anzeigen
     if (window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') {
         drawInGameSettingsDropdown(this.ctx);
     }
@@ -555,7 +547,6 @@ class World {
    */
   enforceEndbossBlocking() {
     if (this.character && this.endBoss) {
-      // Berücksichtige Offsets für präzise Bild-zu-Bild Kollision
       const charRightOffset = this.character.offset ? this.character.offset.right : 0;
       const bossLeftOffset = this.endBoss.offset ? this.endBoss.offset.left : 0;
       

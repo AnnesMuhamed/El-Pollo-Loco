@@ -91,7 +91,6 @@ class Character extends MovableObject {
    */
   constructor() {
     super().loadImage("img/2_character_pepe/2_walk/W-21.png");
-    // Angepasste Offsets für sichtbare Bildteile (ohne transparente Bereiche)
     this.offset = { top: 120, left: 20, right: 35, bottom: 5 };
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMPING_UP);
@@ -309,8 +308,6 @@ class Character extends MovableObject {
       this.isJumpingDown = false;
       this.currentImage = 0;
       audioManager.playJumpSound();
-      
-      // Reset idle timers when jumping
       this.lastMovementTime = Date.now();
       this.isIdle = false;
       this.isLongIdle = false;
@@ -347,25 +344,18 @@ class Character extends MovableObject {
    * @description Mario-style jump-kill: Character falls and hits enemy with precise image-to-image contact
    */
   isJumpingOnEnemy(enemy) {
-    // Berücksichtige Offsets für präzise Bild-zu-Bild Kollision
     const charBottom = this.y + this.height - (this.offset ? this.offset.bottom : 0);
     const charLeft = this.x + (this.offset ? this.offset.left : 0);
     const charRight = this.x + this.width - (this.offset ? this.offset.right : 0);
-    
     const enemyTop = enemy.y + (enemy.offset ? enemy.offset.top : 0);
     const enemyLeft = enemy.x + (enemy.offset ? enemy.offset.left : 0);
     const enemyRight = enemy.x + enemy.width - (enemy.offset ? enemy.offset.right : 0);
-
-    // Größerer horizontaler Bereich für Jump-Kill (60px breit für einfacheren Treffer)
     const characterCenterX = charLeft + (charRight - charLeft) / 2;
-    const jumpKillLeft = characterCenterX - 30;        // 30px links der Mitte  
-    const jumpKillRight = characterCenterX + 30;       // 30px rechts der Mitte
-
-    const distance = charBottom - enemyTop;    // Vertikaler Abstand zwischen sichtbaren Teilen
-    const verticalCollision = distance >= -10 && distance <= 15;  // Präzise vertikale Toleranz (bleibt gleich)
+    const jumpKillLeft = characterCenterX - 30;         
+    const jumpKillRight = characterCenterX + 30;      
+    const distance = charBottom - enemyTop;    
+    const verticalCollision = distance >= -10 && distance <= 15; 
     const horizontalOverlap = jumpKillRight > enemyLeft && jumpKillLeft < enemyRight;
-
-    // Checken, ob der Character gerade fällt (speedY negativ, wenn fallend)
     const isFalling = this.speedY < 0;
 
     return verticalCollision && horizontalOverlap && isFalling;

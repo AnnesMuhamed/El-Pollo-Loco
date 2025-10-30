@@ -113,16 +113,12 @@ function drawSettingsDropdown(ctx) {
     const buttonHeight = 35;
     const buttonSpacing = 8;
     let currentY = menuY + 15;
-    
-    // Korrekte audioManager-Referenz verwenden
     const soundOn = (typeof audioManager !== 'undefined' && audioManager) ? audioManager.soundEnabled : true;
     const soundText = soundOn ? '🔊 Sound' : '🔇 Muted';
     drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, soundText, 'sound');
     currentY += buttonHeight + buttonSpacing;
-    
     drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, 'ℹ️ Info', 'info');
     currentY += buttonHeight + buttonSpacing;
-    
     drawDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '⛶ Fullscreen', 'fullscreen');
 }
 
@@ -256,16 +252,12 @@ function drawInGameSettingsDropdown(ctx) {
     const buttonHeight = 35;
     const buttonSpacing = 8;
     let currentY = menuY + 15;
-    
-    // Korrekte audioManager-Referenz verwenden
     const soundOn = (typeof audioManager !== 'undefined' && audioManager) ? audioManager.soundEnabled : true;
     const soundText = soundOn ? '🔊 Sound' : '🔇 Muted';
     drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, soundText, 'sound');
     currentY += buttonHeight + buttonSpacing;
-    
     drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, 'ℹ️ Info', 'info');
     currentY += buttonHeight + buttonSpacing;
-    
     drawInGameDropdownButton(ctx, menuX + 10, currentY, menuWidth - 20, buttonHeight, '⛶ Fullscreen', 'fullscreen');
 }
 

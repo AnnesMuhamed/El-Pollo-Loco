@@ -10,17 +10,16 @@ class ThrowableObject extends MovableObject {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.loadImages(this.IMAGES_ROTATION);
         
-        // Angepasste Offsets für sichtbare Bildteile der Flasche (ohne transparente Bereiche)
         this.offset = { top: 5, left: 5, right: 5, bottom: 5 };
         
         this.x = 100;
         this.y = 100;
         this.height = 50;
         this.width = 40;
-        this.speed = 0.5;  // Noch langsamer horizontal für längeren Bogen
-        this.speedY = 24;  // Viel stärkere initiale Geschwindigkeit nach oben
-        this.acceleration = 1.5;  // Noch langsamere Gravitation für längeren Bogen
-        this.applyGravity();  // Gravitation anwenden
+        this.speed = 0.5; 
+        this.speedY = 24;  
+        this.acceleration = 1.5;  
+        this.applyGravity();  
         this.animate();
     }
 
