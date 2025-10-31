@@ -59,8 +59,6 @@ class World {
     this.gameOverImage.src = 'img/You won, you lost/Game Over.png';
   }
 
-
-
   /**
    * Sets the world reference for the character
    * @description Allows the character to access world properties and methods
@@ -90,37 +88,7 @@ class World {
    * @description Handles enemy death when jumped on and character damage on side collision
    */
   checkEnemyCollisions() {
-    let closestEnemy = null;
-    let closestDistance = Infinity;
-    let jumpKillOccurred = false;
-
-    for (let enemy of this.level.enemies) {
-      if (enemy.isDead) continue;
-      
-      if (this.character.isJumpingOnEnemy(enemy)) {
-        let distance = Math.abs(this.character.x - enemy.x);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestEnemy = enemy;
-        }
-      }
-    }
-
-    if (closestEnemy) {
-      this.handleJumpKillCollision(closestEnemy);
-      jumpKillOccurred = true;
-    }
-
-    if (!jumpKillOccurred) {
-      for (let enemy of this.level.enemies) {
-        if (enemy.isDead) continue;
-        this.handleSideCollision(enemy);
-      }
-    }
-    
-    if (!this.endBoss.isDead) {
-      this.handleBossCollision();
-    }
+    wuCheckEnemyCollisions(this);
   }
 
   /**
@@ -128,16 +96,7 @@ class World {
    * @description Manages boss attacks and character damage
    */
   handleBossCollision() {
-    if (this.character.isColliding(this.endBoss)) {
-      if (!this.endBoss.isPlayingAttackAnimation) {
-        this.character.hit();
-        this.statusBar.setPercentage((this.character.energy / 100) * 100);
-        this.checkCharacterDeath();
-        this.endBoss.startAttackAnimation();
-      }
-      return true;
-    }
-    return false;
+    return wuHandleBossCollision(this);
   }
 
   /**
@@ -147,18 +106,7 @@ class World {
    * @description Kills enemy when character jumps on them
    */
   handleJumpKillCollision(enemy) {
-      if (this.character.isJumpingOnEnemy(enemy)) {
-        enemy.isDead = true;
-        audioManager.playEnemyHitSound();
-      this.character.speedY = 20; 
-      this.character.jumpStartY = this.character.y;
-      this.character.isJumpingUp = true;
-      this.character.isJumpingDown = false;
-      this.character.currentImage = 0;
-      
-      return true;
-    }
-    return false;
+    return wuHandleJumpKillCollision(this, enemy);
   }
 
   /**
@@ -167,16 +115,7 @@ class World {
    * @description Manages character damage on side collision with enemies
    */
   handleSideCollision(enemy) {
-    const distance = Math.abs(this.character.x - enemy.x);
-    const timeSinceLastHit = new Date().getTime() - enemy.lastHit;
-    
-    if (distance < 200 && this.character.isColliding(enemy) && timeSinceLastHit > 800) {
-      this.character.hit();
-      const percentage = (this.character.energy / 100) * 100;
-      this.statusBar.setPercentage(percentage);
-      this.checkCharacterDeath();
-      enemy.lastHit = new Date().getTime();
-    }
+    wuHandleSideCollision(this, enemy);
   }
 
   /**
@@ -184,11 +123,7 @@ class World {
    * @description Initiates game over sequence when character dies
    */
   checkCharacterDeath() {
-        if (this.character.isDead() && !this.characterDeathTime) {
-          this.characterDeathTime = new Date().getTime();
-          this.gameOverScreenShown = false;
-      setTimeout(() => { this.showGameOver = true; }, 3000);
-        }
+    wuCheckCharacterDeath(this);
   }
 
   /**
@@ -196,12 +131,7 @@ class World {
    * @description Handles bottle hits on the endboss
    */
   checkBossBottleCollision() {
-    for (let i = this.throwableObject.length - 1; i >= 0; i--) {
-      let bottle = this.throwableObject[i];
-      if (bottle.isColliding(this.endBoss)) {
-        this.handleBossHit(bottle, i);
-      }
-    }
+    wuCheckBossBottleCollision(this);
   }
 
   /**
@@ -209,14 +139,7 @@ class World {
    * @description Handles bottle hits on regular enemies
    */
   checkEnemyBottleCollision() {
-    for (let i = this.throwableObject.length - 1; i >= 0; i--) {
-      let bottle = this.throwableObject[i];
-      this.level.enemies.forEach((enemy) => {
-        if (!enemy.isDead && bottle.isColliding(enemy)) {
-          this.handleEnemyBottleHit(bottle, i, enemy);
-        }
-      });
-    }
+    wuCheckEnemyBottleCollision(this);
   }
 
   /**
@@ -227,10 +150,7 @@ class World {
    * @description Removes bottle and kills enemy
    */
   handleEnemyBottleHit(bottle, bottleIndex, enemy) {
-    this.throwableObject.splice(bottleIndex, 1); 
-    enemy.isDead = true;
-    audioManager.playEnemyHitSound();  
-    this.spawnBottleSplash(bottle, enemy);
+    wuHandleEnemyBottleHit(this, bottle, bottleIndex, enemy);
   }
 
   /**
@@ -240,15 +160,7 @@ class World {
    * @description Removes bottle and damages boss
    */
   handleBossHit(bottle, index) {
-    this.throwableObject.splice(index, 1);
-        this.endBoss.hit();
-        audioManager.playBossHitSound();
-        if (Math.abs(this.character.x - this.endBoss.x) < 400) {
-          audioManager.playBossSquawkSound();
-        }
-        this.statusBarEndboss.setEndbossStatusbarPercentage(this.endBoss.energy);
-    this.checkBossDeath();
-    this.spawnBottleSplash(bottle, this.endBoss);
+    wuHandleBossHit(this, bottle, index);
   }
 
   /**
@@ -256,45 +168,7 @@ class World {
    * @param {ThrowableObject} bottle
    */
   spawnBottleSplash(bottle, target) {
-    const splashWidth = 60;
-    const splashHeight = 60;
-    const insideOverlap = 16; // stärker in die Hitbox hinein
-
-    let x;
-    let y;
-
-    if (target && typeof bottle.speed === 'number') {
-      const oLeft = (target.offset && target.offset.left) ? target.offset.left : 0;
-      const oRight = (target.offset && target.offset.right) ? target.offset.right : 0;
-      const oTop = (target.offset && target.offset.top) ? target.offset.top : 0;
-      const oBottom = (target.offset && target.offset.bottom) ? target.offset.bottom : 0;
-
-      const hitboxLeft = target.x + oLeft;
-      const hitboxRight = target.x + target.width - oRight;
-      const hitboxTop = target.y + oTop;
-      const hitboxBottom = target.y + target.height - oBottom;
-      const impactCenterY = bottle.y + bottle.height * 0.5;
-      const clampedImpactTop = Math.max(hitboxTop, Math.min(impactCenterY - splashHeight * 0.5, hitboxBottom - splashHeight));
-
-      if (bottle.speed > 0) {
-        x = hitboxLeft - splashWidth + insideOverlap;
-      } else if (bottle.speed < 0) {
-        x = hitboxRight - insideOverlap;
-      } else {
-        x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
-      }
-      y = clampedImpactTop;
-    } else {
-      x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
-      y = bottle.y + bottle.height * 0.5 - splashHeight * 0.5;
-    }
-
-    const splash = new BottleSplash(x, y);
-    this.splashes.push(splash);
-    setTimeout(() => {
-      const idx = this.splashes.indexOf(splash);
-      if (idx !== -1) this.splashes.splice(idx, 1);
-    }, 500);
+    wuSpawnBottleSplash(this, bottle, target);
   }
 
   /**
@@ -302,15 +176,7 @@ class World {
    * @description Sets game as won when boss energy reaches 0
    */
   checkBossDeath() {
-        if (this.endBoss.energy <= 0) {
-          this.endBoss.isDead = true;
-          if (audioManager.bossSquawkSound) {
-            audioManager.bossSquawkSound.pause();
-            audioManager.bossSquawkSound.currentTime = 0;
-          }
-          this.gameWon = true;
-          audioManager.playBossDeathSound();
-    }
+    wuCheckBossDeath(this);
   }
 
   /**
@@ -318,11 +184,7 @@ class World {
    * @description Handles coin collection
    */
   checkCoinCollisions() {
-    this.level.coins.forEach((coin, index) => {
-      if (this.character.isColliding(coin)) {
-        this.collectCoin(index);
-      }
-    });
+    wuCheckCoinCollisions(this);
   }
 
   /**
@@ -331,9 +193,7 @@ class World {
    * @description Removes coin from level and increases coin counter
    */
   collectCoin(index) {
-    this.level.coins.splice(index, 1);
-    this.statusBarCoin.setCoinStatusbarPercentage(this.statusBarCoin.coinStatusbarPercentage + 1);
-    audioManager.playCollectCoinsSound();
+    wuCollectCoin(this, index);
   }
 
   /**
@@ -341,11 +201,7 @@ class World {
    * @description Handles bottle collection
    */
   checkBottleCollisions() {
-    this.level.bottle.forEach((bottle, index) => {
-      if (this.character.isColliding(bottle)) {
-        this.collectBottle(index);
-      }
-    });
+    wuCheckBottleCollisions(this);
   }
 
   /**
@@ -354,9 +210,7 @@ class World {
    * @description Removes bottle from level and increases bottle counter
    */
   collectBottle(index) {
-    this.level.bottle.splice(index, 1);
-    this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage + 1);
-    audioManager.playCollectBottleSound();
+    wuCollectBottle(this, index);
   }
 
   /**
@@ -402,9 +256,7 @@ class World {
    * @description Prepares canvas for drawing with camera offset
    */
   clearAndSetupCanvas() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.currentCamX = Math.round(this.camera_x);
-    this.ctx.translate(this.currentCamX, 0);
+    wuClearAndSetupCanvas(this);
   }
 
   /**
@@ -412,16 +264,7 @@ class World {
    * @description Renders background, enemies, collectibles, and characters
    */
   drawGameObjects() {
-    this.addObjectsToMap(this.level.backgroundObjects);
-    this.addObjectsToMap(this.level.clouds);
-    this.addObjectsToMap(this.level.enemies);
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.bottle);
-    this.addObjectsToMap(this.throwableObject);
-    
-    this.addToMap(this.character);
-    this.addToMap(this.endBoss);
-    this.addObjectsToMap(this.splashes);
+    wuDrawGameObjects(this);
   }
 
   /**
@@ -429,25 +272,7 @@ class World {
    * @description Renders status bars and mobile controls
    */
   drawUIElements() {
-    const backCamX = typeof this.currentCamX === 'number' ? this.currentCamX : this.camera_x;
-    this.ctx.translate(-backCamX, 0);
-    
-    this.addToMap(this.statusBar);
-    this.addToMap(this.statusBarEndboss);
-    this.addToMap(this.statusBarCoin);
-    this.addToMap(this.statusBarBottle);
-
-    if (typeof drawMobileControls === 'function') {
-        drawMobileControls(this.ctx);
-    }
-
-    if (typeof drawInGameSettingsButton === 'function') {
-        drawInGameSettingsButton(this.ctx);
-    }
-    
-    if (window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') {
-        drawInGameSettingsDropdown(this.ctx);
-    }
+    wuDrawUIElements(this);
   }
 
   /**
@@ -456,26 +281,7 @@ class World {
    * @description Shows victory screen and schedules return to start screen
    */
   handleVictoryScreen() {
-    if (this.endBoss.isDead && this.youWonImage.complete) {
-      this.addToMap(this.endBoss);
-      this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
-      
-      if (!this.victoryScreenShown) {
-        this.victoryScreenShown = true;
-        this.gameWon = true;
-        setTimeout(() => {
-          if (typeof window.goToStartScreen === 'function' && !window.goToStartScreenCalled) {
-            window.goToStartScreen();
-          }
-        }, 5000);
-      }
-      
-      if (world && !window.goToStartScreenCalled) {
-        this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
-      }
-      return true;
-    }
-    return false;
+    return wuHandleVictoryScreen(this);
   }
 
   /**
@@ -483,22 +289,7 @@ class World {
    * @description Shows appropriate game over screen based on game state
    */
   handleGameOverScreen() {
-    if (this.showGameOver && this.gameOverImage.complete) {
-      this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
-      
-      if (!this.gameOverScreenShown) {
-        this.gameOverScreenShown = true;
-        this.stopGameOverAudio();
-      }
-      
-      drawGameOverButtons(this.ctx);
-    } else if (this.character.isDead() && this.characterDeathTime) {
-        const timeSinceDeath = new Date().getTime() - this.characterDeathTime;
-        
-        if (timeSinceDeath < 3000 && this.youLostImage.complete) {
-            this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
-      }
-    }
+    wuHandleGameOverScreen(this);
   }
 
   /**
@@ -506,15 +297,7 @@ class World {
    * @description Stops walking, snoring, background, and boss sounds
    */
   stopGameOverAudio() {
-    if (window.audioManager) {
-      window.audioManager.stopWalkingSound();
-      window.audioManager.stopSnoringSound();
-      window.audioManager.stopBackgroundSound();
-      if (window.audioManager.bossSquawkSound) {
-        window.audioManager.bossSquawkSound.pause();
-        window.audioManager.bossSquawkSound.currentTime = 0;
-      }
-    }
+    wuStopGameOverAudio();
   }
 
   /**
@@ -549,14 +332,7 @@ class World {
    * Prevents the character from passing the endboss horizontally
    */
   enforceEndbossBlocking() {
-    if (this.character && this.endBoss) {
-      const charRightOffset = this.character.offset ? this.character.offset.right : 0;
-      const bossLeftOffset = this.endBoss.offset ? this.endBoss.offset.left : 0;
-      const maxCharacterX = this.endBoss.x + bossLeftOffset - this.character.width + charRightOffset;
-      if (this.character.x > maxCharacterX) {
-        this.character.x = maxCharacterX;
-      }
-    }
+    wuEnforceEndbossBlocking(this);
   }
 
   /**
@@ -564,9 +340,7 @@ class World {
    * @param {Array} objects - Array of objects to add to the map
    */
   addObjectsToMap(objects) {
-    objects.forEach((o) => {
-      this.addToMap(o);
-    });
+    wuAddObjectsToMap(this, objects);
   }
 
   /**
@@ -575,15 +349,7 @@ class World {
    * @description Handles object drawing and direction flipping
    */
   addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
-
-    mo.draw(this.ctx);
-
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
+    wuAddToMap(this, mo);
   }
 
   /**
@@ -591,10 +357,7 @@ class World {
    * @param {DrawableObject} mo - The object to flip
    */
   flipImage(mo) {
-    this.ctx.save();
-    this.ctx.translate(mo.width, 0);
-    this.ctx.scale(-1, 1);
-    mo.x = mo.x * -1;
+    wuFlipImage(this, mo);
   }
 
   /**
@@ -602,8 +365,7 @@ class World {
    * @param {DrawableObject} mo - The object to restore
    */
   flipImageBack(mo) {
-    mo.x = mo.x * -1;
-    this.ctx.restore();
+    wuFlipImageBack(this, mo);
   }
 
   /**
@@ -611,20 +373,6 @@ class World {
    * @description Creates a new throwable bottle if the character has bottles available
    */
   throwBottle() {
-    if (this.statusBarBottle.bottleStatusbarPercentage > 0) {
-      let bottle = new ThrowableObject();
-      bottle.x = this.character.x + 50;
-      bottle.y = this.character.y + 100;
-      
-      if (this.character.otherDirection) {
-        bottle.speed = -2;
-      } else {
-        bottle.speed = 2;
-      }
-      
-      this.throwableObject.push(bottle);
-      this.statusBarBottle.setBottleStatusbarPercentage(this.statusBarBottle.bottleStatusbarPercentage - 1);
-      audioManager.playThrowSound();
-    }
+    wuThrowBottle(this);
   }
 }

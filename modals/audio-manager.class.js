@@ -30,10 +30,8 @@ class AudioManager {
         this.bossSquawkSound = new Audio('audio/chicken-squawk-72188.mp3');
         this.snoringSound = new Audio('audio/snoring.mp3');
         this.backgroundSound = new Audio('audio/background-sound.mp3');
-        
         this.walkingSound.loop = true;
         this.walkingSound.volume = 0.5;
-
         this.jumpSound.volume = 0.5;
         this.throwSound.volume = 0.5;
         this.collectBottleSound.volume = 0.5;
