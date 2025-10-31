@@ -172,59 +172,6 @@ function setupTouchCancelEvent() {
 }
 
 /**
- * Calculates canvas coordinates from event coordinates
- * @param {Event} e - The event object
- * @returns {Object} Object containing canvasX and canvasY coordinates
- * @description Converts screen coordinates to canvas coordinates
- */
-// moved to input-utils.js: calculateCanvasCoordinates
-
-/**
- * Checks if start button was clicked
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if start button was clicked
- * @description Handles start button click detection
- */
-// moved to input-utils.js: handleStartButtonClick
-
-/**
- * Checks if game over buttons were clicked
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if game over button was clicked
- * @description Handles restart and home button click detection
- */
-// moved to input-utils.js: handleGameOverButtonClick
-
-/**
- * Checks if settings button was clicked
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if settings button was clicked
- * @description Handles settings button click detection
- */
-// moved to input-utils.js: handleSettingsButtonClick
-
-/**
- * Handles dropdown button clicks
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if a dropdown button was clicked
- * @description Detects clicks on dropdown menu buttons
- */
-// moved to input-utils.js: handleDropdownButtonClick
-
-/**
- * Checks if in-game settings button was clicked
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {boolean} True if in-game settings button was clicked
- * @description Handles in-game settings button click detection
- */
-// moved to input-utils.js: handleInGameSettingsButtonClick
-
-/**
  * Handles in-game dropdown button clicks
  * @param {number} canvasX - X coordinate on canvas
  * @param {number} canvasY - Y coordinate on canvas
@@ -243,47 +190,6 @@ function handleInGameDropdownButtonClick(canvasX, canvasY) {
     }
     return false;
 }
-
-/**
- * Handles dropdown menu actions
- * @param {string} action - The action to perform
- * @description Executes the selected dropdown menu action
- */
-// moved to input-utils.js: handleDropdownAction
-
-/**
- * Toggles settings dropdown visibility
- * @description Shows or hides the settings dropdown menu
- */
-// moved to input-utils.js: toggleSettingsDropdown
-
-/**
- * Shows settings dropdown menu
- * @description Displays the settings dropdown on canvas
- */
-// moved to input-utils.js: showSettingsDropdown
-
-/**
- * Hides settings dropdown menu
- * @description Hides the settings dropdown and redraws start screen
- */
-// moved to input-utils.js: hideSettingsDropdown
-
-/**
- * Processes mobile button press detection
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @returns {string|null} The pressed button type or null
- * @description Detects which mobile button was pressed
- */
-// moved to input-utils.js: detectMobileButtonPress
-
-/**
- * Updates keyboard state based on button press
- * @param {string} buttonPressed - The type of button pressed
- * @description Sets the appropriate keyboard key to true
- */
-// moved to input-utils.js: updateKeyboardOnPress
 
 /**
  * Handles button press events for mouse and touch
@@ -332,28 +238,6 @@ function handleButtonPress(e, type, touchId = null) {
         }
     }
 }
-
-/**
- * Handles touch button release logic
- * @param {number} touchId - The touch identifier
- * @description Processes touch button release and updates keyboard state
- */
-// moved to input-utils.js: handleTouchButtonRelease
-
-/**
- * Handles mouse button release logic
- * @param {number} canvasX - X coordinate on canvas
- * @param {number} canvasY - Y coordinate on canvas
- * @description Processes mouse button release and updates keyboard state
- */
-// moved to input-utils.js: handleMouseButtonRelease
-
-/**
- * Updates keyboard state based on button release
- * @param {string} buttonReleased - The type of button released
- * @description Sets the appropriate keyboard key to false
- */
-// moved to input-utils.js: updateKeyboardOnRelease
 
 /**
  * Handles button release events for mouse and touch

@@ -142,4 +142,3 @@ function handleKeyUp(e) {
 }
 
 window.goToStartScreen = goToStartScreen;
-

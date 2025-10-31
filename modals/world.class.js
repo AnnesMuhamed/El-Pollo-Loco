@@ -120,7 +120,6 @@ class World {
     
     if (!this.endBoss.isDead) {
       this.handleBossCollision();
-      this.enforceEndbossBlocking();
     }
   }
 
@@ -404,7 +403,8 @@ class World {
    */
   clearAndSetupCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.translate(this.camera_x, 0);
+    this.currentCamX = Math.round(this.camera_x);
+    this.ctx.translate(this.currentCamX, 0);
   }
 
   /**
@@ -429,7 +429,8 @@ class World {
    * @description Renders status bars and mobile controls
    */
   drawUIElements() {
-    this.ctx.translate(-this.camera_x, 0);
+    const backCamX = typeof this.currentCamX === 'number' ? this.currentCamX : this.camera_x;
+    this.ctx.translate(-backCamX, 0);
     
     this.addToMap(this.statusBar);
     this.addToMap(this.statusBarEndboss);
@@ -525,6 +526,10 @@ class World {
       return;
     }
 
+    if (!this.endBoss.isDead) {
+      this.enforceEndbossBlocking();
+    }
+
     this.clearAndSetupCanvas();
     this.drawGameObjects();
     this.drawUIElements();
@@ -550,9 +555,6 @@ class World {
       const maxCharacterX = this.endBoss.x + bossLeftOffset - this.character.width + charRightOffset;
       if (this.character.x > maxCharacterX) {
         this.character.x = maxCharacterX;
-        if (this.keyboard && this.keyboard.RIGHT) {
-          this.keyboard.RIGHT = false;
-        }
       }
     }
   }

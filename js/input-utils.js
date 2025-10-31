@@ -15,12 +15,12 @@ function calculateCanvasCoordinates(e) {
 }
 
 /**
- * Checks if pointer is over any clickable element on canvas
+ * Checks if pointer is over start or settings buttons before game
  * @param {number} canvasX
  * @param {number} canvasY
  * @returns {boolean}
  */
-function isOverAnyClickable(canvasX, canvasY) {
+function isOverPreGameButtons(canvasX, canvasY) {
     if (!gameStarted && window.startButtonCoords) {
         const b = window.startButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
@@ -29,33 +29,88 @@ function isOverAnyClickable(canvasX, canvasY) {
         const b = window.settingsButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
+    return false;
+}
+
+/**
+ * Checks if pointer is over in-game settings button
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function isOverInGameSettings(canvasX, canvasY) {
     if (gameStarted && window.inGameSettingsButtonCoords) {
         const b = window.inGameSettingsButtonCoords;
         if (canvasX >= b.x && canvasX <= b.x + b.width && canvasY >= b.y && canvasY <= b.y + b.height) return true;
     }
-    if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
+    return false;
+}
+
+/**
+ * Checks if pointer is over any dropdown button
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function isOverDropdownButtons(canvasX, canvasY) {
+    if (!window.settingsDropdownVisible) return false;
+    if (!gameStarted && window.dropdownButtonCoords) {
         for (const coords of Object.values(window.dropdownButtonCoords)) {
             if (canvasX >= coords.x && canvasX <= coords.x + coords.width && canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
         }
     }
-    if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
+    if (gameStarted && window.inGameDropdownButtonCoords) {
         for (const coords of Object.values(window.inGameDropdownButtonCoords)) {
             if (canvasX >= coords.x && canvasX <= coords.x + coords.width && canvasY >= coords.y && canvasY <= coords.y + coords.height) return true;
         }
     }
+    return false;
+}
+
+/**
+ * Checks if pointer is over game over screen buttons
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function isOverGameOverButtons(canvasX, canvasY) {
     if (world && world.showGameOver && window.gameOverButtonCoords) {
         const r = window.gameOverButtonCoords.restart;
         const h = window.gameOverButtonCoords.home;
         if (r && canvasX >= r.x && canvasX <= r.x + r.width && canvasY >= r.y && canvasY <= r.y + r.height) return true;
         if (h && canvasX >= h.x && canvasX <= h.x + h.width && canvasY >= h.y && canvasY <= h.y + h.height) return true;
     }
-    if (gameRunning && window.mobileButtonCoords) {
-        const m = window.mobileButtonCoords;
-        if (m.left && canvasX >= m.left.x && canvasX <= m.left.x + m.left.width && canvasY >= m.left.y && canvasY <= m.left.y + m.left.height) return true;
-        if (m.right && canvasX >= m.right.x && canvasX <= m.right.x + m.right.width && canvasY >= m.right.y && canvasY <= m.right.y + m.right.height) return true;
-        if (m.jump && canvasX >= m.jump.x && canvasX <= m.jump.x + m.jump.width && canvasY >= m.jump.y && canvasY <= m.jump.y + m.jump.height) return true;
-        if (m.throw && canvasX >= m.throw.x && canvasX <= m.throw.x + m.throw.width && canvasY >= m.throw.y && canvasY <= m.throw.y + m.throw.height) return true;
-    }
+    return false;
+}
+
+/**
+ * Checks if pointer is over any mobile control button
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function isOverMobileControls(canvasX, canvasY) {
+    if (!gameRunning || !window.mobileButtonCoords) return false;
+    const m = window.mobileButtonCoords;
+    if (m.left && canvasX >= m.left.x && canvasX <= m.left.x + m.left.width && canvasY >= m.left.y && canvasY <= m.left.y + m.left.height) return true;
+    if (m.right && canvasX >= m.right.x && canvasX <= m.right.x + m.right.width && canvasY >= m.right.y && canvasY <= m.right.y + m.right.height) return true;
+    if (m.jump && canvasX >= m.jump.x && canvasX <= m.jump.x + m.jump.width && canvasY >= m.jump.y && canvasY <= m.jump.y + m.jump.height) return true;
+    if (m.throw && canvasX >= m.throw.x && canvasX <= m.throw.x + m.throw.width && canvasY >= m.throw.y && canvasY <= m.throw.y + m.throw.height) return true;
+    return false;
+}
+
+/**
+ * Checks if pointer is over any clickable element on canvas
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function isOverAnyClickable(canvasX, canvasY) {
+    if (isOverPreGameButtons(canvasX, canvasY)) return true;
+    if (isOverInGameSettings(canvasX, canvasY)) return true;
+    if (isOverDropdownButtons(canvasX, canvasY)) return true;
+    if (isOverGameOverButtons(canvasX, canvasY)) return true;
+    if (isOverMobileControls(canvasX, canvasY)) return true;
     return false;
 }
 
