@@ -127,21 +127,93 @@ function setupCanvasAndEvents() {
 }
 
 /**
- * Starts a new game session
- * @description Initializes game state, creates level, and begins gameplay
+ * Starts a new game session and background sound after user interaction
+ * @description Initializes audio and then begins game setup and rendering
  */
 function startGame() {
+    setupAudio();
     if (gameStarted) {
         resetGame();
     } else {
         window.level1 = createInitialLevel();
     }
-    
     resetVictoryStates();
     initializeGameState();
-    setupAudio();
     createGameWorld();
     setupCanvasAndEvents();
+}
+
+/**
+ * Sets a flag to prevent duplicate start screen calls
+ * @returns {boolean} True if already set, otherwise false
+ */
+function setAndCheckStartScreenFlag() {
+    if (window.goToStartScreenCalled) {
+        return true;
+    }
+    window.goToStartScreenCalled = true;
+    return false;
+}
+
+/**
+ * Sets core game running states to false
+ */
+function pauseGameFlags() {
+    gameStarted = false;
+    gameRunning = false;
+}
+
+/**
+ * Cancels animation frame if active
+ */
+function stopMainAnimationFrame() {
+    if (window.gameAnimationId) {
+        cancelAnimationFrame(window.gameAnimationId);
+        window.gameAnimationId = null;
+    }
+}
+
+/**
+ * Stops world animation loop if needed
+ */
+function stopWorldAnimationLoop() {
+    if (world && world.lastFrameTime) {
+        world.stopAnimation();
+    }
+}
+
+/**
+ * Clears world reference
+ */
+function clearWorldReference() {
+    if (world) {
+        world = null;
+    }
+}
+
+/**
+ * Stops all audio when returning to start screen
+ */
+function stopAllAudioOnReturn() {
+    if (audioManager) {
+        audioManager.stopAllSounds();
+    }
+}
+
+/**
+ * Draws the start screen
+ */
+function renderStartScreen() {
+    drawStartScreen();
+}
+
+/**
+ * Resets start screen flag after timeout
+ */
+function resetStartScreenFlagWithDelay() {
+    setTimeout(() => {
+        window.goToStartScreenCalled = false;
+    }, 7000);
 }
 
 /**
@@ -149,36 +221,14 @@ function startGame() {
  * @description Resets game state, stops all sounds, and shows start screen
  */
 function goToStartScreen() {
-    if (window.goToStartScreenCalled) {
-        return;
-    }
-    window.goToStartScreenCalled = true;
-    
-    gameStarted = false;
-    gameRunning = false;
-    
-    if (window.gameAnimationId) {
-        cancelAnimationFrame(window.gameAnimationId);
-        window.gameAnimationId = null;
-    }
-    
-    if (world && world.lastFrameTime) {
-        world.stopAnimation();
-    }
-    
-    if (world) {
-        world = null;
-    }
-    
-    if (audioManager) {
-        audioManager.stopAllSounds();
-    }
-    
-    drawStartScreen();
-    
-    setTimeout(() => {
-        window.goToStartScreenCalled = false;
-    }, 7000);
+    if (setAndCheckStartScreenFlag()) { return; }
+    pauseGameFlags();
+    stopMainAnimationFrame();
+    stopWorldAnimationLoop();
+    clearWorldReference();
+    stopAllAudioOnReturn();
+    renderStartScreen();
+    resetStartScreenFlagWithDelay();
 }
 
 /**

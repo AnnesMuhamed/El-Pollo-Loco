@@ -72,9 +72,6 @@ function init() {
    setupCanvasClickHandler();
 }
 
-// Make init function globally available
-window.init = init;
-
 /**
  * Handles keyboard key down events
  * @param {KeyboardEvent} e - The keyboard event object

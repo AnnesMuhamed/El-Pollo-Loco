@@ -119,10 +119,8 @@ class World {
     }
     
     if (!this.endBoss.isDead) {
-      const bossCollisionActive = this.handleBossCollision();
-      if (!bossCollisionActive) {
-        this.enforceEndbossBlocking();
-      }
+      this.handleBossCollision();
+      this.enforceEndbossBlocking();
     }
   }
 
@@ -549,10 +547,12 @@ class World {
     if (this.character && this.endBoss) {
       const charRightOffset = this.character.offset ? this.character.offset.right : 0;
       const bossLeftOffset = this.endBoss.offset ? this.endBoss.offset.left : 0;
-      
       const maxCharacterX = this.endBoss.x + bossLeftOffset - this.character.width + charRightOffset;
       if (this.character.x > maxCharacterX) {
         this.character.x = maxCharacterX;
+        if (this.keyboard && this.keyboard.RIGHT) {
+          this.keyboard.RIGHT = false;
+        }
       }
     }
   }
