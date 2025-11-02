@@ -6,6 +6,10 @@ class ThrowableObject extends MovableObject {
         'img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
     ];
 
+    /**
+     * Creates a new ThrowableObject instance
+     * @description Initializes throwable object with rotation images, physics and animation
+     */
     constructor() {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
         this.loadImages(this.IMAGES_ROTATION);
@@ -23,10 +27,19 @@ class ThrowableObject extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Checks if object is above ground
+     * @description Always returns true for throwable objects
+     * @returns {boolean} Always returns true
+     */
     isAboveGround() {
         return true;  
     }
 
+    /**
+     * Animates the throwable object
+     * @description Plays rotation animation and updates horizontal movement
+     */
     animate() {
         this.animationInterval = setInterval(() => {
             if (!window.goToStartScreenCalled) {

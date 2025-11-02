@@ -10,6 +10,10 @@ class StatusBarCoin extends DrawableObject {
 
   coinStatusbarPercentage = 0;
 
+  /**
+   * Creates a new StatusBarCoin instance
+   * @description Initializes coin status bar with images and default position
+   */
   constructor() {
     super();
     this.loadImages(this.IMAGES_COIN_STATUSBAR);
@@ -20,12 +24,22 @@ class StatusBarCoin extends DrawableObject {
     this.width = 200;
   }
 
+  /**
+   * Sets the coin status bar percentage
+   * @description Updates the displayed image based on coin count
+   * @param {number} coinStatusbarPercentage - The coin count (0-10)
+   */
   setCoinStatusbarPercentage(coinStatusbarPercentage) {
     this.coinStatusbarPercentage = coinStatusbarPercentage;
     let path = this.IMAGES_COIN_STATUSBAR[this.resolveCoinImageIndex()];
     this.img = this.imageCash[path];
   }
 
+  /**
+   * Resolves the image index based on coin percentage
+   * @description Maps coin count to status bar image index
+   * @returns {number} The index of the status bar image (0-5)
+   */
   resolveCoinImageIndex() {
     if (this.coinStatusbarPercentage <= 0) {
       return 0;

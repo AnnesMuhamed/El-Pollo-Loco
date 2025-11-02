@@ -4,6 +4,10 @@ class coins extends CollectibleObjects {
 
   IMAGES_COINS = ["img/8_coin/coin_1.png", "img/8_coin/coin_2.png"];
 
+  /**
+   * Creates a new coins instance
+   * @description Initializes coin with random x position and starts animation
+   */
   constructor() {
     super().loadImage(this.IMAGES_COINS[0]);
     this.loadImages(this.IMAGES_COINS);
@@ -16,6 +20,10 @@ class coins extends CollectibleObjects {
     this.startAnimation();
   }
 
+  /**
+   * Starts the coin animation
+   * @description Checks if game is running and starts animation, retries if not
+   */
   startAnimation() {
     if (typeof gameRunning !== 'undefined' && gameRunning) {
       this.animate();
@@ -26,6 +34,10 @@ class coins extends CollectibleObjects {
     }
   }
 
+  /**
+   * Animates the coin rotation
+   * @description Sets up interval to play coin animation continuously while game is running
+   */
   animate() {
     this.animationInterval = setInterval(() => {
       if (!window.goToStartScreenCalled) {

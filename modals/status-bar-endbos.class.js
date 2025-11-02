@@ -10,6 +10,10 @@ class StatusBarEndboss extends DrawableObject {
 
     endbossStatusbarPercentage = 100;
 
+    /**
+     * Creates a new StatusBarEndboss instance
+     * @description Initializes endboss status bar with images and default position
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES_ENDBOSS_STATUSBAR);
@@ -20,12 +24,22 @@ class StatusBarEndboss extends DrawableObject {
         this.width = 200;
     }
 
+    /**
+     * Sets the endboss status bar percentage
+     * @description Updates the displayed image based on endboss energy
+     * @param {number} endbossStatusbarPercentage - The endboss energy (0-100)
+     */
     setEndbossStatusbarPercentage(endbossStatusbarPercentage) {
         this.endbossStatusbarPercentage = endbossStatusbarPercentage;
         let path = this.IMAGES_ENDBOSS_STATUSBAR[this.resolveImageIndex()];
         this.img = this.imageCash[path];
     }
 
+    /**
+     * Resolves the image index based on endboss percentage
+     * @description Maps endboss energy to status bar image index
+     * @returns {number} The index of the status bar image (0-5)
+     */
     resolveImageIndex() {
         if (this.endbossStatusbarPercentage == 100) {
             return 0;  

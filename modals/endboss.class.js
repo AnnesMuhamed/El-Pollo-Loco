@@ -124,6 +124,10 @@ class Endboss extends MovableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Manages boss animation state
+     * @description Starts alert or walking animation based on activation status
+     */
     animate() {
         if (this.isDead) {
             return;
@@ -142,6 +146,10 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Starts the alert animation sequence
+     * @description Plays alert animation loop when boss is not activated yet
+     */
     startAlertAnimation() {
         this.stopAllAnimations();
         
@@ -172,6 +180,10 @@ class Endboss extends MovableObject {
         }, 200); 
     }
 
+    /**
+     * Stops the alert animation
+     * @description Clears alert animation interval and resets flag
+     */
     stopAlertAnimation() {
         if (this.alertInterval) {
             clearInterval(this.alertInterval);
@@ -180,6 +192,10 @@ class Endboss extends MovableObject {
         this.isPlayingAlertAnimation = false;
     }
 
+    /**
+     * Starts the walking animation sequence
+     * @description Plays walking animation loop when boss is activated
+     */
     startWalkingAnimation() {
         this.stopAllAnimations();
         
@@ -199,6 +215,10 @@ class Endboss extends MovableObject {
         }, 200);
     }
 
+    /**
+     * Stops the walking animation
+     * @description Clears walking animation interval
+     */
     stopWalkingAnimation() {
         if (this.walkingInterval) {
             clearInterval(this.walkingInterval);
@@ -206,6 +226,10 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Stops all boss animations
+     * @description Clears all animation intervals except dead and jump animations
+     */
     stopAllAnimations() {
         this.stopWalkingAnimation();
         this.stopAttackAnimation();
@@ -217,7 +241,8 @@ class Endboss extends MovableObject {
     }
 
     /**
-     * Stoppt alle Animationen inklusive Sprung (nur für Dead-Animation)
+     * Stops all animations including jump
+     * @description Clears all animation intervals including jump, used for dead animation
      */
     stopAllAnimationsIncludingJump() {
         this.stopAllAnimations();
@@ -229,6 +254,10 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Stops the dead animation
+     * @description Clears dead animation interval
+     */
     stopDeadAnimation() {
         if (this.deadInterval) {
             clearInterval(this.deadInterval);
@@ -257,6 +286,10 @@ class Endboss extends MovableObject {
         this.y = this.originalY;
     }
 
+    /**
+     * Starts the attack animation sequence
+     * @description Plays attack animation once then returns to walking animation
+     */
     startAttackAnimation() {
         if (this.isDead) {
             return;
@@ -282,6 +315,10 @@ class Endboss extends MovableObject {
         }, 100);
     }
 
+    /**
+     * Stops the attack animation
+     * @description Clears attack animation interval
+     */
     stopAttackAnimation() {
         if (this.attackInterval) {
             clearInterval(this.attackInterval);
@@ -289,6 +326,10 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Starts the dead animation sequence
+     * @description Plays dead animation once when boss energy reaches zero
+     */
     startDeadAnimation() {
         this.stopAllAnimationsIncludingJump(); 
         this.stopDeadAnimation();
@@ -309,6 +350,10 @@ class Endboss extends MovableObject {
         }, 300);
     }
 
+    /**
+     * Starts the hurt animation sequence
+     * @description Plays hurt animation once then returns to walking animation
+     */
     startHurtAnimation() {
         if (this.isDead) {
             return;
@@ -334,6 +379,10 @@ class Endboss extends MovableObject {
         }, 100);
     }
 
+    /**
+     * Handles boss hit by bottle
+     * @description Activates boss, plays sounds, increases speed, triggers jump attack and reduces energy
+     */
     hit() {
         if (this.isDead) {
             return;
@@ -362,7 +411,8 @@ class Endboss extends MovableObject {
     }
 
     /**
-     * Startet Sprung-Angriff in Richtung Character (wie Flasche-Physik)
+     * Starts jump attack towards character
+     * @description Initiates jump with physics similar to bottle throw
      */
     startJumpAttack() {
         if (this.isJumping) return;
