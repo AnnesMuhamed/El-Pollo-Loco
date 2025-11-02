@@ -58,5 +58,3 @@ class DrawableObject {
     });
   }
 }
-
-window.DrawableObject = DrawableObject;

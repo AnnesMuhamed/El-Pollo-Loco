@@ -67,15 +67,15 @@ function createBackgroundObjectsArray() {
  * @returns {Array<coins>} Array of coin objects.
  */
 function createCoinsArray() {
-    const coins = [
-        new window.coins(), new window.coins(), new window.coins(), new window.coins(), new window.coins()
+    const coinsArray = [
+        new coins(), new coins(), new coins(), new coins(), new coins()
     ];
     if (!isMobile) {
-        coins.push(
-            new window.coins(), new window.coins(), new window.coins(), new window.coins(), new window.coins()
+        coinsArray.push(
+            new coins(), new coins(), new coins(), new coins(), new coins()
         );
     }
-    return coins;
+    return coinsArray;
 }
 
 /**
@@ -83,15 +83,15 @@ function createCoinsArray() {
  * @returns {Array<bottle>} Array of bottle objects.
  */
 function createBottlesArray() {
-    const bottles = [
-        new window.bottle(), new window.bottle(), new window.bottle(), new window.bottle(), new window.bottle()
+    const bottlesArray = [
+        new bottle(), new bottle(), new bottle(), new bottle(), new bottle()
     ];
     if (!isMobile) {
-        bottles.push(
-            new window.bottle(), new window.bottle(), new window.bottle(), new window.bottle(), new window.bottle()
+        bottlesArray.push(
+            new bottle(), new bottle(), new bottle(), new bottle(), new bottle()
         );
     }
-    return bottles;
+    return bottlesArray;
 }
 
 window.initLevel1 = initLevel1;

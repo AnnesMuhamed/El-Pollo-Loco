@@ -5,5 +5,3 @@ class CollectibleObjects extends MovableObject {
     
 
 }
-
-window.CollectibleObjects = CollectibleObjects;

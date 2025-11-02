@@ -214,5 +214,3 @@ class MovableObject extends DrawableObject {
     }
   }
 }
-
-window.MovableObject = MovableObject;

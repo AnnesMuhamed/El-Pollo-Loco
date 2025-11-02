@@ -44,7 +44,5 @@ class coins extends CollectibleObjects {
         this.playAnimation(this.IMAGES_COINS);
       }
     }, 200);
-  }
+    }
 }
-
-window.coins = coins;

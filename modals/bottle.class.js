@@ -48,4 +48,3 @@ class bottle extends CollectibleObjects {
         }, 200);
     }
 }
-window.bottle = bottle;
