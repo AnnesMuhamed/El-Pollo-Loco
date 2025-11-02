@@ -37,7 +37,7 @@ function wuDrawUIElements(world) {
     wuAddToMap(world, world.statusBarBottle);
     if (typeof drawMobileControls === 'function') drawMobileControls(world.ctx);
     if (typeof drawInGameSettingsButton === 'function') drawInGameSettingsButton(world.ctx);
-    if (world.window && world.window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') drawInGameSettingsDropdown(world.ctx);
+    if (typeof window !== 'undefined' && window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') drawInGameSettingsDropdown(world.ctx);
 }
 
 /**

@@ -229,17 +229,7 @@ class AudioManager {
      * @description Sets volume to normal levels for all audio files
      */
     enableAllSounds() {
-        this.walkingSound.volume = 0.5;
-        this.jumpSound.volume = 0.5;
-        this.throwSound.volume = 0.5;
-        this.collectBottleSound.volume = 0.5;
-        this.collectCoinsSound.volume = 0.5;
-        this.enemyHitSound.volume = 0.5;
-        this.hurtCharacterSound.volume = 0.5;
-        this.bossHitSound.volume = 0.5;
-        this.bossDeathSound.volume = 0.5;
-        this.bossSquawkSound.volume = 0.5;
-        this.snoringSound.volume = 0.5;
+        this.setEffectsVolume(0.5);
         this.backgroundSound.volume = 0.3;
     }
 
@@ -248,18 +238,29 @@ class AudioManager {
      * @description Sets volume to 0 for all audio files
      */
     disableAllSounds() {
-        this.walkingSound.volume = 0;
-        this.jumpSound.volume = 0;
-        this.throwSound.volume = 0;
-        this.collectBottleSound.volume = 0;
-        this.collectCoinsSound.volume = 0;
-        this.enemyHitSound.volume = 0;
-        this.hurtCharacterSound.volume = 0;
-        this.bossHitSound.volume = 0;
-        this.bossDeathSound.volume = 0;
-        this.bossSquawkSound.volume = 0;
-        this.snoringSound.volume = 0;
+        this.setEffectsVolume(0);
         this.backgroundSound.volume = 0;
+    }
+
+    /**
+     * Sets volume for all non-background effects
+     * @param {number} volume
+     */
+    setEffectsVolume(volume) {
+        const effects = [
+            this.walkingSound,
+            this.jumpSound,
+            this.throwSound,
+            this.collectBottleSound,
+            this.collectCoinsSound,
+            this.enemyHitSound,
+            this.hurtCharacterSound,
+            this.bossHitSound,
+            this.bossDeathSound,
+            this.bossSquawkSound,
+            this.snoringSound
+        ];
+        effects.forEach(a => a.volume = volume);
     }
 
     /**
