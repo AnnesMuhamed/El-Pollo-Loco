@@ -388,8 +388,8 @@ function wuCheckEnemyCollisions(world) {
     let jumpKillOccurred = false;
     for (let enemy of world.level.enemies) {
         if (enemy.isDead) continue;
-        if (world.character.isJumpingOnEnemy(enemy)) {
-            let distance = Math.abs(world.character.x - enemy.x);
+        if (wuIsStompCandidate(world, enemy)) {
+            const distance = Math.abs(world.character.x - enemy.x);
             if (distance < closestDistance) {
                 closestDistance = distance;
                 closestEnemy = enemy;
@@ -409,6 +409,25 @@ function wuCheckEnemyCollisions(world) {
     if (!world.endBoss.isDead) {
         wuHandleBossCollision(world);
     }
+}
+
+/**
+ * Checks tolerant stomp candidate against an enemy
+ * @param {World} world
+ * @param {any} enemy
+ * @returns {boolean}
+ */
+function wuIsStompCandidate(world, enemy) {
+    const c = world.character;
+    const charBottom = c.y + c.height;
+    const charLeft = c.x;
+    const charRight = c.x + c.width;
+    const enemyTop = enemy.y;
+    const enemyLeft = enemy.x;
+    const enemyRight = enemy.x + enemy.width;
+    const verticalOk = charBottom >= enemyTop - 10 && charBottom <= enemyTop + 27;
+    const horizontalOk = charRight > enemyLeft && charLeft < enemyRight;
+    return c.speedY < 0 && verticalOk && horizontalOk;
 }
 
 /**

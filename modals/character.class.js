@@ -344,20 +344,15 @@ class Character extends MovableObject {
    * @description Mario-style jump-kill: Character falls and hits enemy with precise image-to-image contact
    */
   isJumpingOnEnemy(enemy) {
-    const charBottom = this.y + this.height - (this.offset ? this.offset.bottom : 0);
-    const charLeft = this.x + (this.offset ? this.offset.left : 0);
-    const charRight = this.x + this.width - (this.offset ? this.offset.right : 0);
-    const enemyTop = enemy.y + (enemy.offset ? enemy.offset.top : 0);
-    const enemyLeft = enemy.x + (enemy.offset ? enemy.offset.left : 0);
-    const enemyRight = enemy.x + enemy.width - (enemy.offset ? enemy.offset.right : 0);
-    const characterCenterX = charLeft + (charRight - charLeft) / 2;
-    const jumpKillLeft = characterCenterX - 30;         
-    const jumpKillRight = characterCenterX + 30;      
-    const distance = charBottom - enemyTop;    
-    const verticalCollision = distance >= -10 && distance <= 15; 
-    const horizontalOverlap = jumpKillRight > enemyLeft && jumpKillLeft < enemyRight;
+    const charBottom = this.y + this.height;
+    const charLeft = this.x;
+    const charRight = this.x + this.width;
+    const enemyTop = enemy.y;
+    const enemyLeft = enemy.x;
+    const enemyRight = enemy.x + enemy.width;
+    const verticalCollision = charBottom >= enemyTop - 8 && charBottom <= enemyTop + 25;
+    const horizontalOverlap = charRight > enemyLeft && charLeft < enemyRight;
     const isFalling = this.speedY < 0;
-
     return verticalCollision && horizontalOverlap && isFalling;
   }
 }

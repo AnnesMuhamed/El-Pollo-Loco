@@ -72,6 +72,9 @@ canvas {
     width: auto;
     height: auto;
     aspect-ratio: 3/2;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .game-container {
@@ -116,6 +119,9 @@ canvas {
     align-items: center;
     justify-content: center;
     line-height: 1;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 @media (max-width: 1024px) {

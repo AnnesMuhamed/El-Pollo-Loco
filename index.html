@@ -205,5 +205,17 @@
         apply();
         window.addEventListener('resize', apply);
     })();
+    (function preventLongPressContextMenu(){
+        var disableEvents = ['contextmenu', 'selectstart', 'gesturestart'];
+        disableEvents.forEach(function(evt){
+            document.addEventListener(evt, function(e){
+                var inButton = e.target && e.target.closest && e.target.closest('button');
+                var isCanvas = e.target && e.target.tagName === 'CANVAS';
+                if (inButton || isCanvas) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+    })();
 </script>
 </html>
