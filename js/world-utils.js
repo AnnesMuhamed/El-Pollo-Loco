@@ -52,6 +52,7 @@ function wuHandleVictoryScreen(world) {
         if (!world.victoryScreenShown) {
             world.victoryScreenShown = true;
             world.gameWon = true;
+            wuStopVictoryAudio();
             setTimeout(() => {
                 if (typeof world.window !== 'undefined' && world.window && typeof world.window.goToStartScreen === 'function' && !world.window.goToStartScreenCalled) {
                     world.window.goToStartScreen();
@@ -92,13 +93,38 @@ function wuHandleGameOverScreen(world) {
  * Stops all game over audio
  */
 function wuStopGameOverAudio() {
-    if (window.audioManager) {
-        window.audioManager.stopWalkingSound();
-        window.audioManager.stopSnoringSound();
-        window.audioManager.stopBackgroundSound();
-        if (window.audioManager.bossSquawkSound) {
-            window.audioManager.bossSquawkSound.pause();
-            window.audioManager.bossSquawkSound.currentTime = 0;
+    const am = window.audioManager || (typeof audioManager !== 'undefined' ? audioManager : null);
+    if (am) {
+        am.stopWalkingSound();
+        am.stopSnoringSound();
+        am.stopBackgroundSound();
+        if (am.bossSquawkSound) {
+            am.bossSquawkSound.pause();
+            am.bossSquawkSound.currentTime = 0;
+        }
+        if (am.enemyHitSound) {
+            am.enemyHitSound.pause();
+            am.enemyHitSound.currentTime = 0;
+        }
+    }
+}
+
+/**
+ * Stops all victory screen audio
+ */
+function wuStopVictoryAudio() {
+    const am = window.audioManager || (typeof audioManager !== 'undefined' ? audioManager : null);
+    if (am) {
+        am.stopWalkingSound();
+        am.stopSnoringSound();
+        am.stopBackgroundSound();
+        if (am.bossSquawkSound) {
+            am.bossSquawkSound.pause();
+            am.bossSquawkSound.currentTime = 0;
+        }
+        if (am.enemyHitSound) {
+            am.enemyHitSound.pause();
+            am.enemyHitSound.currentTime = 0;
         }
     }
 }
@@ -374,6 +400,9 @@ function wuCheckCharacterDeath(world) {
     if (world.character.isDead() && !world.characterDeathTime) {
         world.characterDeathTime = new Date().getTime();
         world.gameOverScreenShown = false;
+        if (typeof wuStopGameOverAudio === 'function') {
+            wuStopGameOverAudio();
+        }
         setTimeout(() => { world.showGameOver = true; }, 3000);
     }
 }

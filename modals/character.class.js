@@ -191,6 +191,13 @@ class Character extends MovableObject {
    * @description Starts and stops walking sound based on movement and game state
    */
   handleWalkingSound() {
+    if (this.world.showGameOver || this.world.gameWon) {
+        if (this.isWalkingSoundPlaying) {
+            audioManager.stopWalkingSound();
+            this.isWalkingSoundPlaying = false;
+        }
+        return;
+    }
     const shouldPlayWalkingSound = (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isDead() && !this.world.showGameOver && !this.world.endBoss.isDead && !this.isAboveGround();
     
     if (shouldPlayWalkingSound !== this.lastShouldPlayWalkingSound) {

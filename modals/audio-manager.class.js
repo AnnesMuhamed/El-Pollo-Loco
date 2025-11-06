@@ -177,6 +177,7 @@ class AudioManager {
      * @description Plays background music
      */
     playBackgroundSound() {
+        this.backgroundSound.loop = true;
         this.playAudioSafely(this.backgroundSound, 'Background sound');
     }
 
@@ -186,6 +187,7 @@ class AudioManager {
      */
     stopBackgroundSound() {
         this.pauseAudioSafely(this.backgroundSound, 'Stop background sound');
+        this.backgroundSound.loop = false;
     }
 
     /**
