@@ -1,135 +1,4 @@
 /**
- * Clears canvas and applies rounded camera translation
- * @param {World} world
- */
-function wuClearAndSetupCanvas(world) {
-    world.ctx.clearRect(0, 0, world.canvas.width, world.canvas.height);
-    world.currentCamX = Math.round(world.camera_x);
-    world.ctx.translate(world.currentCamX, 0);
-}
-
-/**
- * Draws game objects to canvas
- * @param {World} world
- */
-function wuDrawGameObjects(world) {
-    wuAddObjectsToMap(world, world.level.backgroundObjects);
-    wuAddObjectsToMap(world, world.level.clouds);
-    wuAddObjectsToMap(world, world.level.enemies);
-    wuAddObjectsToMap(world, world.level.coins);
-    wuAddObjectsToMap(world, world.level.bottle);
-    wuAddObjectsToMap(world, world.throwableObject);
-    wuAddToMap(world, world.character);
-    wuAddToMap(world, world.endBoss);
-    wuAddObjectsToMap(world, world.splashes);
-}
-
-/**
- * Draws UI elements to canvas
- * @param {World} world
- */
-function wuDrawUIElements(world) {
-    const backCamX = typeof world.currentCamX === 'number' ? world.currentCamX : world.camera_x;
-    world.ctx.translate(-backCamX, 0);
-    wuAddToMap(world, world.statusBar);
-    wuAddToMap(world, world.statusBarEndboss);
-    wuAddToMap(world, world.statusBarCoin);
-    wuAddToMap(world, world.statusBarBottle);
-    if (typeof drawMobileControls === 'function') drawMobileControls(world.ctx);
-    if (typeof drawInGameSettingsButton === 'function') drawInGameSettingsButton(world.ctx);
-    if (typeof window !== 'undefined' && window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') drawInGameSettingsDropdown(world.ctx);
-}
-
-/**
- * Shows victory screen and schedules return
- * @param {World} world
- * @returns {boolean}
- */
-function wuHandleVictoryScreen(world) {
-    if (world.endBoss.isDead && world.youWonImage.complete) {
-        wuAddToMap(world, world.endBoss);
-        world.ctx.drawImage(world.youWonImage, 0, 0, world.canvas.width, world.canvas.height);
-        if (!world.victoryScreenShown) {
-            world.victoryScreenShown = true;
-            world.gameWon = true;
-            wuStopVictoryAudio();
-            setTimeout(() => {
-                if (typeof world.window !== 'undefined' && world.window && typeof world.window.goToStartScreen === 'function' && !world.window.goToStartScreenCalled) {
-                    world.window.goToStartScreen();
-                } else if (typeof window !== 'undefined' && typeof window.goToStartScreen === 'function' && !window.goToStartScreenCalled) {
-                    window.goToStartScreen();
-                }
-            }, 5000);
-        }
-        if (typeof world !== 'undefined' && !window.goToStartScreenCalled) {
-            world.currentAnimationFrame = requestAnimationFrame(() => world.draw());
-        }
-        return true;
-    }
-    return false;
-}
-
-/**
- * Shows game over or lost screen
- * @param {World} world
- */
-function wuHandleGameOverScreen(world) {
-    if (world.showGameOver && world.gameOverImage.complete) {
-        world.ctx.drawImage(world.gameOverImage, 0, 0, world.canvas.width, world.canvas.height);
-        if (!world.gameOverScreenShown) {
-            world.gameOverScreenShown = true;
-            wuStopGameOverAudio();
-        }
-        drawGameOverButtons(world.ctx);
-    } else if (world.character.isDead() && world.characterDeathTime) {
-        const timeSinceDeath = new Date().getTime() - world.characterDeathTime;
-        if (timeSinceDeath < 3000 && world.youLostImage.complete) {
-            world.ctx.drawImage(world.youLostImage, 0, 0, world.canvas.width, world.canvas.height);
-        }
-    }
-}
-
-/**
- * Stops all game over audio
- */
-function wuStopGameOverAudio() {
-    const am = window.audioManager || (typeof audioManager !== 'undefined' ? audioManager : null);
-    if (am) {
-        am.stopWalkingSound();
-        am.stopSnoringSound();
-        am.stopBackgroundSound();
-        if (am.bossSquawkSound) {
-            am.bossSquawkSound.pause();
-            am.bossSquawkSound.currentTime = 0;
-        }
-        if (am.enemyHitSound) {
-            am.enemyHitSound.pause();
-            am.enemyHitSound.currentTime = 0;
-        }
-    }
-}
-
-/**
- * Stops all victory screen audio
- */
-function wuStopVictoryAudio() {
-    const am = window.audioManager || (typeof audioManager !== 'undefined' ? audioManager : null);
-    if (am) {
-        am.stopWalkingSound();
-        am.stopSnoringSound();
-        am.stopBackgroundSound();
-        if (am.bossSquawkSound) {
-            am.bossSquawkSound.pause();
-            am.bossSquawkSound.currentTime = 0;
-        }
-        if (am.enemyHitSound) {
-            am.enemyHitSound.pause();
-            am.enemyHitSound.currentTime = 0;
-        }
-    }
-}
-
-/**
  * Adds an array of objects to map
  * @param {World} world
  * @param {Array} objects
@@ -193,34 +62,85 @@ function wuEnforceEndbossBlocking(world) {
  * @param {any} target
  */
 function wuSpawnBottleSplash(world, bottle, target) {
-    const splashWidth = 60;
-    const splashHeight = 60;
-    const insideOverlap = 16;
-    let x;
-    let y;
-    if (target && typeof bottle.speed === 'number') {
-        const oLeft = (target.offset && target.offset.left) ? target.offset.left : 0;
-        const oRight = (target.offset && target.offset.right) ? target.offset.right : 0;
-        const oTop = (target.offset && target.offset.top) ? target.offset.top : 0;
-        const oBottom = (target.offset && target.offset.bottom) ? target.offset.bottom : 0;
-        const hitboxLeft = target.x + oLeft;
-        const hitboxRight = target.x + target.width - oRight;
-        const hitboxTop = target.y + oTop;
-        const hitboxBottom = target.y + target.height - oBottom;
-        const impactCenterY = bottle.y + bottle.height * 0.5;
-        const clampedImpactTop = Math.max(hitboxTop, Math.min(impactCenterY - splashHeight * 0.5, hitboxBottom - splashHeight));
-        if (bottle.speed > 0) x = hitboxLeft - splashWidth + insideOverlap; else if (bottle.speed < 0) x = hitboxRight - insideOverlap; else x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
-        y = clampedImpactTop;
-    } else {
-        x = bottle.x + bottle.width * 0.5 - splashWidth * 0.5;
-        y = bottle.y + bottle.height * 0.5 - splashHeight * 0.5;
-    }
-    const splash = new BottleSplash(x, y);
+    const coords = wuResolveSplashCoordinates(bottle, target);
+    const splash = new BottleSplash(coords.x, coords.y);
     world.splashes.push(splash);
-    setTimeout(() => {
-        const idx = world.splashes.indexOf(splash);
-        if (idx !== -1) world.splashes.splice(idx, 1);
-    }, 500);
+    setTimeout(() => wuRemoveSplash(world, splash), 500);
+}
+
+/**
+ * Resolves splash coordinates based on hit target
+ * @param {ThrowableObject} bottle
+ * @param {any} target
+ * @returns {{x:number,y:number}}
+ */
+function wuResolveSplashCoordinates(bottle, target) {
+    const width = 60;
+    const height = 60;
+    if (target && typeof bottle.speed === 'number') {
+        return wuResolveTargetSplashCoords(bottle, target, width, height);
+    }
+    return wuResolveFreeSplashCoords(bottle, width, height);
+}
+
+/**
+ * Resolves splash coordinates when hitting a target
+ * @param {ThrowableObject} bottle
+ * @param {any} target
+ * @param {number} width
+ * @param {number} height
+ * @returns {{x:number,y:number}}
+ */
+function wuResolveTargetSplashCoords(bottle, target, width, height) {
+    const offsets = target.offset || {};
+    const hitboxLeft = target.x + (offsets.left || 0);
+    const hitboxRight = target.x + target.width - (offsets.right || 0);
+    const hitboxTop = target.y + (offsets.top || 0);
+    const hitboxBottom = target.y + target.height - (offsets.bottom || 0);
+    const centerY = bottle.y + bottle.height * 0.5;
+    const y = Math.max(hitboxTop, Math.min(centerY - height * 0.5, hitboxBottom - height));
+    const x = wuResolveHorizontalSplash(bottle, hitboxLeft, hitboxRight, width);
+    return { x, y };
+}
+
+/**
+ * Resolves default splash coordinates when no target is hit
+ * @param {ThrowableObject} bottle
+ * @param {number} width
+ * @param {number} height
+ * @returns {{x:number,y:number}}
+ */
+function wuResolveFreeSplashCoords(bottle, width, height) {
+    const x = bottle.x + bottle.width * 0.5 - width * 0.5;
+    const y = bottle.y + bottle.height * 0.5 - height * 0.5;
+    return { x, y };
+}
+
+/**
+ * Resolves horizontal splash alignment
+ * @param {ThrowableObject} bottle
+ * @param {number} hitboxLeft
+ * @param {number} hitboxRight
+ * @param {number} width
+ * @returns {number}
+ */
+function wuResolveHorizontalSplash(bottle, hitboxLeft, hitboxRight, width) {
+    const overlap = 16;
+    if (bottle.speed > 0) return hitboxLeft - width + overlap;
+    if (bottle.speed < 0) return hitboxRight - overlap;
+    return bottle.x + bottle.width * 0.5 - width * 0.5;
+}
+
+/**
+ * Removes splash object after animation completes
+ * @param {World} world
+ * @param {BottleSplash} splash
+ */
+function wuRemoveSplash(world, splash) {
+    const index = world.splashes.indexOf(splash);
+    if (index !== -1) {
+        world.splashes.splice(index, 1);
+    }
 }
 
 /**
@@ -400,8 +320,8 @@ function wuCheckCharacterDeath(world) {
     if (world.character.isDead() && !world.characterDeathTime) {
         world.characterDeathTime = new Date().getTime();
         world.gameOverScreenShown = false;
-        if (typeof wuStopGameOverAudio === 'function') {
-            wuStopGameOverAudio();
+        if (typeof world.stopGameOverAudio === 'function') {
+            world.stopGameOverAudio();
         }
         setTimeout(() => { world.showGameOver = true; }, 3000);
     }
@@ -412,32 +332,56 @@ function wuCheckCharacterDeath(world) {
  * @param {World} world
  */
 function wuCheckEnemyCollisions(world) {
-    let closestEnemy = null;
-    let closestDistance = Infinity;
-    let jumpKillOccurred = false;
-    for (let enemy of world.level.enemies) {
-        if (enemy.isDead) continue;
-        if (wuIsStompCandidate(world, enemy)) {
-            const distance = Math.abs(world.character.x - enemy.x);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestEnemy = enemy;
-            }
-        }
-    }
-    if (closestEnemy) {
-        wuHandleJumpKillCollision(world, closestEnemy);
-        jumpKillOccurred = true;
-    }
-    if (!jumpKillOccurred) {
-        for (let enemy of world.level.enemies) {
-            if (enemy.isDead) continue;
-            wuHandleSideCollision(world, enemy);
-        }
+    const stompTarget = wuFindClosestStompCandidate(world);
+    const stomped = wuAttemptJumpKill(world, stompTarget);
+    if (!stomped) {
+        wuResolveSideCollisions(world);
     }
     if (!world.endBoss.isDead) {
         wuHandleBossCollision(world);
     }
+}
+
+/**
+ * Finds the closest stompable enemy
+ * @param {World} world
+ * @returns {any|null}
+ */
+function wuFindClosestStompCandidate(world) {
+    let closest = null;
+    let bestDistance = Infinity;
+    world.level.enemies.forEach((enemy) => {
+        if (enemy.isDead || !wuIsStompCandidate(world, enemy)) return;
+        const distance = Math.abs(world.character.x - enemy.x);
+        if (distance < bestDistance) {
+            closest = enemy;
+            bestDistance = distance;
+        }
+    });
+    return closest;
+}
+
+/**
+ * Attempts a jump kill on the provided enemy
+ * @param {World} world
+ * @param {any|null} enemy
+ * @returns {boolean}
+ */
+function wuAttemptJumpKill(world, enemy) {
+    if (!enemy) return false;
+    return wuHandleJumpKillCollision(world, enemy);
+}
+
+/**
+ * Resolves side collisions for all enemies
+ * @param {World} world
+ */
+function wuResolveSideCollisions(world) {
+    world.level.enemies.forEach((enemy) => {
+        if (!enemy.isDead) {
+            wuHandleSideCollision(world, enemy);
+        }
+    });
 }
 
 /**

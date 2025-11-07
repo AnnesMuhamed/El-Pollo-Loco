@@ -74,143 +74,13 @@ class World {
   checkCollisions() {
     this.collisionInterval = setInterval(() => {
       if (!window.goToStartScreenCalled) {
-      this.checkEnemyCollisions();
-      this.checkCoinCollisions();
-      this.checkBottleCollisions();
-      this.checkBossBottleCollision();
-        this.checkEnemyBottleCollision(); 
+        wuCheckEnemyCollisions(this);
+        wuCheckCoinCollisions(this);
+        wuCheckBottleCollisions(this);
+        wuCheckBossBottleCollision(this);
+        wuCheckEnemyBottleCollision(this);
       }
     }, 50); 
-  }
-
-  /**
-   * Checks for collisions between character and enemies
-   * @description Handles enemy death when jumped on and character damage on side collision
-   */
-  checkEnemyCollisions() {
-    wuCheckEnemyCollisions(this);
-  }
-
-  /**
-   * Handles collision between character and boss
-   * @description Manages boss attacks and character damage
-   */
-  handleBossCollision() {
-    return wuHandleBossCollision(this);
-  }
-
-  /**
-   * Handles Mario-style jump-kill collision
-   * @param {Object} enemy - The enemy to check collision with
-   * @returns {boolean} True if jump-kill occurred, false otherwise
-   * @description Kills enemy when character jumps on them
-   */
-  handleJumpKillCollision(enemy) {
-    return wuHandleJumpKillCollision(this, enemy);
-  }
-
-  /**
-   * Handles side collision between character and enemy
-   * @param {Object} enemy - The enemy to check collision with
-   * @description Manages character damage on side collision with enemies
-   */
-  handleSideCollision(enemy) {
-    wuHandleSideCollision(this, enemy);
-  }
-
-  /**
-   * Checks if character has died and handles death sequence
-   * @description Initiates game over sequence when character dies
-   */
-  checkCharacterDeath() {
-    wuCheckCharacterDeath(this);
-  }
-
-  /**
-   * Checks for collisions between bottles and boss
-   * @description Handles bottle hits on the endboss
-   */
-  checkBossBottleCollision() {
-    wuCheckBossBottleCollision(this);
-  }
-
-  /**
-   * Checks for collisions between bottles and enemies
-   * @description Handles bottle hits on regular enemies
-   */
-  checkEnemyBottleCollision() {
-    wuCheckEnemyBottleCollision(this);
-  }
-
-  /**
-   * Handles bottle hit on enemy
-   * @param {Object} bottle - The bottle that hit the enemy
-   * @param {number} bottleIndex - Index of the bottle in throwableObject array
-   * @param {Object} enemy - The enemy that was hit
-   * @description Removes bottle and kills enemy
-   */
-  handleEnemyBottleHit(bottle, bottleIndex, enemy) {
-    wuHandleEnemyBottleHit(this, bottle, bottleIndex, enemy);
-  }
-
-  /**
-   * Handles bottle hit on boss
-   * @param {Object} bottle - The bottle that hit the boss
-   * @param {number} index - Index of the bottle in throwableObject array
-   * @description Removes bottle and damages boss
-   */
-  handleBossHit(bottle, index) {
-    wuHandleBossHit(this, bottle, index);
-  }
-
-  /**
-   * Spawns a bottle splash effect at the bottle's impact position
-   * @param {ThrowableObject} bottle
-   */
-  spawnBottleSplash(bottle, target) {
-    wuSpawnBottleSplash(this, bottle, target);
-  }
-
-  /**
-   * Checks if boss has died and handles victory
-   * @description Sets game as won when boss energy reaches 0
-   */
-  checkBossDeath() {
-    wuCheckBossDeath(this);
-  }
-
-  /**
-   * Checks for collisions between character and coins
-   * @description Handles coin collection
-   */
-  checkCoinCollisions() {
-    wuCheckCoinCollisions(this);
-  }
-
-  /**
-   * Collects a coin and updates status bar
-   * @param {number} index - Index of the coin to collect
-   * @description Removes coin from level and increases coin counter
-   */
-  collectCoin(index) {
-    wuCollectCoin(this, index);
-  }
-
-  /**
-   * Checks for collisions between character and bottles
-   * @description Handles bottle collection
-   */
-  checkBottleCollisions() {
-    wuCheckBottleCollisions(this);
-  }
-
-  /**
-   * Collects a bottle and updates status bar
-   * @param {number} index - Index of the bottle to collect
-   * @description Removes bottle from level and increases bottle counter
-   */
-  collectBottle(index) {
-    wuCollectBottle(this, index);
   }
 
   /**
@@ -252,27 +122,47 @@ class World {
   }
 
   /**
-   * Clears canvas and sets up camera translation
-   * @description Prepares canvas for drawing with camera offset
+   * Clears canvas and applies camera translation
+   * @description Prepares drawing context with rounded camera offset
    */
   clearAndSetupCanvas() {
-    wuClearAndSetupCanvas(this);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.currentCamX = Math.round(this.camera_x);
+    this.ctx.translate(this.currentCamX, 0);
   }
 
   /**
-   * Draws all game objects on the canvas
+   * Draws map and entity layers
    * @description Renders background, enemies, collectibles, and characters
    */
   drawGameObjects() {
-    wuDrawGameObjects(this);
+    wuAddObjectsToMap(this, this.level.backgroundObjects);
+    wuAddObjectsToMap(this, this.level.clouds);
+    wuAddObjectsToMap(this, this.level.enemies);
+    wuAddObjectsToMap(this, this.level.coins);
+    wuAddObjectsToMap(this, this.level.bottle);
+    wuAddObjectsToMap(this, this.throwableObject);
+    wuAddToMap(this, this.character);
+    wuAddToMap(this, this.endBoss);
+    wuAddObjectsToMap(this, this.splashes);
   }
 
   /**
-   * Draws UI elements on the canvas
-   * @description Renders status bars and mobile controls
+   * Draws UI elements
+   * @description Renders status bars and optional overlays
    */
   drawUIElements() {
-    wuDrawUIElements(this);
+    const offset = typeof this.currentCamX === 'number' ? this.currentCamX : this.camera_x;
+    this.ctx.translate(-offset, 0);
+    wuAddToMap(this, this.statusBar);
+    wuAddToMap(this, this.statusBarEndboss);
+    wuAddToMap(this, this.statusBarCoin);
+    wuAddToMap(this, this.statusBarBottle);
+    if (typeof drawMobileControls === 'function') drawMobileControls(this.ctx);
+    if (typeof drawInGameSettingsButton === 'function') drawInGameSettingsButton(this.ctx);
+    if (typeof window !== 'undefined' && window.settingsDropdownVisible && typeof drawInGameSettingsDropdown === 'function') {
+      drawInGameSettingsDropdown(this.ctx);
+    }
   }
 
   /**
@@ -281,7 +171,17 @@ class World {
    * @description Shows victory screen and schedules return to start screen
    */
   handleVictoryScreen() {
-    return wuHandleVictoryScreen(this);
+    const victoryReady = this.endBoss.isDead && this.youWonImage.complete;
+    if (!victoryReady) return false;
+    wuAddToMap(this, this.endBoss);
+    this.ctx.drawImage(this.youWonImage, 0, 0, this.canvas.width, this.canvas.height);
+    if (!this.victoryScreenShown) {
+      this.startVictorySequence();
+    }
+    if (!window.goToStartScreenCalled) {
+      this.queueVictoryFrame();
+    }
+    return true;
   }
 
   /**
@@ -289,7 +189,18 @@ class World {
    * @description Shows appropriate game over screen based on game state
    */
   handleGameOverScreen() {
-    wuHandleGameOverScreen(this);
+    if (this.showGameOver && this.gameOverImage.complete) {
+      this.ctx.drawImage(this.gameOverImage, 0, 0, this.canvas.width, this.canvas.height);
+      if (!this.gameOverScreenShown) {
+        this.gameOverScreenShown = true;
+        this.stopGameOverAudio();
+      }
+      drawGameOverButtons(this.ctx);
+      return;
+    }
+    if (this.character.isDead() && this.characterDeathTime) {
+      this.drawYouLostFrame();
+    }
   }
 
   /**
@@ -297,7 +208,96 @@ class World {
    * @description Stops walking, snoring, background, and boss sounds
    */
   stopGameOverAudio() {
-    wuStopGameOverAudio();
+    const manager = this.getAudioManager();
+    if (!manager) return;
+    manager.stopWalkingSound();
+    manager.stopSnoringSound();
+    manager.stopBackgroundSound();
+    this.resetBossSounds(manager);
+  }
+
+  /**
+   * Starts victory handling sequence
+   * @description Marks victory, stops audio, and schedules return to start screen
+   */
+  startVictorySequence() {
+    this.victoryScreenShown = true;
+    this.gameWon = true;
+    this.stopVictoryAudio();
+    setTimeout(() => {
+      this.requestReturnToStart();
+    }, 5000);
+  }
+
+  /**
+   * Requests a return to the start screen
+   * @description Tries world-scoped handler first, then global handler
+   */
+  requestReturnToStart() {
+    const worldScope = this.window && typeof this.window.goToStartScreen === 'function' && !this.window.goToStartScreenCalled;
+    if (worldScope) {
+      this.window.goToStartScreen();
+      return;
+    }
+    if (typeof window !== 'undefined' && typeof window.goToStartScreen === 'function' && !window.goToStartScreenCalled) {
+      window.goToStartScreen();
+    }
+  }
+
+  /**
+   * Queues the next frame during victory screen
+   * @description Keeps draw loop alive until start screen is shown
+   */
+  queueVictoryFrame() {
+    this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
+  }
+
+  /**
+   * Draws the "you lost" frame when appropriate
+   * @description Shows temporary death screen before main game over
+   */
+  drawYouLostFrame() {
+    const elapsed = new Date().getTime() - this.characterDeathTime;
+    if (elapsed < 3000 && this.youLostImage.complete) {
+      this.ctx.drawImage(this.youLostImage, 0, 0, this.canvas.width, this.canvas.height);
+    }
+  }
+
+  /**
+   * Stops all audio for victory screen
+   * @description Uses shared cleanup to silence audio sources
+   */
+  stopVictoryAudio() {
+    this.stopGameOverAudio();
+  }
+
+  /**
+   * Resolves the current audio manager instance
+   * @returns {AudioManager|null} The active audio manager if available
+   */
+  getAudioManager() {
+    if (typeof window !== 'undefined' && window.audioManager) {
+      return window.audioManager;
+    }
+    if (typeof audioManager !== 'undefined') {
+      return audioManager;
+    }
+    return null;
+  }
+
+  /**
+   * Resets boss-related audio effects
+   * @param {AudioManager} manager - The audio manager to reset
+   */
+  resetBossSounds(manager) {
+    if (manager.bossSquawkSound) {
+      manager.bossSquawkSound.pause();
+      manager.bossSquawkSound.currentTime = 0;
+    }
+    if (manager.enemyHitSound) {
+      manager.enemyHitSound.pause();
+      manager.enemyHitSound.currentTime = 0;
+    }
   }
 
   /**
@@ -310,7 +310,7 @@ class World {
     }
 
     if (!this.endBoss.isDead) {
-      this.enforceEndbossBlocking();
+      wuEnforceEndbossBlocking(this);
     }
 
     this.clearAndSetupCanvas();
@@ -326,46 +326,6 @@ class World {
     if (!this.victoryScreenShown && !this.showGameOver && typeof gameRunning !== 'undefined' && gameRunning && world && !window.goToStartScreenCalled) {
       this.currentAnimationFrame = requestAnimationFrame(() => this.draw());
     }
-  }
-
-  /**
-   * Prevents the character from passing the endboss horizontally
-   */
-  enforceEndbossBlocking() {
-    wuEnforceEndbossBlocking(this);
-  }
-
-  /**
-   * Adds multiple objects to the game map
-   * @param {Array} objects - Array of objects to add to the map
-   */
-  addObjectsToMap(objects) {
-    wuAddObjectsToMap(this, objects);
-  }
-
-  /**
-   * Adds a single object to the game map
-   * @param {DrawableObject} mo - The object to add to the map
-   * @description Handles object drawing and direction flipping
-   */
-  addToMap(mo) {
-    wuAddToMap(this, mo);
-  }
-
-  /**
-   * Flips an image horizontally
-   * @param {DrawableObject} mo - The object to flip
-   */
-  flipImage(mo) {
-    wuFlipImage(this, mo);
-  }
-
-  /**
-   * Restores an image to its original orientation
-   * @param {DrawableObject} mo - The object to restore
-   */
-  flipImageBack(mo) {
-    wuFlipImageBack(this, mo);
   }
 
   /**

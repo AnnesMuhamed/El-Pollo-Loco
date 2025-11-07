@@ -52,38 +52,9 @@ function setupMouseEvents() {
  */
 function handleMouseMove(e) {
     const { canvasX, canvasY } = calculateCanvasCoordinates(e);
-    if (isOverAnyClickable(canvasX, canvasY)) {
-        canvas.style.cursor = 'pointer';
-    } else {
-        canvas.style.cursor = 'default';
-    }
-    if (!gameStarted && window.settingsDropdownVisible && window.dropdownButtonCoords) {
-        let hoveredButton = null;
-        for (const [action, coords] of Object.entries(window.dropdownButtonCoords)) {
-            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
-                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
-                hoveredButton = action;
-                break;
-            }
-        }
-        if (hoveredButton !== window.hoveredDropdownButton) {
-            window.hoveredDropdownButton = hoveredButton;
-            drawStartScreen();
-        }
-    }
-    if (gameStarted && window.settingsDropdownVisible && window.inGameDropdownButtonCoords) {
-        let hoveredButton = null;
-        for (const [action, coords] of Object.entries(window.inGameDropdownButtonCoords)) {
-            if (canvasX >= coords.x && canvasX <= coords.x + coords.width &&
-                canvasY >= coords.y && canvasY <= coords.y + coords.height) {
-                hoveredButton = action;
-                break;
-            }
-        }
-        if (hoveredButton !== window.hoveredInGameDropdownButton) {
-            window.hoveredInGameDropdownButton = hoveredButton;
-        }
-    }
+    updateCanvasCursor(canvasX, canvasY);
+    updatePreGameDropdownHover(canvasX, canvasY);
+    updateInGameDropdownHover(canvasX, canvasY);
 }
 
 /**
@@ -200,42 +171,46 @@ function handleInGameDropdownButtonClick(canvasX, canvasY) {
  */
 function handleButtonPress(e, type, touchId = null) {
     const { canvasX, canvasY } = calculateCanvasCoordinates(e);
-    
-    if (handleStartButtonClick(canvasX, canvasY)) {
+    if (processCanvasButtonActions(canvasX, canvasY)) {
         return;
     }
-    
-    if (handleGameOverButtonClick(canvasX, canvasY)) {
-        return;
-    }
-    
-    if (handleSettingsButtonClick(canvasX, canvasY)) {
-        return;
-    }
-    
-    if (handleInGameSettingsButtonClick(canvasX, canvasY)) {
-        return;
-    }
-    
-    if (handleDropdownButtonClick(canvasX, canvasY)) {
-        return;
-    }
-    
-    if (handleInGameDropdownButtonClick(canvasX, canvasY)) {
-        return;
-    }
-    
+    handleMobileControlPress(canvasX, canvasY, type, touchId);
+}
+
+/**
+ * Processes core canvas button actions
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @returns {boolean}
+ */
+function processCanvasButtonActions(canvasX, canvasY) {
+    if (handleStartButtonClick(canvasX, canvasY)) return true;
+    if (handleGameOverButtonClick(canvasX, canvasY)) return true;
+    if (handleSettingsButtonClick(canvasX, canvasY)) return true;
+    if (handleInGameSettingsButtonClick(canvasX, canvasY)) return true;
+    if (handleDropdownButtonClick(canvasX, canvasY)) return true;
+    if (handleInGameDropdownButtonClick(canvasX, canvasY)) return true;
+    return false;
+}
+
+/**
+ * Handles mobile control button presses
+ * @param {number} canvasX
+ * @param {number} canvasY
+ * @param {string} type
+ * @param {number|null} touchId
+ */
+function handleMobileControlPress(canvasX, canvasY, type, touchId) {
     const buttonPressed = detectMobileButtonPress(canvasX, canvasY);
-    
-    if (buttonPressed) {
-        updateKeyboardOnPress(buttonPressed);
-        
-        if (type === 'touch' && touchId !== null) {
-            window.touchPoints.set(touchId, buttonPressed);
-            window.activeButtons.add(buttonPressed);
-        } else if (type === 'mouse') {
-            window.activeButtons.add(buttonPressed);
-        }
+    if (!buttonPressed) return;
+    updateKeyboardOnPress(buttonPressed);
+    if (type === 'touch' && touchId !== null) {
+        window.touchPoints.set(touchId, buttonPressed);
+        window.activeButtons.add(buttonPressed);
+        return;
+    }
+    if (type === 'mouse') {
+        window.activeButtons.add(buttonPressed);
     }
 }
 

@@ -115,6 +115,56 @@ function isOverAnyClickable(canvasX, canvasY) {
 }
 
 /**
+ * Updates canvas cursor based on hover state
+ * @param {number} canvasX
+ * @param {number} canvasY
+ */
+function updateCanvasCursor(canvasX, canvasY) {
+    if (typeof canvas === 'undefined' || !canvas) return;
+    const isClickable = isOverAnyClickable(canvasX, canvasY);
+    canvas.style.cursor = isClickable ? 'pointer' : 'default';
+}
+
+/**
+ * Updates hovered start screen dropdown button
+ * @param {number} canvasX
+ * @param {number} canvasY
+ */
+function updatePreGameDropdownHover(canvasX, canvasY) {
+    if (gameStarted || !window.settingsDropdownVisible || !window.dropdownButtonCoords) return;
+    let hovered = null;
+    for (const [action, coords] of Object.entries(window.dropdownButtonCoords)) {
+        if (canvasX >= coords.x && canvasX <= coords.x + coords.width && canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+            hovered = action;
+            break;
+        }
+    }
+    if (hovered !== window.hoveredDropdownButton) {
+        window.hoveredDropdownButton = hovered;
+        drawStartScreen();
+    }
+}
+
+/**
+ * Updates hovered in-game dropdown button
+ * @param {number} canvasX
+ * @param {number} canvasY
+ */
+function updateInGameDropdownHover(canvasX, canvasY) {
+    if (!gameStarted || !window.settingsDropdownVisible || !window.inGameDropdownButtonCoords) return;
+    let hovered = null;
+    for (const [action, coords] of Object.entries(window.inGameDropdownButtonCoords)) {
+        if (canvasX >= coords.x && canvasX <= coords.x + coords.width && canvasY >= coords.y && canvasY <= coords.y + coords.height) {
+            hovered = action;
+            break;
+        }
+    }
+    if (hovered !== window.hoveredInGameDropdownButton) {
+        window.hoveredInGameDropdownButton = hovered;
+    }
+}
+
+/**
  * Detects which mobile control was pressed
  * @param {number} canvasX
  * @param {number} canvasY
