@@ -232,4 +232,3 @@ class StatusBarEndboss extends DrawableObject {
     return 5;
   }
 }
-
